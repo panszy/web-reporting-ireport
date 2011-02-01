@@ -3,20 +3,30 @@ package database;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.ArrayList;
+import java.util.Properties;
 
 public class Connector {
 	private ArrayList<Connection> connection = new ArrayList<Connection>();
 	private static Connector conn;
 	private int maxConnection;
+	private String username;
+	private String password;
+	private String host;
+	private int port;
 
-	public Connector(String user, String password, String url, int port,
+	public Connector(String username, String password, String host, int port,
 			int initalConnection, int maxConnection) throws Exception {
 		this.maxConnection = maxConnection;
-		if (conn == null)
-			conn = new Connector(user, password, url, port, initalConnection,
-					maxConnection);
-		for (int i = 0; i < initalConnection; i++) {
-			putConnection(createNewConnection());
+		this.username = username;
+		this.password = password;
+		this.host = host;
+		this.port = port;
+		if (conn == null) {
+			conn = new Connector(username, password, host, port,
+					initalConnection, maxConnection);
+			for (int i = 0; i < initalConnection; i++) {
+				putConnection(createNewConnection());
+			}
 		}
 	}
 
@@ -38,10 +48,14 @@ public class Connector {
 		if (maxConnection == connection.size())
 			throw new Exception("Exceeding maximum connection");
 		else {
-			Class.forName("com.ibm.db2.jcc.DB2DataSource");
-			Connection db2Conn = DriverManager.getConnection("jdbc:db2:schema", "username", "password"); 
-			// TODO: provide the real schema, username, and password
-			return db2Conn;
+			String databaseURL = "jdbc:derby:net://"+this.host+":"+Integer.toString(this.port)+"/sample";
+			Class.forName("com.ibm.db2.jcc.DB2Driver");
+			Properties properties = new Properties();
+			properties.put("user", this.username);
+			properties.put("password", this.password);
+			properties.put("retreiveMessagesFromServerOnGetMessage", "true");
+			Connection conn = DriverManager.getConnection(databaseURL, properties);
+			return conn;
 		}
 	}
 }
