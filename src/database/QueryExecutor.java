@@ -66,4 +66,9 @@ public class QueryExecutor {
 		return result;
 	}
 
+	public static void main(String[] args)  throws Exception {
+		new Connector("db2admin", "password", "localhost", 50000, 1, 10);
+		QueryExecutor q = new QueryExecutor(1);
+		System.out.println(q.executeQuery(new Object[0]));
+	}
 }
