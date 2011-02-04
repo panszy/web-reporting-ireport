@@ -17,12 +17,12 @@ public class Connector {
 
 	public Connector(String username, String password, String host, int port,
 			int initialConnection, int maxConnection) throws Exception {
-		this.maxConnection = maxConnection;
-		this.username = username;
-		this.password = password;
-		this.host = host;
-		this.port = port;
-		this.initialConnection = initialConnection;		
+		Connector.maxConnection = maxConnection;
+		Connector.username = username;
+		Connector.password = password;
+		Connector.host = host;
+		Connector.port = port;
+		Connector.initialConnection = initialConnection;		
 	}
 
 	public static Connector getInstance() throws Exception {
@@ -50,8 +50,8 @@ public class Connector {
 		if (maxConnection == connection.size())
 			throw new Exception("Exceeding maximum connection");
 		else {
-			String databaseURL = "jdbc:derby:net://"+host+":"+Integer.toString(port)+"/sample";
-			Class.forName("COM.ibm.db2.jcc.DB2Driver");
+			String databaseURL = "jdbc:db2://"+host+":"+Integer.toString(port)+"/sample";
+			Class.forName("com.ibm.db2.jcc.DB2Driver");
 			Properties properties = new Properties();
 			properties.put("user", username);
 			properties.put("password", password);
