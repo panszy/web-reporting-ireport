@@ -5,7 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import common.Util;
-import listener.Listener;
 
 public class QueryExecutor {
 
@@ -71,10 +70,7 @@ public class QueryExecutor {
 		return result;
 	}
 
-	public static void main(String[] args) throws Exception {
-		Listener listener = new Listener();
-		listener.start();
-		Thread.sleep(100);
+	public static void main(String[] args) throws Exception {		
 		
 		ArrayList<String[]> res = Util.sendQuery("localhost", 9876, 1, new String[0]);
 
