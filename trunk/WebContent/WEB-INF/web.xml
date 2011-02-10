@@ -9,4 +9,22 @@
     <welcome-file>default.htm</welcome-file>
     <welcome-file>default.jsp</welcome-file>
   </welcome-file-list>
+    <listener>
+        <listener-class>listener.Listener</listener-class>
+    </listener>
+    
+    <servlet>
+        <servlet-name>DownloadServlet</servlet-name>
+        <servlet-class>servlet.ServletDownload</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>DownloadServlet</servlet-name>
+        <url-pattern>/viewer</url-pattern>
+    </servlet-mapping>  
+    
+    <session-config>
+      <session-timeout>30</session-timeout> 
+    </session-config>
+    
 </web-app>
