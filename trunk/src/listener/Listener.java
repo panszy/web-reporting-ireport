@@ -4,9 +4,14 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import javax.servlet.http.*;
+import javax.servlet.*;
+
+
 import database.Connector;
 
-public class Listener extends Thread {
+public class Listener extends Thread implements ServletContextListener, HttpSessionListener
+{
 	
 	int port = 9876;
 	
@@ -29,5 +34,26 @@ public class Listener extends Thread {
 		} catch (IOException e) {			
 			e.printStackTrace();
 		}
+	}
+
+	public void sessionCreated(HttpSessionEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void sessionDestroyed(HttpSessionEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void contextDestroyed(ServletContextEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void contextInitialized(ServletContextEvent arg0) {
+		Listener listener = new Listener();
+		listener.start();
+		
 	}
 }
