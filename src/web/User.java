@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Set;
 import org.apache.log4j.Logger;
 import exception.DaoException;
+import exception.UserNotFoundException;
 
 public class User implements Serializable {
     public static final long serialVersionUID = 1L;

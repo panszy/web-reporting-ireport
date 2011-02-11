@@ -5,7 +5,12 @@ import java.sql.Connection;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import org.apache.log4j.Logger;
+
+import exception.AccountDeactivatedException;
+import exception.AccountLockedException;
 import exception.DaoException;
+import exception.LoginException;
+import exception.UserNotFoundException;
 import common.EncryptUtil;
 import database.Connector;
 

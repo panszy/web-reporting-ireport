@@ -1,4 +1,4 @@
-<%@ page import="com.torepo.web.web.HttpConstants" %>
+<%@ page import="web.HttpConstants" %>
 <%String title="Create New Service Configuration"; %>
 <%@ include file="/includes/header.jsp"%>
 <form action="createconfig" method="post" name="config" >

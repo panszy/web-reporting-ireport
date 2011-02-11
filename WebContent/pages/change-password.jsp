@@ -1,4 +1,4 @@
-<%@page import="com.torepo.web.web.HttpConstants" %>
+<%@page import="web.HttpConstants" %>
 <% String title = "Change Password"; %>
 <%@ include file="/includes/header.jsp" %>
 <table>

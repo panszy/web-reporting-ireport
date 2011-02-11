@@ -1,13 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
   <display-name>Kifar</display-name>
-  <welcome-file-list>
-    <welcome-file>index.html</welcome-file>
-    <welcome-file>index.htm</welcome-file>
-    <welcome-file>index.jsp</welcome-file>
-    <welcome-file>default.html</welcome-file>
-    <welcome-file>default.htm</welcome-file>
-    <welcome-file>default.jsp</welcome-file>
+  <welcome-file-list>    
+    <welcome-file>pages/index.jsp</welcome-file>    
   </welcome-file-list>
     <listener>
         <listener-class>listener.Listener</listener-class>
@@ -17,14 +12,150 @@
         <servlet-name>DownloadServlet</servlet-name>
         <servlet-class>servlet.ServletDownload</servlet-class>
     </servlet>
+    
+    <servlet>
+		<servlet-name>Login</servlet-name>
+		<servlet-class>servlet.Login</servlet-class>
+	</servlet>
+	
+	<servlet>
+		<servlet-name>Logout</servlet-name>
+		<servlet-class>servlet.Logout</servlet-class>
+	</servlet> 
+	
+	<servlet>
+		<servlet-name>UserPanel</servlet-name>
+		<servlet-class>servlet.UserPanel</servlet-class>
+	</servlet>
+	
+	<servlet>
+		<servlet-name>ChangePassword</servlet-name>
+		<servlet-class>servlet.ChangePassword</servlet-class>
+	</servlet>
+	
+	<servlet>
+		<servlet-name>CreateNewUser</servlet-name>
+		<servlet-class>servlet.CreateNewUser</servlet-class>
+	</servlet>
+    <servlet>
+         <servlet-name>CreateUser</servlet-name>
+         <servlet-class>servlet.CreateUser</servlet-class>
+    </servlet>
+    <servlet>
+		<servlet-name>SearchUser</servlet-name>
+		<servlet-class>servlet.SearchUser</servlet-class>
+	</servlet>
+	
+    <servlet>
+		<servlet-name>UpdateUser</servlet-name>
+		<servlet-class>servlet.UpdateUser</servlet-class>
+	</servlet>
+
+    <servlet>
+		<servlet-name>UpdateGroup</servlet-name>
+		<servlet-class>servlet.UserGroup</servlet-class>
+	</servlet>
+
+    <servlet>
+		<servlet-name>EditUserGroup</servlet-name>
+		<servlet-class>servlet.EditUserGroup</servlet-class>
+	</servlet>
+
+    <servlet>
+		<servlet-name>UserGroupServlet</servlet-name>
+		<servlet-class>servlet.UserGroupServlet</servlet-class>
+	</servlet>
+
+    <servlet>
+		<servlet-name>AddUserGroup</servlet-name>
+		<servlet-class>servlet.AddUserGroup</servlet-class>
+	</servlet>
+
+    <servlet>
+		<servlet-name>UpdateUserGroup</servlet-name>
+		<servlet-class>servlet.UpdateUserGroup</servlet-class>
+	</servlet>
 
     <servlet-mapping>
         <servlet-name>DownloadServlet</servlet-name>
         <url-pattern>/viewer</url-pattern>
     </servlet-mapping>  
     
+    <servlet-mapping>
+		<servlet-name>Login</servlet-name>
+		<url-pattern>/pages/login</url-pattern>
+	</servlet-mapping>
+  
+	<servlet-mapping>
+		<servlet-name>Logout</servlet-name>
+		<url-pattern>/logout</url-pattern>
+	</servlet-mapping>
+  
+	<servlet-mapping>
+		<servlet-name>UserPanel</servlet-name>
+		<url-pattern>/pages/user-panel</url-pattern>
+	</servlet-mapping>
+  
+	<servlet-mapping>
+		<servlet-name>ChangePassword</servlet-name>
+		<url-pattern>/pages/change-password</url-pattern>
+	</servlet-mapping>
+  
+	<servlet-mapping>
+		<servlet-name>CreateNewUser</servlet-name>
+		<url-pattern>/pages/admin/create-new-user</url-pattern>
+	</servlet-mapping>
+    <servlet-mapping>
+    	 <servlet-name>CreateUser</servlet-name>
+    	 <url-pattern>/pages/admin/createuser</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+		<servlet-name>SearchUser</servlet-name>
+		<url-pattern>/pages/admin/search-user</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>UpdateUser</servlet-name>
+		<url-pattern>/pages/admin/update-user</url-pattern>
+	</servlet-mapping>
+
+    <servlet-mapping>
+		<servlet-name>UpdateGroup</servlet-name>
+		<url-pattern>/pages/admin/update-group</url-pattern>
+	</servlet-mapping>
+
+    <servlet-mapping>
+		<servlet-name>EditUserGroup</servlet-name>
+		<url-pattern>/pages/admin/edit-user-group</url-pattern>
+	</servlet-mapping>
+
+    <servlet-mapping>
+		<servlet-name>UserGroupServlet</servlet-name>
+		<url-pattern>/pages/admin/user-group-servlet</url-pattern>
+	</servlet-mapping>
+
+    <servlet-mapping>
+		<servlet-name>AddUserGroup</servlet-name>
+		<url-pattern>/pages/admin/add-user-group</url-pattern>
+	</servlet-mapping>
+
+    <servlet-mapping>
+		<servlet-name>UpdateUserGroup</servlet-name>
+		<url-pattern>/pages/admin/update-user-group</url-pattern>
+	</servlet-mapping>
+    
     <session-config>
       <session-timeout>30</session-timeout> 
     </session-config>
+    
+    <filter>
+  		<filter-name>SecurityFilter</filter-name>
+  		<filter-class>filter.SecurityFilter</filter-class>
+  	</filter>
+  	
+  	<filter-mapping>
+  		<filter-name>SecurityFilter</filter-name>
+  		<url-pattern>/*</url-pattern>
+  	</filter-mapping>
     
 </web-app>

@@ -1,5 +1,5 @@
-<%@ page import="com.torepo.web.util.DateFormatter" %>
-<%@ page import="com.torepo.web.web.UserSession" %>
+<%@  page import="common.DateFormatter" %> 
+<%@ page import="web.UserSession" %>
 <%
     UserSession userSession = UserSession.Factory.getUserSession(request);
 %>

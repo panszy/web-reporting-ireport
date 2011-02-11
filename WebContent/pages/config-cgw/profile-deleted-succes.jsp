@@ -1,7 +1,7 @@
-<%@page import="com.torepo.web.util.DateFormatter" %>
-<%@page import="com.torepo.web.web.UserSession" %>
-<%@page import="com.torepo.web.web.User" %>
-<%@page import="com.torepo.web.web.HttpConstants" %>
+<%@page import="common.DateFormatter" %>
+<%@page import="web.UserSession" %>
+<%@page import="web.User" %>
+<%@page import="web.HttpConstants" %>
 <%
 String title = "User Search";
 String message = (String)request.getParameter("message");
