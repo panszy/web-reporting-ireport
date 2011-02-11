@@ -1,5 +1,5 @@
-<%@page import="com.torepo.web.web.User" %>
-<%@page import="com.torepo.web.web.HttpConstants" %>
+<%@page import="web.User" %>
+<%@page import="web.HttpConstants" %>
 <%@page import="java.util.Set" %>
 <%@page import="java.util.Map" %>
 <%@page import="java.util.Iterator" %>

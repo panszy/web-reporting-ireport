@@ -1,5 +1,5 @@
-<%@page import="com.torepo.web.web.HttpConstants" %>
-<% String title = "IN Gateway OA&M"; %>
+<%@page import="web.HttpConstants" %>
+<% String title = "Web Reporting Report"; %>
 <%@ include file="/includes/header.jsp" %>
 <table>
 	<tr>

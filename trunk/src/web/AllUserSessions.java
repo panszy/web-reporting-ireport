@@ -6,6 +6,8 @@ import java.util.Map;
 
 import javax.servlet.ServletContext;
 
+import exception.AccountAlreadyLoggedInException;
+
 public class AllUserSessions {
     public static class Factory {
         public static AllUserSessions get(ServletContext ctx) {

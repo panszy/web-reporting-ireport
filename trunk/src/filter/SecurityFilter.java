@@ -13,13 +13,13 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.log4j.Logger;
 import exception.DaoException;
-import web.AccountAlreadyLoggedInException;
-import web.AccountDeactivatedException;
-import web.AccountLockedException;
-import web.LoginException;
+import exception.AccountAlreadyLoggedInException;
+import exception.AccountDeactivatedException;
+import exception.AccountLockedException;
+import exception.LoginException;
 import web.HttpConstants;
 import web.User;
-import web.UserNotFoundException;
+import exception.UserNotFoundException;
 import web.UserSession;
 
 public class SecurityFilter implements Filter {

@@ -1,5 +1,5 @@
-<%@page import="com.torepo.web.web.User" %>
-<%@page import="com.torepo.web.web.HttpConstants" %>
+<%@page import="web.User" %>
+<%@page import="web.HttpConstants" %>
 <%@page import="java.util.Set" %>
 <% User user = (User) request.getAttribute(HttpConstants.ATTR_NAME_USER); %>
 <%String title;

@@ -1,5 +1,5 @@
-<%@ page import="com.torepo.web.web.User" %>
-<%@ page import="com.torepo.web.web.HttpConstants" %>
+<%@ page import="web.User" %>
+<%@ page import="web.HttpConstants" %>
 <%@ page import="java.util.*" %>
 <% User user = (User) request.getAttribute(HttpConstants.ATTR_NAME_USER);
     ArrayList<String> menus = (ArrayList<String>) request.getAttribute("menu");

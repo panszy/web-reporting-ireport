@@ -1,5 +1,5 @@
-<%@ page import="com.torepo.web.web.User" %>
-<%@ page import="com.torepo.web.web.HttpConstants" %>
+<%@ page import="web.User" %>
+<%@ page import="web.HttpConstants" %>
 <% User user = (User) request.getAttribute(HttpConstants.ATTR_NAME_USER);
     String menu_name = (String) request.getAttribute("menu_name");
     String[] paramName = (String[]) request.getAttribute("name");
