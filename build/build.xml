@@ -1,0 +1,44 @@
+<project name="ireport build" default="deploy">  
+
+  <property name="tomcat.webapps" value="C:\\Program Files\\Apache Software Foundation\\Tomcat 6.0\\webapps"/>
+
+  <target name="clean" >		
+		<delete dir="classes"/>
+  </target>
+  
+  <target name="compile" depends="clean">	
+  		<mkdir dir="classes"/>
+		<javac destdir="classes/" >		
+			<src path="../src/applet" />
+			<src path="../src/servlet" />
+			<src path="../src/common" />  
+     		<src path="../src/listener" /> 
+     		<src path="../src/database" />
+			<src path="../src/web" />
+			<src path="../src/exception" />
+			<src path="../src/filter" />
+		</javac>
+  	<copy todir="../WebContent/WEB-INF/classes" >  
+  	        <fileset dir="classes" includes="**"/>  
+  			<fileset dir="../report" includes="**"/>
+  	 </copy>
+
+  </target>
+  
+  <target name="jar" depends="compile">
+  	<mkdir dir="../dist"/>  	
+  	<delete file="../dist/ireport.war"/>
+    <jar destfile="../dist/ireport.war"
+         basedir="../WebContent"
+         includes="**/**"
+         />
+  </target>      
+
+  <target name="deploy" description="deploy ireport"
+          depends="jar">
+  	 <delete file="${tomcat.webapps}\\ireport.war"/>
+     <copy file="../dist/ireport.war" todir="${tomcat.webapps}"/>
+  </target>  
+    
+    
+</project>
