@@ -22,6 +22,7 @@
   	        <fileset dir="classes" includes="**"/>  
   			<fileset dir="../report" includes="**"/>
   	 </copy>
+  	 <copy file="../lib/db2jcc.jar" todir="../WebContent/WEB-INF/lib"/>
 
   </target>
   
