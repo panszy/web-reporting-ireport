@@ -38,7 +38,7 @@ public class User implements Serializable {
 
         public static final String STMT_QUERY_COUNT_USERS = "select count(user_id) from user";
 
-        public static final String STMT_QUERY_USER_ROLES = "select role from role where role=?";
+        public static final String STMT_QUERY_USER_ROLES = "select role from user_role where role=?";
 
         public static final String STMT_UPDATE_USER = "update user set username=?, password=?, full_name=?, nik=?, status=?, failed_logins=?, password_expiry=?, email_address=?,department=?,division=?,address=?,user.group=? where user_id=?";
 
@@ -50,9 +50,9 @@ public class User implements Serializable {
 
         public static final String STMT_QUERY_INSERTED_USER_ID = "select last_insert_id()";
 
-        public static final String STMT_QUERY_USER_ROLE = "select role from role where role=? and t1.role=t2.group";
+        public static final String STMT_QUERY_USER_ROLE = "select role from user_role where role=? and t1.role=t2.group";
 
-        public static final String STMT_DELETE_USER_ROLE = "delete from role where role=?";
+        public static final String STMT_DELETE_USER_ROLE = "delete from user_role where role=?";
 
         public static final String STMT_INSERT_USER_ROLE = "insert into user_role(user_id, role) values (?, ?)";
 
