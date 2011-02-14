@@ -1,7 +1,12 @@
 package exception;
 
 public class NIKException extends Exception {
-    public NIKException()
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	public NIKException()
     {
         super();
     }

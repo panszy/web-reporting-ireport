@@ -18,17 +18,21 @@ import web.UserSession;
 
 import database.Connector;
 public class EditUserGroup extends HttpServlet{
-    private Connection conn=null;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private Connection conn=null;
     private PreparedStatement pstmt=null,pstmt4=null;
     private ResultSet rs=null;
     private String groupId;
     private String groupName;
-    private List groupMenuList;
-    private Map menuMap;
+    private List<String> groupMenuList;
+    private Map<String,String> menuMap;
     public void doGet(HttpServletRequest request, HttpServletResponse response)throws ServletException,IOException
     { 
-      groupMenuList=new ArrayList();
-      menuMap=new HashMap();
+      groupMenuList=new ArrayList<String>();
+      menuMap=new HashMap<String,String>();
       groupId=request.getParameter("groupid");
       groupName=request.getParameter("groupname");
       try{

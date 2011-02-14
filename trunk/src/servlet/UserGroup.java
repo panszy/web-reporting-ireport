@@ -5,26 +5,27 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.ServletException;
-
 import database.Connector;
-
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
-import exception.DaoException;
 
 public class UserGroup extends HttpServlet{
-    private Connection conn=null;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 198833059161243550L;
+	private Connection conn=null;
     private PreparedStatement pstmt=null;
     private ResultSet rs=null;
-    private List groupList=null;
-    private Map menuMap;
+    @SuppressWarnings("unused")
+	private List<String> groupList=null;
+    private Map<String,String> menuMap;
     public void doGet(HttpServletRequest request,HttpServletResponse response)throws ServletException,IOException
     {
        doPost(request,response);
@@ -33,7 +34,7 @@ public class UserGroup extends HttpServlet{
     public void doPost(HttpServletRequest request,HttpServletResponse response) throws ServletException,IOException
     {  try{ 
           // groupList=new ArrayList();
-            menuMap=new HashMap();
+            menuMap=new HashMap<String,String>();
             conn=Connector.getInstance().getConnection();
             pstmt=conn.prepareStatement("select role,name from role");
             rs=pstmt.executeQuery();

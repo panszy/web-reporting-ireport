@@ -11,8 +11,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.naming.NamingException;
 import org.apache.log4j.Logger;
-import java.util.Set;
-import java.util.HashSet;
 import java.util.regex.*;
 import java.util.Map;
 import java.util.HashMap;
@@ -20,7 +18,6 @@ import exception.DaoException;
 import exception.EmailException;
 import common.EncryptUtil;
 import exception.InvalidPasswordException;
-import exception.RoleException;
 import exception.UserNameException;
 import exception.NIKException;
 import web.HttpConstants;
@@ -39,12 +36,12 @@ public class CreateUser extends HttpServlet {
     Connection conn;
     PreparedStatement pstmt;
     ResultSet rs;
-    Map groupMap=null;
+    Map<String,String> groupMap=null;
     try{    
      conn=Connector.getInstance().getConnection();
      pstmt=conn.prepareStatement("select role,name from role order by name");
      rs=pstmt.executeQuery();
-     groupMap=new HashMap();
+     groupMap=new HashMap<String,String>();
      while(rs.next())
          groupMap.put((String)rs.getString(1),(String)rs.getString(2));
      }
@@ -69,7 +66,7 @@ public class CreateUser extends HttpServlet {
         Connection conn;
         PreparedStatement pstmt2=null;
         ResultSet rs=null;
-        Map  groupMap=new HashMap();
+        Map<String,String>  groupMap=new HashMap<String,String>();
 
         try {
             conn = (Connection) Connector.getInstance().getConnection();
@@ -107,9 +104,7 @@ public class CreateUser extends HttpServlet {
             if (request.getParameter(HttpConstants.HTTP_VAR_MONITORING_ROLE) != null||request.getParameter("monitoringori")!=null)
                 set.add(3);
             user.setRoles(set);
-            */
-            // Connection conn;
-            User userLoad;
+            */                       
             // try{
             // validate password
             if (request.getParameter(HttpConstants.HTTP_VAR_USERNAME)== "")
@@ -227,7 +222,7 @@ public class CreateUser extends HttpServlet {
                 // make connection to database
            
 
-            userLoad = User.Factory.loadByUsername(conn, request
+            User.Factory.loadByUsername(conn, request
                     .getParameter(HttpConstants.HTTP_VAR_USERNAME));
             request.setAttribute("registeredUser", "User is registered");
             request.getRequestDispatcher("/pages/admin/user-add-success.jsp")

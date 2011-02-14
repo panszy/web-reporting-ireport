@@ -9,23 +9,28 @@ import java.util.Enumeration;
 import java.util.Map;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.naming.NamingException;
-
 import database.Connector;
 
 public class UpdateUserGroup extends HttpServlet {
-    private Enumeration enu;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private Enumeration<String> enu;
     private Connection conn;
     private PreparedStatement pstmt;
     private String groupId;
-    private String groupName;
-    private Map menuMap;
+    @SuppressWarnings("unused")
+	private String groupName;
+    @SuppressWarnings("unused")
+	private Map<String,String> menuMap;
 
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        enu = request.getParameterNames();
-        menuMap = (Map) request.getAttribute("menuMap");
+    @SuppressWarnings("unchecked")
+	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        enu = (Enumeration<String>)request.getParameterNames();
+        menuMap = (Map<String,String>) request.getAttribute("menuMap");
         groupId = request.getParameter("groupid");
         groupName = request.getParameter("groupname");
         try {

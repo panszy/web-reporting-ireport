@@ -11,12 +11,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
-import org.omg.CORBA.Request;
 import exception.DaoException;
-import exception.InvalidPasswordException;
-import common.PasswordManager;
 import database.Connector;
-import web.HttpConstants;
 import web.User;
 import exception.UserNotFoundException;
 import web.UserSession;
@@ -98,7 +94,7 @@ public class SearchUserRoot extends HttpServlet {
                 if (request.getParameterValues("deleted") != null) {
                     String[] delete = (String[]) request
                             .getParameterValues("deleted");
-                    for (String str : delete)
+                    for (@SuppressWarnings("unused") String str : delete)
 
                         try {
 
@@ -142,7 +138,7 @@ public class SearchUserRoot extends HttpServlet {
                 if (request.getParameterValues("deleted") != null) {
                     String[] delete = (String[]) request
                             .getParameterValues("deleted");
-                    for (String str : delete)
+                    for (@SuppressWarnings("unused") String str : delete)
 
                         try {
 

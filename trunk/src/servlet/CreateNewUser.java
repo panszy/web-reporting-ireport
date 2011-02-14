@@ -34,14 +34,14 @@ public class CreateNewUser extends HttpServlet {
                 logger.warn("Unable to load user with user_id '" + strUserId + "'");
             }
         }
-        HashMap groupMap = null;
+        HashMap<String,String> groupMap = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
             Connection conn = Connector.getInstance().getConnection();
             pstmt = conn.prepareStatement("select role,name from role order by name");
             rs = pstmt.executeQuery();
-            groupMap = new HashMap();
+            groupMap = new HashMap<String,String>();
             while (rs.next())
                 groupMap.put((String) rs.getString(1), (String) rs.getString(2));
             request.setAttribute("groupMap", groupMap);
