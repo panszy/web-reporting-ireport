@@ -5,9 +5,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.PreparedStatement;
-import java.util.List;
 import java.util.Set;
-import java.util.HashSet;
 import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -18,14 +16,12 @@ import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.log4j.Logger;
-import org.omg.CORBA.Request;
 import exception.DaoException;
 import exception.EmailException;
 import exception.InvalidPasswordException;
 import exception.NIKException;
 import common.PasswordManager;
 import database.Connector;
-import exception.RoleException;
 import web.HttpConstants;
 import web.User;
 import exception.UserNotFoundException;
@@ -39,7 +35,7 @@ public class UpdateUser extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String strUsername = (String)request.getParameter("user");
-        Map groupMap=new HashMap();
+        Map<String,String> groupMap=new HashMap<String,String>();
         Connection conn=null;
         PreparedStatement pstmt=null;
         ResultSet rs=null;
@@ -77,11 +73,13 @@ public class UpdateUser extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         //String username = (String)request.getParameter("username");
-        String fullname1,nik1,email1,department1,division1,address1;
+        @SuppressWarnings("unused")
+		String fullname1,nik1,email1,department1,division1,address1;
         int status1;
-        Set roleSet1;
+        @SuppressWarnings("unused")
+		Set<Integer> roleSet1;
         StringBuffer buff=new StringBuffer();
-        Map statusMap=new HashMap();
+        Map<String,Integer> statusMap=new HashMap<String,Integer>();
         statusMap.put("active",0);
         statusMap.put("deactive",1);
         statusMap.put("locked",2);

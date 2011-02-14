@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.PreparedStatement;
-import java.util.List;
 import java.util.Set;
 import java.util.HashSet;
 import javax.naming.NamingException;
@@ -17,7 +16,6 @@ import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.log4j.Logger;
-import org.omg.CORBA.Request;
 import exception.DaoException;
 import exception.EmailException;
 import exception.InvalidPasswordException;
@@ -58,7 +56,7 @@ public class UpdateUserRoot extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         //String username = (String)request.getParameter("username");
         
-        Map statusMap=new HashMap();
+        Map<String,Integer> statusMap=new HashMap<String,Integer>();
         statusMap.put("active",0);
         statusMap.put("deactive",1);
         statusMap.put("locked",2);
@@ -77,7 +75,7 @@ public class UpdateUserRoot extends HttpServlet {
         String Action = (String)request.getParameter("Action");
 
         int status=(Integer)statusMap.get(request.getParameter("status"));
-        Set roleSet=new HashSet();
+        Set<Integer> roleSet=new HashSet<Integer>();
         if((request.getParameter("admin")!=null)||(request.getParameter("adminori")!=null))
             roleSet.add(0);
         if((request.getParameter("cgw")!=null)||(request.getParameter("cgwori")!=null))

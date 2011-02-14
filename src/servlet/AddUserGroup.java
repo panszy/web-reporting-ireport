@@ -23,22 +23,22 @@ public class AddUserGroup extends HttpServlet {
     
 	private static final long serialVersionUID = 5385813167953211657L;
 	private Connection conn1 = null, conn2 = null, conn = null;
-    private PreparedStatement pstmt = null, pstmt2 = null, pstmt3 = null, pstmt4 = null;
+    private PreparedStatement pstmt = null, pstmt4 = null;
     private ResultSet rs = null;
     private String groupId;
     private String groupName;
-    private Map menuMap;
-    Enumeration enu;
+    private Map<String,String> menuMap;
+    Enumeration<String> enu;
 
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        List menuList = new ArrayList();
-        String menuid;
-        String word = "";
-        menuMap=(Map)request.getAttribute("menuMap");
+    @SuppressWarnings("unchecked")
+	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        List<String> menuList = new ArrayList<String>();
+        String menuid;        
+        menuMap=(Map<String,String>)request.getAttribute("menuMap");
 
         try {
             groupName = request.getParameter("groupname");
-            enu = (Enumeration) request.getParameterNames();
+            enu = (Enumeration<String>) request.getParameterNames();
             enu.nextElement();
 
             conn1 = Connector.getInstance().getConnection();
@@ -96,6 +96,7 @@ public class AddUserGroup extends HttpServlet {
         finally {
             try {
                 pstmt.close();
+                pstmt4.close();
             } catch (SQLException e) {
                 e.printStackTrace();
             }

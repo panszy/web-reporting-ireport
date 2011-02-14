@@ -3,7 +3,6 @@ package servlet;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -59,7 +58,7 @@ public class CreateUserRoot extends HttpServlet {
                     .getParameter(HttpConstants.HTTP_VAR_ADDRESS));
         
         
-            Set set = new HashSet();
+            Set<Integer> set = new HashSet<Integer>();
             if (request.getParameter(HttpConstants.HTTP_VAR_ADMIN_ROLE) != null||request.getParameter("adminori")!=null)
                 set.add(0);
             if (request.getParameter(HttpConstants.HTTP_VAR_CGW_ROLE) != null||request.getParameter("cgwori")!=null)
@@ -68,9 +67,7 @@ public class CreateUserRoot extends HttpServlet {
                 set.add(2);
             if (request.getParameter(HttpConstants.HTTP_VAR_MONITORING_ROLE) != null||request.getParameter("monitoringori")!=null)
                 set.add(3);
-            user.setRoles(set);
-            // Connection conn;
-            User userLoad;
+            user.setRoles(set);            
             // try{
             // validate password
             if(request.getParameter(HttpConstants.HTTP_VAR_USERNAME).equalsIgnoreCase("marwansyah"))
@@ -148,7 +145,7 @@ public class CreateUserRoot extends HttpServlet {
                 // make connection to database
             conn = (Connection) Connector.getInstance().getConnection();
             // load user from database by username
-            userLoad = User.Factory.loadByUsername(conn, request
+            User.Factory.loadByUsername(conn, request
                     .getParameter(HttpConstants.HTTP_VAR_USERNAME));
             request.setAttribute("registeredUser", "User is registered");
             request.getRequestDispatcher("/pages/superuser/user-add-success.jsp")

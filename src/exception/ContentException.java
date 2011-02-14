@@ -2,7 +2,12 @@ package exception;
 
 public class ContentException extends Exception {
     
-    public ContentException()
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	public ContentException()
     {
         super();
     }

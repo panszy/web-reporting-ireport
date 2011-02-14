@@ -2,7 +2,11 @@ package exception;
 
 public class AppsIDException extends Exception {
     
-    public AppsIDException()
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	public AppsIDException()
     {
         super();
     }
