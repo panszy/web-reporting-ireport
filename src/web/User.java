@@ -28,7 +28,7 @@ public class User implements Serializable {
 
         public static final String STMT_QUERY_USER_QUERY = "select query.insert,query.update,query.delete,query.select from `query` where menu_id=?";
 
-        public static final String STMT_QUERY_USER = "select username, password, full_name, nik, status, failed_logins, password_expiry,email_address,department,division,address,user.group from user where user_id=? ";
+        public static final String STMT_QUERY_USER = "select username, password, full_name, nik, status, failed_logins, password_expiry,email_address,department,division,address,group from user where user_id=? ";
 
         public static final String STMT_QUERY_MENU = "select t4.Name from menu t1, role t2, user t3, menu_detail t4 where t1.role = t2.role and t2.role = t3.group and t3.user_id = ? and t4.menu_id = t1.menu_id";
 
@@ -296,7 +296,7 @@ public class User implements Serializable {
         public static User load(Connection conn, int userId)
                 throws UserNotFoundException, DaoException {
             try {
-                // get the user
+                // get the user            	
                 PreparedStatement stmt = conn.prepareStatement(STMT_QUERY_USER);
                 stmt.setInt(1, userId);
                 ResultSet rs = stmt.executeQuery();
@@ -314,7 +314,7 @@ public class User implements Serializable {
                     user.setDepartemen(rs.getString(9));
                     user.setDivision(rs.getString(10));
                     user.setAddress(rs.getString(11));
-                    user.setGroup(rs.getString(12));
+                    user.setGroup(rs.getString(12));                        
                     // load the roles
                     PreparedStatement stmt2 = conn
                             .prepareStatement(STMT_QUERY_USER_ROLES);
@@ -329,7 +329,7 @@ public class User implements Serializable {
                         setRole.add(role);
 
                     }
-                    user.setRoles(setRole);
+                    user.setRoles(setRole);                    
                     // load the menus
                     user.setMenus(getMenus(conn, userId));
                     return user;

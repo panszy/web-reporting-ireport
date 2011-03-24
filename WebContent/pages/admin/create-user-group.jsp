@@ -6,7 +6,6 @@
 <%@ page import="java.util.HashMap" %> 
 <%String title="Add User Group"; 
   List menuList=(List)request.getAttribute("menu");
- // List idList=(List)request.getAttribute("idList");
  Map menuMap=(Map)request.getAttribute("menuMap");
   Iterator iter=menuMap.keySet().iterator();
   String menu;

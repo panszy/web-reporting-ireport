@@ -13,6 +13,7 @@ import java.sql.SQLException;
 
 import database.Connector;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
 import java.util.ArrayList;
@@ -33,34 +34,32 @@ public class AddUserGroup extends HttpServlet {
     @SuppressWarnings("unchecked")
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         List<String> menuList = new ArrayList<String>();
-        String menuid;        
-        menuMap=(Map<String,String>)request.getAttribute("menuMap");
+        String menuid;                                         
 
         try {
             groupName = request.getParameter("groupname");
             enu = (Enumeration<String>) request.getParameterNames();
-            enu.nextElement();
-
+            enu.nextElement();            
             conn1 = Connector.getInstance().getConnection();
             pstmt = conn1.prepareStatement("insert into role (name) values(?)");
             pstmt.setString(1, groupName);
-            pstmt.execute();
-
+            pstmt.execute();            
             pstmt = conn1.prepareStatement("select role from role where name=?");
             pstmt.setString(1, groupName);
             rs = pstmt.executeQuery();
             if (rs.next())
                 groupId = rs.getString(1);
+            Connector.putConnection(conn1);
             conn2 = Connector.getInstance().getConnection();
             while (enu.hasMoreElements()) {
                 menuid = (String) enu.nextElement();
                 pstmt = conn2.prepareStatement("insert into menu (role,menu_id) values(?,?)");
                 pstmt.setString(1, groupId);
                 pstmt.setString(2, menuid);
-                pstmt.execute();
+                pstmt.executeUpdate();
                 menuList.add(menuid);
             }
-
+            Connector.putConnection(conn2);
             conn = Connector.getInstance().getConnection();
 
             pstmt4 = conn.prepareStatement(User.Factory.STMT_INSERT_USER_AUDIT);
@@ -72,6 +71,7 @@ public class AddUserGroup extends HttpServlet {
             pstmt4.setString(3, "Create User Group  " + groupId + " by "
                     + userSession.getUser().getUsername());
             pstmt4.executeUpdate();
+            Connector.putConnection(conn);
 
             request.setAttribute("groupId", groupId);
             request.setAttribute("groupName", groupName);
@@ -79,24 +79,36 @@ public class AddUserGroup extends HttpServlet {
             request.getRequestDispatcher("/pages/admin/addusergroupsuccess.jsp").forward(request, response);
 
         }        
-        catch (SQLException e) {
-
-            //   request.setAttribute("idList", idList);
+        catch (SQLException e) {        	
+        	try {
+				menuMap=new HashMap<String,String>();
+				conn = Connector.getInstance().getConnection();
+				pstmt=conn.prepareStatement("select menu_detail.menu_id,menu_detail.name from menu_detail");
+				rs=pstmt.executeQuery();
+				while(rs.next())
+				    menuMap.put(rs.getString(1), rs.getString(2));
+				Connector.putConnection(conn);
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
             request.setAttribute("menu", menuList);
             request.setAttribute("enum", enu);
             request.setAttribute("groupId", groupId);
             request.setAttribute("groupName", groupName);
             request.setAttribute("error", "UserGroup already exist");
             request.setAttribute("menuMap", menuMap);
-            request.getRequestDispatcher("/pages/admin/create-user-group.jsp").forward(request, response);
-
+            request.getRequestDispatcher("/pages/admin/create-user-group.jsp").forward(request, response);            
         } catch (Exception e) {
 			e.printStackTrace();
 		}
         finally {
-            try {
-                pstmt.close();
-                pstmt4.close();
+            try {            	
+            	if(pstmt!=null)
+            		pstmt.close();
+            	if(pstmt4!=null)
+            		pstmt4.close(); 
+            	if(rs!=null)
+            		rs.close();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -104,7 +116,7 @@ public class AddUserGroup extends HttpServlet {
 
     }
 
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {    	
         doGet(request, response);
     }
 }

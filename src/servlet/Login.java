@@ -42,8 +42,8 @@ public class Login extends HttpServlet {
                 pstmt.setString(3, userSession.getUser().getUsername()
                         + " Login");
                 pstmt.executeUpdate();
-                pstmt.close();
-                conn2.close();
+                pstmt.close();   
+                Connector.putConnection(conn2);
             } catch (SQLException sqle) {
                 sqle.printStackTrace();
             } catch (NamingException ne) {
@@ -67,8 +67,8 @@ public class Login extends HttpServlet {
                 pstmt.setString(3, userSession.getUser().getUsername()
                         + " Login");
                 pstmt.executeUpdate();
-                pstmt.close();
-                conn2.close();
+                pstmt.close();      
+                Connector.putConnection(conn2);
             } catch (SQLException sqle) {
                 sqle.printStackTrace();
             } catch (NamingException ne) {

@@ -10,6 +10,7 @@ public class Connector {
 	private static Connector conn;
 	private static int maxConnection;
 	private static int initialConnection;
+	private int currentUsedConnection;
 	private static String username;
 	private static String password;
 	private static String host;
@@ -39,7 +40,7 @@ public class Connector {
 	public synchronized Connection getConnection() throws Exception {
 		if (connection.size() == 0)
 			putConnection(createNewConnection());
-		return connection.get(connection.size() - 1);
+		return connection.remove(connection.size() - 1);
 	}
 
 	public static synchronized void putConnection(Connection conn) throws Exception {
