@@ -43,7 +43,7 @@ public class UserGroup extends HttpServlet{
                 //groupList.add(rs.getString(1));
                 menuMap.put(rs.getString(1),rs.getString(2));
             }
-            
+            Connector.putConnection(conn);
         } catch (NamingException e) {
             e.printStackTrace();
         

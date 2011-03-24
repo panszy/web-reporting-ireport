@@ -4,6 +4,7 @@
 
   <target name="clean" >		
 		<delete dir="classes"/>
+  	    <delete dir="../WebContent/WEB-INF/classes"/>
   </target>
   
   <target name="compile" depends="clean">	
@@ -18,6 +19,7 @@
 			<src path="../src/exception" />
 			<src path="../src/filter" />
 		</javac>
+  	<mkdir dir="../WebContent/WEB-INF/classes"/>
   	<copy todir="../WebContent/WEB-INF/classes" >  
   	        <fileset dir="classes" includes="**"/>  
   			<fileset dir="../report" includes="**"/>

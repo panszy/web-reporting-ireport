@@ -72,36 +72,36 @@ public class QueryExecutor {
 
 	public static void main(String[] args) throws Exception {		
 		
-		ArrayList<String[]> res = Util.sendQuery("localhost", 9876, 1, new String[0]);
-
-		for (String[] stringList : res) {
-			for (String string : stringList)
-				System.out.print(string + "|");
-			System.out.println("");
-		}
-		
-		res = Util.sendQuery("localhost", 9876, 1, new String[0]);
-
-		for (String[] stringList : res) {
-			for (String string : stringList)
-				System.out.print(string + "|");
-			System.out.println("");
-		}
-		
-		res = Util.sendQuery("localhost", 9876, 2, new String[0]);
-
-		for (String[] stringList : res) {
-			for (String string : stringList)
-				System.out.print(string + "|");
-			System.out.println("");
-		}
-		
-		res = Util.sendQuery("localhost", 9876, 4, new String[]{"3"});
-
-		for (String[] stringList : res) {
-			for (String string : stringList)
-				System.out.print(string + "|");
-			System.out.println("");
-		}
+//		ArrayList<String[]> res = Util.sendQuery("localhost", 9876, 1, new String[0]);
+//
+//		for (String[] stringList : res) {
+//			for (String string : stringList)
+//				System.out.print(string + "|");
+//			System.out.println("");
+//		}
+//		
+//		res = Util.sendQuery("localhost", 9876, 1, new String[0]);
+//
+//		for (String[] stringList : res) {
+//			for (String string : stringList)
+//				System.out.print(string + "|");
+//			System.out.println("");
+//		}
+//		
+//		res = Util.sendQuery("localhost", 9876, 2, new String[0]);
+//
+//		for (String[] stringList : res) {
+//			for (String string : stringList)
+//				System.out.print(string + "|");
+//			System.out.println("");
+//		}
+//		
+//		res = Util.sendQuery("localhost", 9876, 4, new String[]{"3"});
+//
+//		for (String[] stringList : res) {
+//			for (String string : stringList)
+//				System.out.print(string + "|");
+//			System.out.println("");
+//		}				
 	}	
 }

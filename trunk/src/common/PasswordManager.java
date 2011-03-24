@@ -163,7 +163,9 @@ public class PasswordManager {
         }
         finally{
             try{
+            	if(rs!=null)
             rs.close();
+            	if(stmt!=null)
             stmt.close();
             }catch(Throwable t)
             {

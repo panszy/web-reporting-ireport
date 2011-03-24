@@ -58,9 +58,9 @@ public class UserSession implements Serializable {
     
     public void login(String username, String password) throws LoginException, UserNotFoundException, DaoException {
         logger.debug("Logging in with username '" + username + "'");
-        
+        Connection conn = null;
         try {
-            Connection conn = Connector.getInstance().getConnection();
+            conn = Connector.getInstance().getConnection();
 
             User targetUser = User.Factory.loadByUsername(conn, username);             
 
@@ -102,11 +102,18 @@ public class UserSession implements Serializable {
                 }
 
                 throw new LoginException();
-            }
+            }            
         }
         catch(Exception ex) {
             logger.error(ex);
-        }                
+        } finally {
+        	try {
+				if(conn!=null)
+					Connector.putConnection(conn);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+        }
     }
     
     public void logout() {

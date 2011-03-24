@@ -93,8 +93,7 @@ public class UserGroupServlet extends HttpServlet {
              {  // idList.add(rs.getString(1));
                  //menuList.add(rs.getString(2));
                  menuMap.put(rs.getString(1), rs.getString(2));
-             }
-             
+             }             
              
              
          } catch (NamingException e) {
