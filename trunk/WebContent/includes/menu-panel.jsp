@@ -39,8 +39,29 @@
         <a href="<%=request.getContextPath()%>/pages/admin/update-group">Create user group</a>
     </td>
 </tr>
-</table>
+<%
+    }
+    if (us.getMenus().contains("sample report")) {
+%>
+<tr>
+    <td>
+        <img src="<%=request.getContextPath()%>/images/icons/system-users.png">
+    </td>
+    <td>
+        <b>User Management</b>
+    </td>
+</tr>
+<tr>
+    <td>
+    </td>
+    <td>
+        <a href="<%=request.getContextPath()%>/pages/report/report.jsp?reportname=report1.jasper">Sample Report 1</a>
+    </td>
+</tr>
 <%
     	}
+    %>
+    </table>
+    <%
     }
 %>
