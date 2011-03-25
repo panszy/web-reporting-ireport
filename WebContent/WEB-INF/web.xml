@@ -9,6 +9,11 @@
     </listener>
     
     <servlet>
+        <servlet-name>JasperPrint</servlet-name>
+        <servlet-class>servlet.JasperPrintServlet</servlet-class>
+    </servlet>
+    
+    <servlet>
         <servlet-name>DownloadServlet</servlet-name>
         <servlet-class>servlet.ServletDownload</servlet-class>
     </servlet>
@@ -75,6 +80,11 @@
 		<servlet-name>UpdateUserGroup</servlet-name>
 		<servlet-class>servlet.UpdateUserGroup</servlet-class>
 	</servlet>
+	
+	<servlet-mapping>
+        <servlet-name>JasperPrint</servlet-name>
+        <url-pattern>/jasper</url-pattern>
+    </servlet-mapping>
 
     <servlet-mapping>
         <servlet-name>DownloadServlet</servlet-name>

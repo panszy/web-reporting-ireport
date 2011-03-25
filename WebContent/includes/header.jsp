@@ -5,7 +5,7 @@
 %>
 <html>
 <head>
-    <title><%=title %> - Telkomsel Charging Gateway</title>
+    <title><%=title %> - Kifar</title>
     <script language="javascript">
 
         function ChangeValue(field, value) {

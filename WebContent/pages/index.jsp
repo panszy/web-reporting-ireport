@@ -4,7 +4,7 @@
 	<tr>
 		<td>
 			<img src="<%=request.getContextPath()%>/images/icons/help-about.png">
-			<b>Welcome to Toredu - Education Information System</b>
+			<b>Welcome to Kifar</b>
         </td>
 	</tr>
 	<tr>
