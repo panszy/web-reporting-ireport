@@ -24,7 +24,7 @@ public class ServletDownload extends HttpServlet {
 		ServletOutputStream op = null;
 		try {			
 			
-			JasperPrint jasperTemp = JasperFillManager.fillReport(ServletDownload.class.getClassLoader().getResourceAsStream("report1.jasper"),  new HashMap<Object,Object>(), Connector.getInstance().getConnection());			
+			JasperPrint jasperTemp = JasperFillManager.fillReport(ServletDownload.class.getClassLoader().getResourceAsStream(req.getParameter("reportname")),  new HashMap<Object,Object>(), Connector.getInstance().getConnection());			
 			byte[] result = JasperExportManager.exportReportToPdf(jasperTemp);
 			
 			op = response.getOutputStream();			
