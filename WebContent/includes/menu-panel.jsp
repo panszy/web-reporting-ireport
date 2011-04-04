@@ -48,14 +48,28 @@
         <img src="<%=request.getContextPath()%>/images/icons/system-users.png">
     </td>
     <td>
-        <b>User Management</b>
+        <b>Reporting</b>
     </td>
 </tr>
 <tr>
     <td>
     </td>
     <td>
-        <a href="<%=request.getContextPath()%>/pages/report/report.jsp?reportname=report1.jasper">Sample Report 1</a>
+        <a href="<%=request.getContextPath()%>/pages/report/report.jsp?reportname=report1.jasper&reportlabel=Sample&nbsp;Report&nbsp;1">Sample Report 1</a>
+    </td>
+</tr>
+<tr>
+    <td>
+    </td>
+    <td>
+        <a href="<%=request.getContextPath()%>/pages/report/report.jsp?reportname=report2.jasper&reportlabel=Sample&nbsp;Report&nbsp;2">Sample Report 2</a>
+    </td>
+</tr>
+<tr>
+    <td>
+    </td>
+    <td>
+        <a href="<%=request.getContextPath()%>/pages/report/crystal.jsp">Sample Crystal Report</a>
     </td>
 </tr>
 <%
