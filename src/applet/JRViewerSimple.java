@@ -17,10 +17,7 @@ public class JRViewerSimple extends JRViewer
 	 */
 	public JRViewerSimple(JasperPrint jrPrint) throws JRException
 	{
-		super(jrPrint);
-		
-		tlbToolBar.remove(btnSave);
-		tlbToolBar.remove(btnReload);
+		super(jrPrint);			
 	}
 
 
