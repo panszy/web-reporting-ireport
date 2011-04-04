@@ -1,6 +1,6 @@
 <% String title = "Sample Report 1";%>
 <%@ include file="/includes/header.jsp" %>
-<a href="<%=request.getContextPath()%>/viewer?reportname=<%=request.getParameter("reportname")%>">Download Sample Report 1</a>
+<a href="<%=request.getContextPath()%>/viewer?reportname=<%=request.getParameter("reportname")%>">Download <%=request.getParameter("reportlabel")%></a>
 <br>
 <br>
 
