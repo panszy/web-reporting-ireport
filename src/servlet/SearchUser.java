@@ -129,7 +129,7 @@ public class SearchUser extends HttpServlet {
                                 i++;
                             }
                             pstmt.close(); 
-                            Connector.putConnection(conn2);
+
                         } catch (DaoException ex) {
                             logger.error(ex);
                         } catch (NamingException ex) {
@@ -172,7 +172,7 @@ public class SearchUser extends HttpServlet {
                                 User.Factory.deactive(Connector.getInstance().getConnection(), delete[i]);
                                 i++;
                             }
-                         Connector.putConnection(conn2);
+
                         } catch (DaoException ex) {
                             ex.printStackTrace();
                           //  logger.error(ex);

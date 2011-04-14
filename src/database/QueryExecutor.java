@@ -29,7 +29,7 @@ public class QueryExecutor {
 				rs.close();
 			if (ps != null)
 				ps.close();
-			Connector.putConnection(conn);
+
 		}
 	}
 
@@ -55,7 +55,7 @@ public class QueryExecutor {
 				rs.close();
 			if (ps != null)
 				ps.close();
-			Connector.putConnection(conn);
+
 		}
 	}
 

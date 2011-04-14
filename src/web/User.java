@@ -36,9 +36,7 @@ public class User implements Serializable {
 
         public static final String STMT_QUERY_USERS_ADMIN = "select u1.username,u1.user_id,u1.full_name,u1.nik,u1.status,u1.failed_logins, u1.password_expiry,u1.email_address,u1.department,u1.division,u1.address from user u1";
 
-        public static final String STMT_QUERY_COUNT_USERS = "select count(user_id) from user";
-
-        public static final String STMT_QUERY_USER_ROLES = "select role from user_role where role=?";
+        public static final String STMT_QUERY_COUNT_USERS = "select count(user_id) from user";       
 
         public static final String STMT_UPDATE_USER = "update user set username=?, password=?, full_name=?, nik=?, status=?, failed_logins=?, password_expiry=?, email_address=?,department=?,division=?,address=?,user.group=? where user_id=?";
 
@@ -48,13 +46,7 @@ public class User implements Serializable {
 
         public static final String STMT_DEACTIVE_USER = "update user set flag=1,status=1 where username=?";
 
-        public static final String STMT_QUERY_INSERTED_USER_ID = "select last_insert_id()";
-
-        public static final String STMT_QUERY_USER_ROLE = "select role from user_role where role=? and t1.role=t2.group";
-
-        public static final String STMT_DELETE_USER_ROLE = "delete from user_role where role=?";
-
-        public static final String STMT_INSERT_USER_ROLE = "insert into user_role(user_id, role) values (?, ?)";
+        public static final String STMT_QUERY_INSERTED_USER_ID = "select user_id from user where username=?";                      
 
         public static final String STMT_INSERT_USER_AUDIT = "insert into user_audit(user,ip_address,action) values (?,?,?)";
 
@@ -199,15 +191,9 @@ public class User implements Serializable {
                     user.setDepartemen(rs.getString(9));
                     user.setDivision(rs.getString(10));
                     user.setAddress(rs.getString(11));
-                    user.setGroup(rs.getString(12));
-
-                    stmtrole = conn.prepareStatement(STMT_QUERY_USER_ROLES);
-                    stmtrole.setInt(1, Integer.parseInt(user.getGroup()));
-                    ResultSet rsRole = stmtrole.executeQuery();
-                    Set<Integer> setRole = new HashSet<Integer>();
-                    while (rsRole.next()) {
-                        setRole.add(rsRole.getInt(1));
-                    }
+                    user.setGroup(rs.getString(12));                    
+                    Set<Integer> setRole = new HashSet<Integer>();                    
+                    setRole.add(Integer.parseInt(user.getGroup()));                    
                     user.setRoles(setRole);
                     users.add(user);
 
@@ -251,15 +237,9 @@ public class User implements Serializable {
                     user.setEmailAddress(rs.getString(8));
                     user.setDepartemen(rs.getString(9));
                     user.setDivision(rs.getString(10));
-                    user.setAddress(rs.getString(11));
-
-                    stmtrole = conn.prepareStatement(STMT_QUERY_USER_ROLES);
-                    stmtrole.setInt(1, rs.getInt(2));
-                    ResultSet rsRole = stmtrole.executeQuery();
+                    user.setAddress(rs.getString(11));                    
                     Set<Integer> setRole = new HashSet<Integer>();
-                    while (rsRole.next()) {
-                        setRole.add(rsRole.getInt(1));
-                    }
+                    setRole.add(1);                    
                     user.setRoles(setRole);
                     users.add(user);
 
@@ -314,21 +294,9 @@ public class User implements Serializable {
                     user.setDepartemen(rs.getString(9));
                     user.setDivision(rs.getString(10));
                     user.setAddress(rs.getString(11));
-                    user.setGroup(rs.getString(12));                        
-                    // load the roles
-                    PreparedStatement stmt2 = conn
-                            .prepareStatement(STMT_QUERY_USER_ROLES);
-                    stmt2.setInt(1, userId);
-                    ResultSet rs2 = stmt2.executeQuery();
-                    int role;
-                    Set<Integer> setRole = new HashSet<Integer>();
-                    while (rs2.next()) {
-                        // user.getRoles().add(rs2.getInt(1));
-                        role = rs2.getInt(1);
-                        // setRole=new HashSet();
-                        setRole.add(role);
-
-                    }
+                    user.setGroup(rs.getString(12));                         
+                    Set<Integer> setRole = new HashSet<Integer>();                                            
+                    setRole.add(Integer.parseInt(user.getGroup()));                    
                     user.setRoles(setRole);                    
                     // load the menus
                     user.setMenus(getMenus(conn, userId));
@@ -364,6 +332,7 @@ public class User implements Serializable {
                     stmt.executeUpdate();
 
                     stmt = conn.prepareStatement(STMT_QUERY_INSERTED_USER_ID);
+                    stmt.setString(1, user.getUsername());
 
                     ResultSet rs = stmt.executeQuery();
                     if (rs.next()) {

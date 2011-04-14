@@ -13,15 +13,7 @@ import database.Connector;
 public class Listener extends Thread implements ServletContextListener, HttpSessionListener
 {
 	
-	int port = 9876;
-	
-	static {
-		try {
-			new Connector("visitek-117", "poyomuna190582", "localhost", 50000, 1, 10);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+	int port = 9876;		
 	
 	public void run(){
 		try {
