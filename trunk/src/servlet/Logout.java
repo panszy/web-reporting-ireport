@@ -35,7 +35,7 @@ public class Logout extends HttpServlet {
             pstmt.setString(3, userSession.getUser().getUsername() + " Logout");
             pstmt.executeUpdate();
             pstmt.close();       
-            Connector.putConnection(conn2);
+
             userSession.logout();
             request.getRequestDispatcher("/logout.jsp").forward(request, response);
         } catch (SQLException sqle) {
@@ -69,7 +69,7 @@ public class Logout extends HttpServlet {
             pstmt.setString(3, userSession.getUser().getUsername() + " Logout");
             pstmt.executeUpdate();
             pstmt.close();    
-            Connector.putConnection(conn2);
+
         } catch (SQLException sqle) {
             sqle.printStackTrace();
         } catch (NamingException ne) {

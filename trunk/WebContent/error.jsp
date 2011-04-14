@@ -1,4 +1,4 @@
-<%@page import="com.torepo.web.web.HttpConstants" %>
+<%@page import="web.HttpConstants" %>
 <% String title = (String) request.getAttribute(HttpConstants.ATTR_NAME_ERROR_TITLE); %>
 <%@ include file="/includes/header.jsp" %>
 <table>

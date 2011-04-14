@@ -49,7 +49,6 @@ public class AddUserGroup extends HttpServlet {
             rs = pstmt.executeQuery();
             if (rs.next())
                 groupId = rs.getString(1);
-            Connector.putConnection(conn1);
             conn2 = Connector.getInstance().getConnection();
             while (enu.hasMoreElements()) {
                 menuid = (String) enu.nextElement();
@@ -59,7 +58,7 @@ public class AddUserGroup extends HttpServlet {
                 pstmt.executeUpdate();
                 menuList.add(menuid);
             }
-            Connector.putConnection(conn2);
+            
             conn = Connector.getInstance().getConnection();
 
             pstmt4 = conn.prepareStatement(User.Factory.STMT_INSERT_USER_AUDIT);
@@ -71,7 +70,7 @@ public class AddUserGroup extends HttpServlet {
             pstmt4.setString(3, "Create User Group  " + groupId + " by "
                     + userSession.getUser().getUsername());
             pstmt4.executeUpdate();
-            Connector.putConnection(conn);
+            
 
             request.setAttribute("groupId", groupId);
             request.setAttribute("groupName", groupName);
@@ -87,7 +86,7 @@ public class AddUserGroup extends HttpServlet {
 				rs=pstmt.executeQuery();
 				while(rs.next())
 				    menuMap.put(rs.getString(1), rs.getString(2));
-				Connector.putConnection(conn);
+				
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}

@@ -148,7 +148,7 @@
                 <tr><td class="item"></td>
                 <%if(user.getRoles().contains(2)){ %>
                        <td class="item"><input type="checkbox" name="thresholdori" checked>Threshold</td>
-                 <%}else{ %>
+                 <%}else { %>
                    
                       <td class="item"><input type="checkbox" name="threshold">Threshold</td>
                   <%} %>
@@ -159,16 +159,7 @@
                     <%}else{ %>
 				          <td class="item"><input type="checkbox" name="monitoring">Monitoring</td>
 				    <%}%>
-				    </tr> 
-               <%} else{ 
-              %>      
-             
-             <tr><td class="item">User Role*</td><td class="item"><input type="checkbox" name="admin">Administrators</td></tr>
-             <tr><td class="item"></td><td class="item"><input type="checkbox" name="cgw">Rating Entry Configuration</td></tr>
-             <tr><td class="item"></td><td class="item"><input type="checkbox" name="threshold">Threshold Configuration</td></tr>
-             <tr><td class="item"></td><td class="item"><input type="checkbox" name="monitoring">Monitoring</td></tr>
-           <%
-           }%>      
+				    </tr>                                     
 			 <tr>
  		<td class="item" width=120>
 			Status

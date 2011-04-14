@@ -43,7 +43,7 @@ public class Login extends HttpServlet {
                         + " Login");
                 pstmt.executeUpdate();
                 pstmt.close();   
-                Connector.putConnection(conn2);
+
             } catch (SQLException sqle) {
                 sqle.printStackTrace();
             } catch (NamingException ne) {
@@ -68,7 +68,7 @@ public class Login extends HttpServlet {
                         + " Login");
                 pstmt.executeUpdate();
                 pstmt.close();      
-                Connector.putConnection(conn2);
+                
             } catch (SQLException sqle) {
                 sqle.printStackTrace();
             } catch (NamingException ne) {

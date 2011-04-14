@@ -109,12 +109,6 @@ public class JasperPrintServlet extends HttpServlet
 			out.println("</html>");
 
 			return;
-		} finally {
-			try {
-				Connector.putConnection(conn);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
 		}
 
 		if (jasperPrint != null)

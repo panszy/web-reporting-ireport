@@ -135,6 +135,17 @@ public class SecurityFilter implements Filter {
                             request, response);
 
                     return;
+                } catch (Exception ex) {
+                    logger.error(ex);
+                    request.setAttribute(HttpConstants.ATTR_NAME_ERROR_TITLE,
+                            "Error");
+                    request.setAttribute(HttpConstants.ATTR_NAME_ERROR_TEXT, ex
+                            .getMessage());
+                    // report fatal error
+                    httpRequest.getRequestDispatcher("/error.jsp").forward(
+                            request, response);
+
+                    return;
                 }
             }
 
