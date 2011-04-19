@@ -18,7 +18,7 @@ public class PasswordManager {
 
     public static final String STMT_INSERT_PASSWORD_HISTORY = "insert into user_password_history(user_id, password) values (?, ?)";
 
-    public static final String STMT_QUERY_OLDEST_PASSWORD_HISTORY = "select user_password_history_id from user_password_history where user_id=? order by user_password_history_id desc limit ?, 1";
+    public static final String STMT_QUERY_OLDEST_PASSWORD_HISTORY = "select * from (select user_password_history_id, ROW_NUMBER() OVER(ORDER BY user_password_history_id DESC) AS RN from user_password_history where user_id=? order by user_password_history_id desc) where RN between ? and ?";
 
     public static final String STMT_DELETE_PASSWORD_HISTORY = "delete from user_password_history where user_password_history_id = ?";
 
@@ -190,6 +190,7 @@ public class PasswordManager {
             stmt = conn.prepareStatement(STMT_QUERY_OLDEST_PASSWORD_HISTORY);
             stmt.setInt(1, user.getUserId());
             stmt.setInt(2, Configuration.PASSWORD_HISTORY_COUNT);
+            stmt.setInt(3, Configuration.PASSWORD_HISTORY_COUNT + 1);
             rs = stmt.executeQuery();
 
             while (rs.next()) {
