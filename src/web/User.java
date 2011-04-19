@@ -32,9 +32,9 @@ public class User implements Serializable {
 
         public static final String STMT_QUERY_MENU = "select t4.Name from menu t1, role t2, user t3, menu_detail t4 where t1.role = t2.role and t2.role = t3.group and t3.user_id = ? and t4.menu_id = t1.menu_id";
 
-        public static final String STMT_QUERY_USERS = "select user_id, username, full_name, nik, status, failed_logins, password_expiry,email_address,department,division,address,user.group from user";
+        public static final String STMT_QUERY_USERS = "select user_id, username, full_name, nik, status, failed_logins, password_expiry,email_address,department,division,address,user.group, ROW_NUMBER() OVER(ORDER BY user_id DESC) AS RN  from user";
 
-        public static final String STMT_QUERY_USERS_ADMIN = "select u1.username,u1.user_id,u1.full_name,u1.nik,u1.status,u1.failed_logins, u1.password_expiry,u1.email_address,u1.department,u1.division,u1.address from user u1";
+        public static final String STMT_QUERY_USERS_ADMIN = "select u1.username,u1.user_id,u1.full_name,u1.nik,u1.status,u1.failed_logins, u1.password_expiry,u1.email_address,u1.department,u1.division,u1.address,ROW_NUMBER() OVER(ORDER BY u1.user_id DESC) AS RN from user u1";
 
         public static final String STMT_QUERY_COUNT_USERS = "select count(user_id) from user";       
 
@@ -129,10 +129,10 @@ public class User implements Serializable {
                 if ((start == -1) || (rows == -1)) {
                     stmt = conn.prepareStatement(STMT_QUERY_USERS);
                 } else {
-                    stmt = conn.prepareStatement(STMT_QUERY_USERS
-                            + " limit ?,?");
+                    stmt = conn.prepareStatement("select * from ("+STMT_QUERY_USERS
+                            + ") where RN between ? and ?");
                     stmt.setInt(1, start);
-                    stmt.setInt(2, rows);
+                    stmt.setInt(2, start+rows);
                 }
 
                 ResultSet rs = stmt.executeQuery();
@@ -170,10 +170,10 @@ public class User implements Serializable {
                 if ((start == -1) || (rows == -1)) {
                     stmt = conn.prepareStatement(STMT_QUERY_USERS);
                 } else {
-                    stmt = conn.prepareStatement(STMT_QUERY_USERS + " where "
-                            + filter + " like '%" + field + "%' limit ?,?");
+                    stmt = conn.prepareStatement("select * from ("+STMT_QUERY_USERS + ") where "
+                            + filter + " like '%" + field + "%' and RN between ? and ?");
                     stmt.setInt(1, start);
-                    stmt.setInt(2, rows);
+                    stmt.setInt(2, start+rows);
                 }
 
                 ResultSet rs = stmt.executeQuery();
@@ -215,11 +215,11 @@ public class User implements Serializable {
                     stmt = conn.prepareStatement(STMT_QUERY_USERS_ADMIN + " where u1.user_id=?");
                     stmt.setInt(1, userid);
                 } else {
-                    stmt = conn.prepareStatement(STMT_QUERY_USERS_ADMIN + "  where u1."
-                            + filter + " like '%" + field + "%'  limit ?,?");
+                    stmt = conn.prepareStatement("select * from ("+STMT_QUERY_USERS_ADMIN + "  where u1."
+                            + filter + " like '%" + field + "%'  and RN between ? and ?");
                     stmt.setInt(1, userid);
                     stmt.setInt(2, start);
-                    stmt.setInt(3, rows);
+                    stmt.setInt(3, start+rows);
                 }
 
                 ResultSet rs = stmt.executeQuery();

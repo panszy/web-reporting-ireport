@@ -30,7 +30,15 @@ public class Connector {
 		return connector;
 	}
 
-	public Connection getConnection() throws DaoException {					
+	public Connection getConnection() throws DaoException,NamingException, SQLException {
+		if(conn.isClosed()){
+			Context initCtx = new InitialContext();
+			Context envCtx = (Context) initCtx.lookup("java:comp/env");
+			DataSource ds = (DataSource)
+			  envCtx.lookup("jdbc/SAMPLE");
+
+			connector.conn = ds.getConnection();
+		}
 		return conn;
 	}
 }
