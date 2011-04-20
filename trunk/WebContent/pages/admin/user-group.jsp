@@ -58,9 +58,7 @@
 <form action="user-group-servlet" method="get" name="groupform">
 <tr><td><input type="checkbox" name='deleted' value="<%=groupid%>"></td><td><a href="<%=request.getContextPath()%>/pages/admin/edit-user-group?groupid=<%=groupid%>&groupname=<%=groupMap.get(groupid)%>"><%=groupMap.get(groupid)%></a></td></tr>
   <%} %>
-<tr><td> </td>
-  <td><button name="ActionAdd" value="Add" onClick="add()">Add</button><button name="Action" value="Delete" onClick="deletes()">Delete</button></td></tr>
     </table>
-  
+<button name="ActionAdd" value="Add" onClick="add()">Add</button><button name="Action" value="Delete" onClick="deletes()">Delete</button>  
 </form>  
 <%@ include file="/includes/footer.jsp" %>
