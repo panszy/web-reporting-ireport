@@ -6,7 +6,7 @@
 <script language="JavaScript" type="text/javascript">
 function OpenPop_UpList()
 {  
-  var win=window.open("<%=request.getContextPath()%>/pages/list", "User List", "left=100,top=10,width=480,height=480,status=no,toolbar=no,menubar=no,location=no,scrollbars=yes");
+  win=window.open("<%=request.getContextPath()%>/pages/list", "UserList", "left=100,top=10,width=480,height=480,status=no,toolbar=no,menubar=no,location=no,scrollbars=yes");
   win.focus();
 }
 </script>
@@ -21,7 +21,7 @@ function OpenPop_UpList()
 	width: 800px;
 }
 </style>
-<form name="myForm" action="<%=request.getContextPath()%>/pages/stock-order"
+<form id="myForm" name="myForm" action="<%=request.getContextPath()%>/pages/stock-order"
 	method="post">
 	<%	
 	ArrayList<String> comboData = (ArrayList<String>) request

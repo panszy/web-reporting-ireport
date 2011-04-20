@@ -1,15 +1,16 @@
-<%@  page import="common.DateFormatter" %> 
-<%@ page import="web.UserSession" %>
-<%
-    UserSession userSession = UserSession.Factory.getUserSession(request);
+<%@  page import="common.DateFormatter"%>
+<%@ page import="web.UserSession"%>
+<%UserSession userSession = UserSession.Factory
+					.getUserSession(request);
 %>
 <html>
 <head>
-    <title><%=title %> - Kifar</title>
-    <script language="javascript">
+<title><%=title%> - Kifar</title>
+<script language="javascript">
 
         var timer;
-    
+    	var win;    	    	
+    	
         function ChangeValue(field, value) {
             field.value = value;
         }
@@ -101,7 +102,7 @@
             var d = document.getElementById('my_div');
             var olddiv = document.getElementById('my' + divNum + 'Div');
             d.removeChild(olddiv);
-        }
+        }                
 
         function set_interval()
         {
@@ -128,37 +129,45 @@
         }
 
     </script>
-    <link rel="stylesheet" href="<%=request.getContextPath()%>/style.css"></link>
+<link rel="stylesheet" href="<%=request.getContextPath()%>/style.css"></link>
 </head>
-<% if (!title.equals("Login") && !title.equals("Logout")){ %>
-<body onmousemove="reset_interval()" onclick="reset_interval()" onkeypress="reset_interval()" onload="reset_interval()">
-<% } else { %>
+<%if (!title.equals("Login") && !title.equals("Logout")) {
+
+			%>
+<body onmousemove="reset_interval()"
+	onclick="reset_interval()" onkeypress="reset_interval()"
+	onload="reset_interval()">
+<%} else {
+
+			%>
 <body>
-<%} %>
+<%}
+
+			%>
 <table width="100%" class="header"
-       style="background-image: url('<%=request.getContextPath()%>/images/header-space.jpg'); background-repeat: repeat-x;">
-    <tr>
-        <td width="266" class="header" rowspan=2><img src="<%=request.getContextPath()%>/images/header.jpg"></td>
-        <td height="49" class="header" style="text-align: right; padding-top: 26px; padding-right: 12px;">
-            <%=DateFormatter.getDisplayDate(new java.util.Date())%>
-        </td>
-    </tr>
-    <tr>
-        <td class="menu" style="text-align: right; padding-bottom: 31px; padding-right:12px;">
-            <% if (userSession.isLoggedIn()) { %>
-            <b><%=userSession.getUser().getFullName() %>
-            </b>
-            &#149;
-            <a class="menu" href="<%=request.getContextPath()%>/pages/user-panel">User Panel</a>
-            &#149;
-            <a class="menu" href="<%=request.getContextPath()%>/logout">Logout</a>
-            <% } %>
-        </td>
-    </tr>
+	style="background-image: url('<%=request.getContextPath()%>/images/header-space.jpg'); background-repeat: repeat-x;">
+	<tr>
+		<td width="266" class="header" rowspan=2><img
+			src="<%=request.getContextPath()%>/images/header.jpg"></td>
+		<td height="49" class="header"
+			style="text-align: right; padding-top: 26px; padding-right: 12px;"><%=DateFormatter.getDisplayDate(new java.util.Date())%>
+		</td>
+	</tr>
+	<tr>
+		<td class="menu"
+			style="text-align: right; padding-bottom: 31px; padding-right:12px;">
+		<%if (userSession.isLoggedIn()) {
+
+				%> <b><%=userSession.getUser().getFullName()%> </b> &#149; <a
+			class="menu" href="<%=request.getContextPath()%>/pages/user-panel">User
+		Panel</a> &#149; <a class="menu"
+			href="<%=request.getContextPath()%>/logout">Logout</a> <%}
+
+		%></td>
+	</tr>
 </table>
 <table class="container">
-    <tr>
-        <td class="container" width="250">
-            <%@ include file="/includes/menu-panel.jsp" %>
-        </td>
-        <td class="container">
+	<tr>
+		<td class="container" width="250"><%@ include
+			file="/includes/menu-panel.jsp"%></td>
+		<td class="container">

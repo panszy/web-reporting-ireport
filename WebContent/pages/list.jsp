@@ -2,7 +2,7 @@
 <%@page import="web.UserSession"%>
 <%@page import="web.User"%>
 <%@page import="java.util.List"%>
-<%@page import="java.util.Set" %>
+<%@page import="java.util.Set"%>
 <%@page import="java.util.Iterator" %>
 <%@page import="java.util.Map"%>
 <%@page import="java.util.HashMap"%>
@@ -22,7 +22,15 @@ String KindOfsearch =request.getParameter("KindOfsearch")==null?"":request.getPa
     }
 %>
 <%@page import="java.util.ArrayList"%>
+
 <form action="" method="post" name="frmSearch">
+
+	<script language="javascript">
+        function validepopupform(field1,field2){
+			field1.value=field2;
+			window.close();
+		}    	  
+    </script>
 
 <b>Search User</b> <br><br>
 <select
@@ -48,7 +56,7 @@ String KindOfsearch =request.getParameter("KindOfsearch")==null?"":request.getPa
 <%if (listofuser != null && listofuser.size() > 0){ %>
 <table class="item" border=1 cellSpacing=0 cellPadding=3 style="background-image: url('<%=request.getContextPath()%>/images/item-header-space.jpg'); background-repeat: repeat-x;" width=800>                         
     <tr>
-                    <td class="item-header" colspan=8>
+                    <td class="item-header" colspan="9">
                         List of Users
                     </td>
                 </tr>
@@ -76,7 +84,7 @@ String KindOfsearch =request.getParameter("KindOfsearch")==null?"":request.getPa
         while (listofuser != null && listofuser.size() > i) {     
     %>
     <tr>
-        <td><a href=""><%=((User) listofuser.get(i)).getUsername()%></a></td>
+        <td><a href="" onclick="validepopupform(window.opener.document.forms['myForm'].elements['item-2'],'<%=((User) listofuser.get(i)).getUsername()%>');return false;"><%=((User) listofuser.get(i)).getUsername()%></a></td>
         <td><%=((User) listofuser.get(i)).getFullName()%></td>
         <td><%=((User) listofuser.get(i)).getNik()%></td>
         <td><%=((User) listofuser.get(i)).getEmailAddress()%></td>
