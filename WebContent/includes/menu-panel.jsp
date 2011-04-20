@@ -41,6 +41,35 @@
 </tr>
 <%
     }
+    if (us.getMenus().contains("stock order") || us.getMenus().contains("approve")) {
+%>
+<tr>
+    <td>
+        <img src="<%=request.getContextPath()%>/images/icons/system-users.png">
+    </td>
+    <td>
+        <b>Stock Order</b>
+    </td>
+</tr>
+<% } if (us.getMenus().contains("stock order")){%>
+<tr>
+    <td>
+    </td>
+    <td>
+        <a href="<%=request.getContextPath()%>/pages/stock-order">Order</a>
+    </td>
+</tr>
+<% } 
+if (us.getMenus().contains("approve")){%>
+<tr>
+    <td>
+    </td>
+    <td>
+        <a href="<%=request.getContextPath()%>/pages/approve">Approve</a>
+    </td>
+</tr>
+<%
+	}    	   
     if (us.getMenus().contains("sample report")) {
 %>
 <tr>
@@ -49,20 +78,6 @@
     </td>
     <td>
         <b>Reporting</b>
-    </td>
-</tr>
-<tr>
-    <td>
-    </td>
-    <td>
-        <a href="<%=request.getContextPath()%>/pages/report/report.jsp?reportname=report1.jasper&reportlabel=Sample&nbsp;Report&nbsp;1">Sample Report 1</a>
-    </td>
-</tr>
-<tr>
-    <td>
-    </td>
-    <td>
-        <a href="<%=request.getContextPath()%>/pages/report/report.jsp?reportname=report2.jasper&reportlabel=Sample&nbsp;Report&nbsp;2">Sample Report 2</a>
     </td>
 </tr>
 <tr>

@@ -87,7 +87,7 @@ public class UserGroupServlet extends HttpServlet {
         try{ 
              menuMap=new HashMap<String,String>();
              conn=Connector.getInstance().getConnection();
-             pstmt=conn.prepareStatement("select menu_detail.menu_id,menu_detail.name from menu,menu_detail where menu_detail.menu_id=menu.menu_id");
+             pstmt=conn.prepareStatement("select menu_detail.menu_id,menu_detail.name from menu_detail");
              rs=pstmt.executeQuery();
              while(rs.next())
              {  // idList.add(rs.getString(1));
