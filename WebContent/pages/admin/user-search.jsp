@@ -24,6 +24,9 @@ String KindOfsearch =request.getParameter("KindOfsearch")==null?"":request.getPa
 <%@ include file="/includes/header.jsp"%>
 <%@page import="java.util.ArrayList"%>
 <form action="" method="post" name="frmSearch">
+
+<img src="<%=request.getContextPath()%>/images/icons/system-users.png">
+<b>Search User</b> <br><br>
 <select
     size=1 name=field>
     <option value="Username" <%if(KindOfsearch.equalsIgnoreCase("Username")){ %> selected <%} %>>Username</option>
