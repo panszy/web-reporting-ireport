@@ -17,14 +17,14 @@
         if (confirm("Are you sure you want to update user")) {
             document.frmUpdate.Action.value = 'Update';
             document.frmUpdate.submit();
-        }
+        } else return;
     }
 
     function confirmationReset() {
         if (confirm("Are you sure you want to reset password")) {
             document.frmUpdate.Action.value = 'Reset Password';
             document.frmUpdate.submit();
-        }
+        } else return;
     }
     function uppercase()
     {
@@ -179,8 +179,8 @@
 
 <tr>
     <td height=10>
-        <button onClick="confirmationUpdate()">Update</button>
-        <button onClick="confirmationReset()">Reset Password</button>
+        <input type="button" onClick="confirmationUpdate()" value="Update">
+        <input type="button" onClick="confirmationReset()" value="Reset Password">
         <input type="hidden" size=30 name="Action" value="">
     </td>
 </tr>

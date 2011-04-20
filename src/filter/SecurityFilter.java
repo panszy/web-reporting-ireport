@@ -152,6 +152,7 @@ public class SecurityFilter implements Filter {
             // check user login state
             if (!userSession.isLoggedIn()) {
                 // forward to login screen
+            		httpRequest.getSession().setAttribute("RemoteAddress", httpRequest.getRemoteAddr());
                     httpRequest.getRequestDispatcher("/login.jsp").forward(
                             request, response);
                 return;
