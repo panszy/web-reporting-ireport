@@ -3,6 +3,13 @@
 	String title = "Stock Order";
 %>
 <%@ include file="/includes/header.jsp"%>
+<script language="JavaScript" type="text/javascript">
+function OpenPop_UpList()
+{  
+  var win=window.open("<%=request.getContextPath()%>/pages/list", "User List", "left=100,top=10,width=480,height=480,status=no,toolbar=no,menubar=no,location=no,scrollbars=yes");
+  win.focus();
+}
+</script>
 <link rel="stylesheet" href="/ireport/script/example.css"
 	TYPE="text/css" MEDIA="screen">
 <link rel="stylesheet" href="/ireport/script/example-print.css"
@@ -30,15 +37,16 @@
 <p>
 <table>
 	<tr>
-		<td colspan="2"><select size=1 name=field>
+		<td>Item 1</td>
+		<td><select name=field>
 		<% for(String combo : comboData){ %>
-    <option value="<%=combo %>"><%=combo %></option>&lt;SELECT&gt;
+    <option value="<%=combo %>"><%=combo %></option>
     <% } %>        
 </select></td>				
 	</tr>
 	<tr>
 		<td>Item 2</td>
-		<td><input name="item-2" type="text" value="">
+		<td><input name="item-2" type="text" value="">&nbsp;<a onclick="OpenPop_UpList();return false;" href="">Look up</a>
 		</td>
 	</tr>
 	<tr>
