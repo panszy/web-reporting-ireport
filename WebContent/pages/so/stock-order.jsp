@@ -39,12 +39,12 @@
 	</tr>
 	<tr>
 		<td>Item 2</td>
-		<td><input name="item-2" type="text" value="">&nbsp;<a onclick="OpenPop_UpList('<%=request.getContextPath()%>/pages/list?title=Search%20User&tableTitle=List%20Of%20User&itemName=item-2&showFields=username,address,division&queryCount=userQueryCount&queryData=userQuery');return false;" href="">Look up</a>
+		<td><input name="item-2" type="text" value="">&nbsp;<a onclick="OpenPop_UpList('<%=request.getContextPath()%>/pages/list?title=Search%20User&tableTitle=List%20Of%20User&itemName=item-2&showFields=username,address,division&queryData=userQuery');return false;" href="">Look up</a>
 		</td>
 	</tr>
 	<tr>
 		<td>Item 3&nbsp;&nbsp;</td>
-		<td><input name="item-3" type="text" value="">
+		<td><input name="item-3" type="text" value="">&nbsp;<a onclick="OpenPop_UpList('<%=request.getContextPath()%>/pages/list?title=Search%20User%20Audit&tableTitle=List%20Of%20User%20Audit&itemName=item-3&showFields=user,date_time,action&queryData=userAuditQuery');return false;" href="">Look up</a>
 		</td>
 	</tr>	
 </table>

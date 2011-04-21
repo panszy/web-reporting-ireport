@@ -39,8 +39,7 @@ public class LookupList extends HttpServlet {
 		String title = request.getParameter("title");
 		String tableTitle = request.getParameter("tableTitle");
 		String showFields = request.getParameter("showFields"); 
-		String itemName = request.getParameter("itemName");
-		String queryCount = (String)request.getParameter("queryCount");
+		String itemName = request.getParameter("itemName");		
 		String queryData = (String)request.getParameter("queryData");		
 		String page = (String) request.getParameter("page");
 		String KindOfsearch = (String) request.getParameter("KindOfsearch");
@@ -49,7 +48,7 @@ public class LookupList extends HttpServlet {
 			try {
 				int total_pages = LookupQuery.countNumberLike(
 						Connector.getInstance().getConnection(), KindOfsearch,
-						WordOfsearch,queryCount);
+						WordOfsearch,queryData);
 				try {
 					List<ArrayList<String>> datas = LookupQuery
 							.listlike(Connector.getInstance().getConnection(),
@@ -76,7 +75,7 @@ public class LookupList extends HttpServlet {
 			}
 		}
 
-		request.getRequestDispatcher("/pages/list.jsp?title="+title.replaceAll(" ","%20")+"&tableTitle="+tableTitle.replaceAll(" ","%20")+"&itemName="+itemName.replaceAll(" ","%20")+"&showFields="+showFields.replaceAll(" ","%20")+"&queryCount="+queryCount.replaceAll(" ","%20")+"&queryData="+queryData.replaceAll(" ","%20")).forward(request,
+		request.getRequestDispatcher("/pages/list.jsp?title="+title.replaceAll(" ","%20")+"&tableTitle="+tableTitle.replaceAll(" ","%20")+"&itemName="+itemName.replaceAll(" ","%20")+"&showFields="+showFields.replaceAll(" ","%20")+"&queryData="+queryData.replaceAll(" ","%20")).forward(request,
 				response);
 	}
 
@@ -87,8 +86,7 @@ public class LookupList extends HttpServlet {
 		String title = (String)request.getParameter("title");
 		String tableTitle = (String)request.getParameter("tableTitle");
 		String showFields = (String)request.getParameter("showFields"); 
-		String itemName = (String)request.getParameter("itemName");
-		String queryCount = (String)request.getParameter("queryCount");			
+		String itemName = (String)request.getParameter("itemName");				
 		String queryData = (String)request.getParameter("queryData");		
 		if (request.getParameter("Action") != null) {
 			String action = request.getParameter("Action");
@@ -101,7 +99,7 @@ public class LookupList extends HttpServlet {
 							KindOfsearch, WordOfsearch, 0, 10, queryData,showFields);
 					int total_pages = LookupQuery.countNumberLike(
 							Connector.getInstance().getConnection(), KindOfsearch,
-							WordOfsearch,queryCount);
+							WordOfsearch,queryData);
 					request.setAttribute("listOfUser", datas);
 					request.setAttribute(
 							"total_pages",
@@ -121,7 +119,7 @@ public class LookupList extends HttpServlet {
 				}
 				request.getRequestDispatcher(
 						"/pages/list.jsp?KindOfsearch=" + KindOfsearch
-								+ "&WordOfsearch=" + WordOfsearch+"&title="+title.replaceAll(" ","%20")+"&tableTitle="+tableTitle.replaceAll(" ","%20")+"&itemName="+itemName.replaceAll(" ","%20")+"&showFields="+showFields.replaceAll(" ","%20")+"&queryCount="+queryCount.replaceAll(" ","%20")+"&queryData="+queryData.replaceAll(" ","%20")).forward(
+								+ "&WordOfsearch=" + WordOfsearch+"&title="+title.replaceAll(" ","%20")+"&tableTitle="+tableTitle.replaceAll(" ","%20")+"&itemName="+itemName.replaceAll(" ","%20")+"&showFields="+showFields.replaceAll(" ","%20")+"&queryData="+queryData.replaceAll(" ","%20")).forward(
 						request, response);
 			}
 		}
