@@ -146,8 +146,8 @@
 <%
 	if (!title.equals("Login") && !title.equals("Logout")) {
 %>
-<body onmousemove="reset_interval()" onclick="reset_interval();parent_disable();"
-	onkeypress="reset_interval()" onload="reset_interval()">
+<body onmousemove="reset_interval()"
+	onkeypress="reset_interval()" onload="reset_interval()" onfocus="reset_interval();parent_disable();">
 <%
 	} else {
 %>
