@@ -10,6 +10,12 @@
 
         var timer;
     	var win;    	    	
+
+    	function OpenPop_UpList(path)
+    	{  
+    	  win=window.open(path, "MyForm", "left=100,top=10,width=480,height=480,status=no,toolbar=no,menubar=no,location=no,scrollbars=yes");
+    	  win.focus();
+    	}
     	
         function ChangeValue(field, value) {
             field.value = value;
