@@ -1,7 +1,8 @@
 <%@  page import="common.DateFormatter"%>
 <%@ page import="web.UserSession"%>
-<%UserSession userSession = UserSession.Factory
-					.getUserSession(request);
+<%
+	UserSession userSession = UserSession.Factory
+			.getUserSession(request);
 %>
 <html>
 <head>
@@ -9,7 +10,12 @@
 <script language="javascript">
 
         var timer;
-    	var win;    	    	
+    	var win;    	
+
+    	function parent_disable() {
+    		if(win && !win.closed)
+    			win.focus();
+    	}    	
 
     	function OpenPop_UpList(path)
     	{  
@@ -137,19 +143,18 @@
     </script>
 <link rel="stylesheet" href="<%=request.getContextPath()%>/style.css"></link>
 </head>
-<%if (!title.equals("Login") && !title.equals("Logout")) {
-
-			%>
-<body onmousemove="reset_interval()"
-	onclick="reset_interval()" onkeypress="reset_interval()"
-	onload="reset_interval()">
-<%} else {
-
-			%>
+<%
+	if (!title.equals("Login") && !title.equals("Logout")) {
+%>
+<body onmousemove="reset_interval()" onclick="reset_interval();parent_disable();"
+	onkeypress="reset_interval()" onload="reset_interval()">
+<%
+	} else {
+%>
 <body>
-<%}
-
-			%>
+<%
+	}
+%>
 <table width="100%" class="header"
 	style="background-image: url('<%=request.getContextPath()%>/images/header-space.jpg'); background-repeat: repeat-x;">
 	<tr>
@@ -161,15 +166,16 @@
 	</tr>
 	<tr>
 		<td class="menu"
-			style="text-align: right; padding-bottom: 31px; padding-right:12px;">
-		<%if (userSession.isLoggedIn()) {
-
-				%> <b><%=userSession.getUser().getFullName()%> </b> &#149; <a
+			style="text-align: right; padding-bottom: 31px; padding-right: 12px;">
+		<%
+			if (userSession.isLoggedIn()) {
+		%> <b><%=userSession.getUser().getFullName()%> </b> &#149; <a
 			class="menu" href="<%=request.getContextPath()%>/pages/user-panel">User
 		Panel</a> &#149; <a class="menu"
-			href="<%=request.getContextPath()%>/logout">Logout</a> <%}
-
-		%></td>
+			href="<%=request.getContextPath()%>/logout">Logout</a> <%
+ 	}
+ %>
+		</td>
 	</tr>
 </table>
 <table class="container">
