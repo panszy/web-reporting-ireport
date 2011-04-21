@@ -84,7 +84,14 @@ if (us.getMenus().contains("approve")){%>
     <td>
     </td>
     <td>
-        <a href="<%=request.getContextPath()%>/pages/report/crystal.jsp">Sample Crystal Report</a>
+        <a href="<%=request.getContextPath()%>/pages/report/rincian-invoice.jsp">Laporan Rincian Invoice</a>
+    </td>
+</tr>
+<tr>
+    <td>
+    </td>
+    <td>
+        <a href="<%=request.getContextPath()%>/pages/report/metrep.jsp">Laporan Metrep</a>
     </td>
 </tr>
 <%
