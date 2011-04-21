@@ -1,9 +1,8 @@
 package servlet;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.naming.NamingException;
@@ -14,11 +13,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 
-import web.User;
-import web.UserSession;
+import web.LookupQuery;
 import database.Connector;
 import exception.DaoException;
-import exception.UserNotFoundException;
 
 /**
  * Servlet implementation class LookupList
@@ -39,23 +36,26 @@ public class LookupList extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
+		String title = request.getParameter("title");
+		String tableTitle = request.getParameter("tableTitle");
+		String showFields = request.getParameter("showFields"); 
+		String itemName = request.getParameter("itemName");
+		String queryCount = (String)request.getParameter("queryCount");
+		String queryData = (String)request.getParameter("queryData");		
 		String page = (String) request.getParameter("page");
 		String KindOfsearch = (String) request.getParameter("KindOfsearch");
 		String WordOfsearch = (String) request.getParameter("WordOfsearch");
 		if (page != null) {
-			UserSession userSession1 = UserSession.Factory
-					.getUserSession(request);
-
 			try {
-				int total_pages = User.Factory.countNumberOfUsersLikeAdmin(
+				int total_pages = LookupQuery.countNumberLike(
 						Connector.getInstance().getConnection(), KindOfsearch,
-						WordOfsearch, userSession1.getUser().getUserId());
+						WordOfsearch,queryCount);
 				try {
-					List<User> users = User.Factory
+					List<ArrayList<String>> datas = LookupQuery
 							.listlike(Connector.getInstance().getConnection(),
 									KindOfsearch, WordOfsearch,
-									10 * (Integer.parseInt(page) - 1), 10);
-					request.setAttribute("listOfUser", users);
+									10 * (Integer.parseInt(page) - 1), 10,queryData,showFields);
+					request.setAttribute("listOfUser", datas);
 				} catch (DaoException ex) {
 					ex.printStackTrace();
 					logger.error(ex);
@@ -76,7 +76,7 @@ public class LookupList extends HttpServlet {
 			}
 		}
 
-		request.getRequestDispatcher("/pages/list.jsp").forward(request,
+		request.getRequestDispatcher("/pages/list.jsp?title="+title.replaceAll(" ","%20")+"&tableTitle="+tableTitle.replaceAll(" ","%20")+"&itemName="+itemName.replaceAll(" ","%20")+"&showFields="+showFields.replaceAll(" ","%20")+"&queryCount="+queryCount.replaceAll(" ","%20")+"&queryData="+queryData.replaceAll(" ","%20")).forward(request,
 				response);
 	}
 
@@ -84,20 +84,25 @@ public class LookupList extends HttpServlet {
 	protected void doPost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {		
 
+		String title = (String)request.getParameter("title");
+		String tableTitle = (String)request.getParameter("tableTitle");
+		String showFields = (String)request.getParameter("showFields"); 
+		String itemName = (String)request.getParameter("itemName");
+		String queryCount = (String)request.getParameter("queryCount");			
+		String queryData = (String)request.getParameter("queryData");		
 		if (request.getParameter("Action") != null) {
-
 			String action = request.getParameter("Action");
 			if (action.equalsIgnoreCase("Search")) {
 				String KindOfsearch = (String) request.getParameter("field");
-				String WordOfsearch = (String) request.getParameter("User");
+				String WordOfsearch = (String) request.getParameter("Value");
 				try {
-					List<User> users = User.Factory.listlike(Connector
-							.getInstance().getConnection(), KindOfsearch,
-							WordOfsearch, 0, 10);
-					int total_pages = User.Factory.countNumberOfUsersLike(
-							Connector.getInstance().getConnection(),
-							KindOfsearch, WordOfsearch);
-					request.setAttribute("listOfUser", users);
+					List<ArrayList<String>> datas = LookupQuery
+					.listlike(Connector.getInstance().getConnection(),
+							KindOfsearch, WordOfsearch, 0, 10, queryData,showFields);
+					int total_pages = LookupQuery.countNumberLike(
+							Connector.getInstance().getConnection(), KindOfsearch,
+							WordOfsearch,queryCount);
+					request.setAttribute("listOfUser", datas);
 					request.setAttribute(
 							"total_pages",
 							Integer.toString((total_pages / 10)
@@ -116,7 +121,7 @@ public class LookupList extends HttpServlet {
 				}
 				request.getRequestDispatcher(
 						"/pages/list.jsp?KindOfsearch=" + KindOfsearch
-								+ "&WordOfsearch=" + WordOfsearch).forward(
+								+ "&WordOfsearch=" + WordOfsearch+"&title="+title.replaceAll(" ","%20")+"&tableTitle="+tableTitle.replaceAll(" ","%20")+"&itemName="+itemName.replaceAll(" ","%20")+"&showFields="+showFields.replaceAll(" ","%20")+"&queryCount="+queryCount.replaceAll(" ","%20")+"&queryData="+queryData.replaceAll(" ","%20")).forward(
 						request, response);
 			}
 		}

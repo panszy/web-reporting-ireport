@@ -6,7 +6,7 @@
 <script language="JavaScript" type="text/javascript">
 function OpenPop_UpList()
 {  
-  win=window.open("<%=request.getContextPath()%>/pages/list", "UserList", "left=100,top=10,width=480,height=480,status=no,toolbar=no,menubar=no,location=no,scrollbars=yes");
+  win=window.open("<%=request.getContextPath()%>/pages/list?title=Search%20User&tableTitle=List%20Of%20User&itemName=item-2&showFields=username,address,division&queryCount=userQueryCount&queryData=userQuery", "UserList", "left=100,top=10,width=480,height=480,status=no,toolbar=no,menubar=no,location=no,scrollbars=yes");
   win.focus();
 }
 </script>

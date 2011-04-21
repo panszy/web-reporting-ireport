@@ -7,24 +7,35 @@
 <%@page import="java.util.Map"%>
 <%@page import="java.util.HashMap"%>
 <%
-String title = "User Search";
+String title = request.getParameter("title");
+String tableTitle = request.getParameter("tableTitle");
+String[] showFields = request.getParameter("showFields").split(","); 
+String showFieldsFlat = request.getParameter("showFields");
+String itemName = request.getParameter("itemName");
+String queryCount = request.getParameter("queryCount");
+String queryData = request.getParameter("queryData");
 int pages=request.getAttribute("pages")==null?1:Integer.parseInt((String)request.getAttribute("pages"));
 int total_pages=request.getAttribute("total_pages")==null?1:Integer.parseInt((String)request.getAttribute("total_pages"));
 String WordOfsearch =request.getParameter("WordOfsearch")==null?"":request.getParameter("WordOfsearch");
 String KindOfsearch =request.getParameter("KindOfsearch")==null?"":request.getParameter("KindOfsearch");
 
 %>
-<%
-    User user = UserSession.Factory.getUserSession(request).getUser();
-    ArrayList listofuser = null;
+<%    
+    List<ArrayList<String>> listofuser = null;
     if (request.getAttribute("listOfUser") != null){
-        listofuser = (ArrayList) request.getAttribute("listOfUser");
+        listofuser = (List<ArrayList<String>>) request.getAttribute("listOfUser");
     }
 %>
 <%@page import="java.util.ArrayList"%>
 
 <form action="" method="post" name="frmSearch">
-
+<input type="hidden" value="<%=title %>" name="title">
+<input type="hidden" value="<%=tableTitle %>" name="tableTitle">
+<input type="hidden" value="<%=showFieldsFlat %>" name="showFields">
+<input type="hidden" value="<%=itemName %>" name="itemName">
+<input type="hidden" value="<%=queryCount %>" name="queryCount">
+<input type="hidden" value="<%=queryData %>" name="queryData">
+<link rel="stylesheet" href="<%=request.getContextPath()%>/style.css"></link>
 	<script language="javascript">
         function validepopupform(field1,field2){
 			field1.value=field2;
@@ -32,22 +43,20 @@ String KindOfsearch =request.getParameter("KindOfsearch")==null?"":request.getPa
 		}    	  
     </script>
 
-<b>Search User</b> <br><br>
+<b><%=title%></b> <br><br>
 <select
     size=1 name=field>
-    <option value="Username" <%if(KindOfsearch.equalsIgnoreCase("Username")){ %> selected <%} %>>Username</option>
-    <option value="full_name" <%if(KindOfsearch.equalsIgnoreCase("full_name")){ %> selected <%} %>>Full Name</option>
-    <option value="NIK" <%if(KindOfsearch.equalsIgnoreCase("NIK")){ %> selected <%} %>>NIK</option>
-    <option value="email_address" <%if(KindOfsearch.equalsIgnoreCase("email_address")){ %> selected <%} %>>Email address</option>
-    <option value="status" <%if(KindOfsearch.equalsIgnoreCase("status")){ %> selected <%} %>>Status</option>
+    <% for(String showField : showFields){ %>
+    <option value="<%=showField %>" <%if(KindOfsearch.equalsIgnoreCase(showField)){ %> selected <%} %>><%=showField %></option>
+    <%} %>    
     &lt;\SELECT&gt;
 </select>
 &nbsp;&nbsp;&nbsp;&nbsp; 
 <%if(WordOfsearch!=null){ %>
-<input type="text" size="30" name="User" value="<%=WordOfsearch%>">
+<input type="text" size="30" name="Value" value="<%=WordOfsearch%>">
 <%}else{ %>
 
-<input type="text" size="30" name="User" value="" >
+<input type="text" size="30" name="Value" value="" >
 <%} %>
 &nbsp;&nbsp;&nbsp;
 <input type="submit" value="Search" name="Action"></p>
@@ -56,59 +65,49 @@ String KindOfsearch =request.getParameter("KindOfsearch")==null?"":request.getPa
 <%if (listofuser != null && listofuser.size() > 0){ %>
 <table class="item" border=1 cellSpacing=0 cellPadding=3 style="background-image: url('<%=request.getContextPath()%>/images/item-header-space.jpg'); background-repeat: repeat-x;" width=800>                         
     <tr>
-                    <td class="item-header" colspan="9">
-                        List of Users
+                    <td class="item-header" colspan="<%=showFields.length %>">
+                        <%=tableTitle%>
                     </td>
                 </tr>
 
     <tr>
-        <td><b>Username</b></td>
-        <td><b>Full Name</b></td>
-        <td><b>NIK</b></td>
-        <td><b>Email</b></td>
-        <td><b>Department</b></td>
-        <td><b>Division</b></td>
-        <td><b>Address</b></td>
-        <td><b>Role</b></td>
-        <td><b>Status</b></td>           
-   </tr>
-    <%
-      Map mapStatus=new HashMap();
-      mapStatus.put("0","Active");
-      mapStatus.put("1","Deactive");
-      mapStatus.put("2","Locked");
-    %>
+    <% for (String showField: showFields){ %>    
+        <td><b><%=showField%></b></td>
+        <%} %>                  
+   </tr>    
     <%
         int i = 0;      
         StringBuffer buffer;
-        while (listofuser != null && listofuser.size() > i) {     
+        while (listofuser != null && listofuser.size() > i) {
+        	int j = 0;
     %>
     <tr>
-        <td><a href="" onclick="validepopupform(window.opener.document.forms['myForm'].elements['item-2'],'<%=((User) listofuser.get(i)).getUsername()%>');return false;"><%=((User) listofuser.get(i)).getUsername()%></a></td>
-        <td><%=((User) listofuser.get(i)).getFullName()%></td>
-        <td><%=((User) listofuser.get(i)).getNik()%></td>
-        <td><%=((User) listofuser.get(i)).getEmailAddress()%></td>
-        <td><%=((User) listofuser.get(i)).getDepartemen()%></td>
-        <td><%=((User) listofuser.get(i)).getDivision()%></td>
-        <td><%=((User) listofuser.get(i)).getAddress()%></td>
-        <td><%=((User) listofuser.get(i)).getGroup()%></td> 
-        <td><%=mapStatus.get(new Integer(((User) listofuser.get(i)).getStatus()).toString()) %></td>                     
-   </tr>
-    <%  
-  //  }
+    <% for (String data: listofuser.get(i)){
+    	if(j==0){
+    %>    
+        <td><a href="" onclick="validepopupform(window.opener.document.forms['myForm'].elements['<%=itemName%>'],'<%=data%>');return false;"><%=data%></a></td>
+        <%} else { %> 
+        <td><%=data%></td>
+        <%     	
+    	}  	
+    	j++;
+    }
+    %>
+    </tr>
+    <%
         i++;
         }
-    %>       
+    %>           
 </table>
 <p align="right">
 <%  if(pages>1){ %>
-        <a href="<%=request.getContextPath()%>/pages/list?page=<%=pages-1%>&KindOfsearch=<%=KindOfsearch%>&WordOfsearch=<%=WordOfsearch%>"><u>Prev</u></a>
+        <a href="<%=request.getContextPath()%>/pages/list?page=<%=pages-1%>&KindOfsearch=<%=KindOfsearch%>&WordOfsearch=<%=WordOfsearch%>&title=<%= title.replaceAll(" ","%20")%>&tableTitle=<%= tableTitle.replaceAll(" ","%20")%>&itemName=<%= itemName.replaceAll(" ","%20")%>&showFields=<%= showFieldsFlat.replaceAll(" ","%20")%>&queryCount=<%= queryCount.replaceAll(" ","%20")%>&queryData=<%= queryData.replaceAll(" ","%20")%>"><u>Prev</u></a>
 <%
     }
 %>
    Page <%=pages%> of <%=total_pages%>   
 <%  if (pages<total_pages){ %>   
-        <a href="<%=request.getContextPath()%>/pages/list?page=<%=pages+1%>&KindOfsearch=<%=KindOfsearch%>&WordOfsearch=<%=WordOfsearch%>"><u>Next</u></a>
+        <a href="<%=request.getContextPath()%>/pages/list?page=<%=pages+1%>&KindOfsearch=<%=KindOfsearch%>&WordOfsearch=<%=WordOfsearch%>&title=<%= title.replaceAll(" ","%20")%>&tableTitle=<%= tableTitle.replaceAll(" ","%20")%>&itemName=<%= itemName.replaceAll(" ","%20")%>&showFields=<%= showFieldsFlat.replaceAll(" ","%20")%>&queryCount=<%= queryCount.replaceAll(" ","%20")%>&queryData=<%= queryData.replaceAll(" ","%20")%>"><u>Next</u></a>
 <% 
     }
 %>        
