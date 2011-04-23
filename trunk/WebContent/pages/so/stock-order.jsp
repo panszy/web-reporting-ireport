@@ -1,4 +1,5 @@
-
+<%@ page import="java.text.SimpleDateFormat"%>
+<%@ page import="java.util.Date"%>
 <%
 	String title = "Stock Order";
 %>
@@ -17,8 +18,13 @@
 <form id="myForm" name="myForm" action="<%=request.getContextPath()%>/pages/stock-order"
 	method="post">
 	<%	
-	ArrayList<String> comboData = (ArrayList<String>) request
-			.getAttribute("comboData");
+	ArrayList<String> comboTypeSO = (ArrayList<String>) request
+			.getAttribute("comboTypeSO");
+	ArrayList<String> comboJenisTransaksi = (ArrayList<String>) request
+	.getAttribute("comboJenisTransaksi");
+	SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy");
+	String currentDate = sdf.format(new Date());
+
 %> <img
 	src="<%=request.getContextPath()%>/images/icons/system-users.png">
 <b>Stock Order Information</b> <br>
@@ -26,26 +32,34 @@
 <div class="tabber">
 
 <div class="tabbertab">
-<h2>Tab 1</h2>
+<h2>Type Sales Order</h2>
 <p>
 <table>
 	<tr>
-		<td>Item 1</td>
-		<td><select name=field>
-		<% for(String combo : comboData){ %>
-    <option value="<%=combo %>"><%=combo %></option>
+		<td>Type Sales Order</td>
+		<td><select name=type_so>
+		<% for(String combo : comboTypeSO){ %>
+    <option value="<%=combo.split(",")[1] %>"><%=combo.split(",")[0] %></option>
     <% } %>        
 </select></td>				
 	</tr>
 	<tr>
-		<td>Item 2</td>
-		<td><input name="item-2" type="text" value="">&nbsp;<a onclick="OpenPop_UpList('<%=request.getContextPath()%>/pages/list?title=Search%20User&tableTitle=List%20Of%20User&itemName=item-2&showFields=username,address,division&queryData=userQuery');return false;" href="">Look up</a>
+		<td>Purchase Order</td>
+		<td>PO.<input name="po" type="text" value="">
 		</td>
 	</tr>
 	<tr>
-		<td>Item 3&nbsp;&nbsp;</td>
-		<td><input name="item-3" type="text" value="">&nbsp;<a onclick="OpenPop_UpList('<%=request.getContextPath()%>/pages/list?title=Search%20User%20Audit&tableTitle=List%20Of%20User%20Audit&itemName=item-3&showFields=user,date_time,action&queryData=userAuditQuery');return false;" href="">Look up</a>
+		<td>Tanggal PO</td>
+		<td><input name="tanggal_po" readonly type="text" value="<%=currentDate%>">
 		</td>
+	</tr>
+	<tr>
+		<td>Jenis Transaksi</td>
+		<td><select name=jenis_transaksi>
+		<% for(String combo : comboJenisTransaksi){ %>
+    <option value="<%=combo.split(",")[1] %>"><%=combo.split(",")[0] %></option>
+    <% } %>        
+</select></td>		
 	</tr>	
 </table>
 </p>
@@ -54,7 +68,7 @@
 
 
 <div class="tabbertab">
-<h2>Tab 2</h2>
+<h2>Detail Barang</h2>
 <p>
 <table>
 	<tr>
@@ -79,7 +93,7 @@
 
 <div class="tabbertab">
 
-<h2>Tab 3</h2>
+<h2>Register SO</h2>
 <p>
 <table>
 	<tr>
