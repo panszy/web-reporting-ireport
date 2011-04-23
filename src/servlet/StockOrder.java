@@ -20,7 +20,8 @@ import exception.DaoException;
  * Servlet implementation class StockOrder
  */
 public class StockOrder extends HttpServlet {
-	private final String comboQuery = "select name from menu_detail";
+	private final String comboTypeSOQuery = "select NAMA_TYPESO,KODE_TYPESO from db2admin.tbmastypeso where KODE_TYPESO=2 or KODE_TYPESO=4";
+	private final String comboJenisTransaksi = "select NAMA_TRN,KODE_TRN from db2admin.tbmastrn where KODE_TRN=1 or KODE_TRN=3";
 
 	private static final long serialVersionUID = 1L;
 
@@ -37,19 +38,28 @@ public class StockOrder extends HttpServlet {
 	 *      response)
 	 */
 	protected void doGet(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
-
+			HttpServletResponse response) throws ServletException, IOException {		
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try {
-			Connection conn = Connector.getInstance().getConnection();
-			pstmt = conn.prepareStatement(comboQuery);
+			Connection conn = Connector.getInstance().getConnectionAdmin();
+			pstmt = conn.prepareStatement(comboTypeSOQuery);
 			rs = pstmt.executeQuery();
-			ArrayList<String> comboData = new ArrayList<String>();
+			ArrayList<String> comboTypeSOQuery = new ArrayList<String>();
 			while(rs.next()){
-				comboData.add(rs.getString(1));
+				comboTypeSOQuery.add(rs.getString(1)+","+rs.getString(2));
 			}
-			request.setAttribute("comboData", comboData);
+			request.setAttribute("comboTypeSOQuery", comboTypeSOQuery);
+			
+			rs.close();
+			pstmt.close();
+			pstmt = conn.prepareStatement(comboJenisTransaksi);
+			rs = pstmt.executeQuery();
+			ArrayList<String> comboJenisTransaksi = new ArrayList<String>();
+			while(rs.next()){
+				comboJenisTransaksi.add(rs.getString(1)+","+rs.getString(2));
+			}
+			request.setAttribute("comboJenisTransaksi", comboJenisTransaksi);
 		} catch (DaoException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
