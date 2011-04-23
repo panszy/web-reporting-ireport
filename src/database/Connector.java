@@ -15,7 +15,8 @@ import exception.DaoException;
 
 public class Connector {	
 	private static Connector connector;
-	private Connection conn;
+	private Connection connSample;
+	private Connection connAdmin;
 
 	public static Connector getInstance() throws NamingException, SQLException {
 		if (connector == null) {
@@ -24,21 +25,36 @@ public class Connector {
 			Context envCtx = (Context) initCtx.lookup("java:comp/env");
 			DataSource ds = (DataSource)
 			  envCtx.lookup("jdbc/SAMPLE");
-
-			connector.conn = ds.getConnection();
+			connector.connSample = ds.getConnection();
+			
+			ds = (DataSource)
+			  envCtx.lookup("jdbc/DBSIMPD");
+			connector.connAdmin = ds.getConnection();
 		}
 		return connector;
 	}
 
 	public Connection getConnection() throws DaoException,NamingException, SQLException {
-		if(conn.isClosed()){
+		if(connSample.isClosed()){
 			Context initCtx = new InitialContext();
 			Context envCtx = (Context) initCtx.lookup("java:comp/env");
 			DataSource ds = (DataSource)
 			  envCtx.lookup("jdbc/SAMPLE");
 
-			connector.conn = ds.getConnection();
+			connector.connSample = ds.getConnection();
 		}
-		return conn;
+		return connSample;
+	}
+	
+	public Connection getConnectionAdmin() throws DaoException,NamingException, SQLException {
+		if(connAdmin.isClosed()){
+			Context initCtx = new InitialContext();
+			Context envCtx = (Context) initCtx.lookup("java:comp/env");
+			DataSource ds = (DataSource)
+			  envCtx.lookup("jdbc/DBSIMPD");
+
+			connector.connAdmin = ds.getConnection();
+		}
+		return connAdmin;
 	}
 }
