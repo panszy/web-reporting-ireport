@@ -119,7 +119,7 @@ public class StockOrder extends HttpServlet {
 			HttpServletResponse response) throws ServletException, IOException {
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy");
-		SimpleDateFormat sdfOutput = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.0");
+		SimpleDateFormat sdfOutput = new SimpleDateFormat("yyyy-MM-dd");
 		
 		String noSo = "";
 		File f = new File("counter.donotdelete");
@@ -157,12 +157,10 @@ public class StockOrder extends HttpServlet {
 		String catatan = request.getParameter("catatan");
 		String tipeSO = request.getParameter("type_so");
 		String konsinyasi = tipeSO.equals("4")?"1":"0";
-		
-		Date dateTanggalPo = null;
-		Date dateTanggalSo = null;		
+				
 		try {
-			dateTanggalPo = sdf.parse(tanggalPo);
-			dateTanggalSo = sdf.parse(tanggalSo);
+			tanggalPo = sdfOutput.format(sdf.parse(tanggalPo));
+			tanggalSo = sdfOutput.format(sdf.parse(tanggalSo));
 		} catch (ParseException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -200,11 +198,11 @@ public class StockOrder extends HttpServlet {
 			pstmt.setString(4,"9999");
 			pstmt.setString(5,tipeSO);
 			pstmt.setString(6,tipeDO);
-			pstmt.setDate(7,dateTanggalSo);
+			pstmt.setString(7,tanggalSo);
 			pstmt.setString(8,noSo);
-			pstmt.setDate(9,dateTanggalPo);
+			pstmt.setString(9,tanggalPo);
 			pstmt.setString(10,noPo);
-			pstmt.setString(11,tipeBayar);
+			pstmt.setString(11,tipeBayar.equals("tunai")?"0":"1");
 			pstmt.setString(12,"0");
 			pstmt.setString(13,konsinyasi);
 			pstmt.setString(14,"0");
@@ -212,14 +210,13 @@ public class StockOrder extends HttpServlet {
 			pstmt.setString(16,catatan);
 			pstmt.setInt(17,0);
 			pstmt.executeUpdate();	
-			pstmt.close();
-			System.out.println("PEMBERITAHUAN: simpanOrder OK");
-			
+			pstmt.close();			
+						
 			conn = Connector.getInstance().getConnectionAdmin();
 			pstmt = conn.prepareStatement(simpanOrderDetail);
 			pstmt.setString(1,kodeCabang);
 			pstmt.setString(2,noSo);
-			pstmt.setString(3,"1");
+			pstmt.setInt(3,1);
 			pstmt.setString(4,kodeBarang);
 			pstmt.setString(5,quantity);
 			pstmt.setString(6,quantity);			

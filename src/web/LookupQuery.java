@@ -18,7 +18,7 @@ public class LookupQuery {
 	final public static String userAuditQuery = "select user_audit.user,ip_address,date_time,action, ROW_NUMBER() OVER(ORDER BY user DESC) AS ROWNUMBER  from user_audit";
 	final public static String userAuditQueryTable = "user_audit";
 	final public static String userAuditQueryCount = "select count(1) from user_audit";
-	final public static String kodeBarangQuery = "select DB2ADMIN.TBMASBAR.nama_bar,DB2ADMIN.TBMASBAR.kode_bar, ROW_NUMBER() OVER(ORDER BY DB2ADMIN.TBMASBAR.kode_bar DESC) AS ROWNUMBER from DB2ADMIN.TBMASBAR";
+	final public static String kodeBarangQuery = "select DB2ADMIN.TBMASBAR.kode_bar,DB2ADMIN.TBMASBAR.nama_bar, ROW_NUMBER() OVER(ORDER BY DB2ADMIN.TBMASBAR.kode_bar DESC) AS ROWNUMBER from DB2ADMIN.TBMASBAR";
 	final public static String kodeBarangQueryTable = "DB2ADMIN.TBMASBAR";
 	final public static String kodeBarangQueryCount = "select count(1) from DB2ADMIN.TBMASBAR";
 	final public static String kodeSalesmanQuery = "select DB2ADMIN.TBMASBAR.nama_bar,DB2ADMIN.TBMASBAR.kode_bar, ROW_NUMBER() OVER(ORDER BY DB2ADMIN.TBMASBAR.kode_bar DESC) AS ROWNUMBER from DB2ADMIN.TBMASBAR";
