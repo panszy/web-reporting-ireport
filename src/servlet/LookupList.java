@@ -47,11 +47,11 @@ public class LookupList extends HttpServlet {
 		if (page != null) {
 			try {
 				int total_pages = LookupQuery.countNumberLike(
-						Connector.getInstance().getConnection(), KindOfsearch,
+						Connector.getInstance().getConnectionAdmin(), KindOfsearch,
 						WordOfsearch,queryData);
 				try {
 					List<ArrayList<String>> datas = LookupQuery
-							.listlike(Connector.getInstance().getConnection(),
+							.listlike(Connector.getInstance().getConnectionAdmin(),
 									KindOfsearch, WordOfsearch,
 									10 * (Integer.parseInt(page) - 1), 10,queryData,showFields);
 					request.setAttribute("listOfUser", datas);
@@ -95,10 +95,10 @@ public class LookupList extends HttpServlet {
 				String WordOfsearch = (String) request.getParameter("Value");
 				try {
 					List<ArrayList<String>> datas = LookupQuery
-					.listlike(Connector.getInstance().getConnection(),
+					.listlike(Connector.getInstance().getConnectionAdmin(),
 							KindOfsearch, WordOfsearch, 0, 10, queryData,showFields);
 					int total_pages = LookupQuery.countNumberLike(
-							Connector.getInstance().getConnection(), KindOfsearch,
+							Connector.getInstance().getConnectionAdmin(), KindOfsearch,
 							WordOfsearch,queryData);
 					request.setAttribute("listOfUser", datas);
 					request.setAttribute(

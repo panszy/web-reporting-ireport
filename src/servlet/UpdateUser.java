@@ -74,7 +74,7 @@ public class UpdateUser extends HttpServlet {
 			HttpServletResponse response) throws ServletException, IOException {
 		// String username = (String)request.getParameter("username");
 		@SuppressWarnings("unused")
-		String fullname1, nik1, email1, department1, division1, address1;
+		String fullname1, nik1, email1, department1, division1, address1,cabang1;
 		int status1;
 		@SuppressWarnings("unused")
 		Set<Integer> roleSet1;
@@ -95,8 +95,8 @@ public class UpdateUser extends HttpServlet {
 					.getParameter(HttpConstants.HTTP_VAR_NIK);
 			String emailaddress = (String) request
 					.getParameter(HttpConstants.HTTP_VAR_EMAIL_ADDRESS);
-			String department = (String) request
-					.getParameter(HttpConstants.HTTP_VAR_DEPARTEMEN);
+			String cabang = (String) request
+					.getParameter(HttpConstants.HTTP_VAR_CABANG);
 			String division = (String) request
 					.getParameter(HttpConstants.HTTP_VAR_DIVISION);
 			String address = (String) request
@@ -114,7 +114,7 @@ public class UpdateUser extends HttpServlet {
 					fullname1 = user.getFullName();
 					nik1 = user.getNik();
 					email1 = user.getEmailAddress();
-					department1 = user.getDepartemen();
+					cabang1 = user.getCabang();
 					division1 = user.getDivision();
 					address1 = user.getAddress();
 					status1 = user.getStatus();
@@ -124,7 +124,7 @@ public class UpdateUser extends HttpServlet {
 					user.setUsername(originusername);
 					user.setNik(nik);
 					user.setStatus(status);
-					user.setDepartemen(department);
+					user.setCabang(cabang);
 					user.setDivision(division);
 					user.setAddress(address);
 					user.setGroup(group);
@@ -150,9 +150,9 @@ public class UpdateUser extends HttpServlet {
 					if (email1.compareTo(emailaddress) != 0)
 						buff.append(",old Email=" + email1 + " new Email="
 								+ emailaddress);
-					if (department1.compareTo(department) != 0)
-						buff.append(",old department=" + department1
-								+ " new Department=" + department);
+					if (cabang1.compareTo(cabang) != 0)
+						buff.append(",cabang lama=" + cabang1
+								+ " cabang baru=" + cabang);
 					if (division1.compareTo(division) != 0)
 						buff.append(",old division=" + division1
 								+ " new Division=" + division);

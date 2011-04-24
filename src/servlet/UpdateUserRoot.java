@@ -69,7 +69,7 @@ public class UpdateUserRoot extends HttpServlet {
        
         String nik = (String)request.getParameter(HttpConstants.HTTP_VAR_NIK);
         String emailaddress = (String)request.getParameter(HttpConstants.HTTP_VAR_EMAIL_ADDRESS);
-        String department=(String)request.getParameter(HttpConstants.HTTP_VAR_DEPARTEMEN);
+        String cabang=(String)request.getParameter(HttpConstants.HTTP_VAR_CABANG);
         String division=(String)request.getParameter(HttpConstants.HTTP_VAR_DIVISION);
         String address=(String)request.getParameter(HttpConstants.HTTP_VAR_ADDRESS);
         String Action = (String)request.getParameter("Action");
@@ -96,7 +96,7 @@ public class UpdateUserRoot extends HttpServlet {
                 user.setNik(nik);  
                 user.setRoles(roleSet);
                 user.setStatus(status);
-                user.setDepartemen(department);
+                user.setCabang(cabang);
                 user.setDivision(division);
                 user.setAddress(address);
                 user.setFailedLogins(0);

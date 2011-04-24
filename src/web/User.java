@@ -28,19 +28,19 @@ public class User implements Serializable {
 
         public static final String STMT_QUERY_USER_QUERY = "select query.insert,query.update,query.delete,query.select from `query` where menu_id=?";
 
-        public static final String STMT_QUERY_USER = "select username, password, full_name, nik, status, failed_logins, password_expiry,email_address,department,division,address,group from user where user_id=? ";
+        public static final String STMT_QUERY_USER = "select username, password, full_name, nik, status, failed_logins, password_expiry,email_address,cabang,division,address,group from user where user_id=? ";
 
         public static final String STMT_QUERY_MENU = "select t4.Name from menu t1, role t2, user t3, menu_detail t4 where t1.role = t2.role and t2.role = t3.group and t3.user_id = ? and t4.menu_id = t1.menu_id";
 
-        public static final String STMT_QUERY_USERS = "select user_id, username, full_name, nik, status, failed_logins, password_expiry,email_address,department,division,address,user.group, ROW_NUMBER() OVER(ORDER BY user_id DESC) AS RN  from user";
+        public static final String STMT_QUERY_USERS = "select user_id, username, full_name, nik, status, failed_logins, password_expiry,email_address,cabang,division,address,user.group, ROW_NUMBER() OVER(ORDER BY user_id DESC) AS RN  from user";
 
-        public static final String STMT_QUERY_USERS_ADMIN = "select u1.username,u1.user_id,u1.full_name,u1.nik,u1.status,u1.failed_logins, u1.password_expiry,u1.email_address,u1.department,u1.division,u1.address,ROW_NUMBER() OVER(ORDER BY u1.user_id DESC) AS RN from user u1";
+        public static final String STMT_QUERY_USERS_ADMIN = "select u1.username,u1.user_id,u1.full_name,u1.nik,u1.status,u1.failed_logins, u1.password_expiry,u1.email_address,u1.cabang,u1.division,u1.address,ROW_NUMBER() OVER(ORDER BY u1.user_id DESC) AS RN from user u1";
 
         public static final String STMT_QUERY_COUNT_USERS = "select count(user_id) from user";       
 
-        public static final String STMT_UPDATE_USER = "update user set username=?, password=?, full_name=?, nik=?, status=?, failed_logins=?, password_expiry=?, email_address=?,department=?,division=?,address=?,user.group=? where user_id=?";
+        public static final String STMT_UPDATE_USER = "update user set username=?, password=?, full_name=?, nik=?, status=?, failed_logins=?, password_expiry=?, email_address=?,cabang=?,division=?,address=?,user.group=? where user_id=?";
 
-        public static final String STMT_INSERT_USER = "insert into user(username, password, full_name, nik, status, failed_logins, password_expiry,email_address,department,division,address,flag,user.group) values (?, ?, ?, ?, ?, ?, ?, ?,?,?,?,0,?)";
+        public static final String STMT_INSERT_USER = "insert into user(username, password, full_name, nik, status, failed_logins, password_expiry,email_address,cabang,division,address,flag,user.group) values (?, ?, ?, ?, ?, ?, ?, ?,?,?,?,0,?)";
 
         public static final String STMT_DELETE_USER = "delete from user where username=?";
 
@@ -147,7 +147,7 @@ public class User implements Serializable {
                     user.setFailedLogins(rs.getInt(6));
                     user.setPasswordExpiry(rs.getDate(7));
                     user.setEmailAddress(rs.getString(8));
-                    user.setDepartemen(rs.getString(9));
+                    user.setCabang(rs.getString(9));
                     user.setDivision(rs.getString(10));
                     user.setAddress(rs.getString(11));
                     user.setGroup(rs.getString(12));
@@ -188,7 +188,7 @@ public class User implements Serializable {
                     user.setFailedLogins(rs.getInt(6));
                     user.setPasswordExpiry(rs.getDate(7));
                     user.setEmailAddress(rs.getString(8));
-                    user.setDepartemen(rs.getString(9));
+                    user.setCabang(rs.getString(9));
                     user.setDivision(rs.getString(10));
                     user.setAddress(rs.getString(11));
                     user.setGroup(rs.getString(12));                    
@@ -235,7 +235,7 @@ public class User implements Serializable {
                     user.setFailedLogins(rs.getInt(6));
                     user.setPasswordExpiry(rs.getDate(7));
                     user.setEmailAddress(rs.getString(8));
-                    user.setDepartemen(rs.getString(9));
+                    user.setCabang(rs.getString(9));
                     user.setDivision(rs.getString(10));
                     user.setAddress(rs.getString(11));                    
                     Set<Integer> setRole = new HashSet<Integer>();
@@ -291,7 +291,7 @@ public class User implements Serializable {
                     user.setFailedLogins(rs.getInt(6));
                     user.setPasswordExpiry(rs.getDate(7));
                     user.setEmailAddress(rs.getString(8));
-                    user.setDepartemen(rs.getString(9));
+                    user.setCabang(rs.getString(9));
                     user.setDivision(rs.getString(10));
                     user.setAddress(rs.getString(11));
                     user.setGroup(rs.getString(12));                         
@@ -325,7 +325,7 @@ public class User implements Serializable {
                     stmt.setInt(6, user.getFailedLogins());
                     stmt.setDate(7, user.getPasswordExpiry());
                     stmt.setString(8, user.getEmailAddress());
-                    stmt.setString(9, user.getDepartemen());
+                    stmt.setString(9, user.getCabang());
                     stmt.setString(10, user.getDivision());
                     stmt.setString(11, user.getAddress());
                     stmt.setString(12, user.getGroup());
@@ -353,7 +353,7 @@ public class User implements Serializable {
                     stmt.setInt(6, user.getFailedLogins());
                     stmt.setDate(7, user.getPasswordExpiry());
                     stmt.setString(8, user.getEmailAddress());
-                    stmt.setString(9, user.getDepartemen());
+                    stmt.setString(9, user.getCabang());
                     stmt.setString(10, user.getDivision());
                     stmt.setString(11, user.getAddress());
                     stmt.setString(12, user.getGroup());
@@ -429,7 +429,7 @@ public class User implements Serializable {
 
     String emailAddress;
 
-    String departemen;
+    String cabang;
 
     String division;
 
@@ -524,12 +524,12 @@ public class User implements Serializable {
         this.passwordExpiry = passwordExpiry;
     }
 
-    public String getDepartemen() {
-        return departemen;
+    public String getCabang() {
+        return cabang;
     }
 
-    public void setDepartemen(String departemen) {
-        this.departemen = departemen;
+    public void setCabang(String cabang) {
+        this.cabang = cabang;
     }
 
     public String getDivision() {

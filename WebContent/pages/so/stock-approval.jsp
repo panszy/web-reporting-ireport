@@ -43,7 +43,7 @@
 		}
 	%>
 </table>
-<input type="submit" value="Approved"
+<input type="submit" value="Approve"
 	onclick="ChangeValue(document.myForm.type,'approve')"> <input
 	type="submit" value="Cancel"
 	onclick="ChangeValue(document.myForm.type,'cancel')"> <input

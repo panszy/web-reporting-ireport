@@ -88,10 +88,10 @@
 				</tr>
                 <tr>
                     <td class="item">
-                        Department
+                        Cabang
                     </td>
                     <td class="item">
-                        <%=user.getDepartemen() %>
+                        <%=user.getCabang() %>
                     </td>
                 </tr>
                 <tr>

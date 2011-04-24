@@ -131,7 +131,7 @@ String KindOfsearch =request.getParameter("KindOfsearch")==null?"":request.getPa
 		<td><b>Full Name</b></td>
 		<td><b>NIK</b></td>
 		<td><b>Email</b></td>
-        <td><b>Department</b></td>
+        <td><b>Cabang</b></td>
         <td><b>Division</b></td>
         <td><b>Address</b></td>
 		<td><b>Role</b></td>
@@ -160,7 +160,7 @@ String KindOfsearch =request.getParameter("KindOfsearch")==null?"":request.getPa
 		<td><%=((User) listofuser.get(i)).getFullName()%></td>
 		<td><%=((User) listofuser.get(i)).getNik()%></td>
 		<td><%=((User) listofuser.get(i)).getEmailAddress()%></td>
-        <td><%=((User) listofuser.get(i)).getDepartemen()%></td>
+        <td><%=((User) listofuser.get(i)).getCabang()%></td>
         <td><%=((User) listofuser.get(i)).getDivision()%></td>
         <td><%=((User) listofuser.get(i)).getAddress()%></td>
         

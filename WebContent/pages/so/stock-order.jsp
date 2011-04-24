@@ -11,7 +11,7 @@
 <script type="text/javascript" src="/ireport/script/tabber.js"></script>
 <style type="text/css">
 .tabberlive .tabbertab {
-	height: 400px;
+	height: 300px;
 	width: 800px;
 }
 </style>
@@ -22,6 +22,8 @@
 			.getAttribute("comboTypeSO");
 	ArrayList<String> comboJenisTransaksi = (ArrayList<String>) request
 	.getAttribute("comboJenisTransaksi");
+	ArrayList<String> comboTipeTransaksi = (ArrayList<String>) request
+	.getAttribute("comboTipeTransaksi");	
 	SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy");
 	String currentDate = sdf.format(new Date());
 
@@ -72,18 +74,13 @@
 <p>
 <table>
 	<tr>
-		<td>Item 4</td>
-		<td><input name="item-4" type="text" value="">
+		<td>Kode Barang</td>
+		<td><input name="kode_barang" size="50" readonly type="text" value="">&nbsp;<a onclick="OpenPop_UpList('<%=request.getContextPath()%>/pages/list?title=Cari%20Kode%20Barang&tableTitle=Daftar%20Barang%20Audit&itemName=kode_barang&showFields=kode_bar,nama_bar&queryData=kodeBarangQuery');return false;" href="">Look up</a>
 		</td>
 	</tr>
 	<tr>
-		<td>Item 5</td>
-		<td><input name="item-5" type="text" value="">
-		</td>
-	</tr>
-	<tr>
-		<td>Item 6&nbsp;&nbsp;</td>
-		<td><input name="item-6" type="text" value="">
+		<td>Quantity SO</td>
+		<td><input name="quantity_so" type="text" value="" onkeypress='return onlyNumbers(event)'>
 		</td>
 	</tr>	
 </table>
@@ -97,20 +94,32 @@
 <p>
 <table>
 	<tr>
-		<td>Item 7</td>
-		<td><input name="item-7" type="text" value="">
+		<td>Type Delivery</td>
+		<td><select name="tipe_transaksi">
+		<% for(String combo : comboTipeTransaksi){ %>
+    <option value="<%=combo.split(",")[1] %>"><%=combo.split(",")[0] %></option>
+    <% } %>        
+</select></td>
 		</td>
 	</tr>
 	<tr>
-		<td>Item 8</td>
-		<td><input name="item-8" type="text" value="">
+		<td>Tanggal Sales Order</td>
+		<td><input name="tanggal_so" readonly type="text" value="<%=currentDate%>">
 		</td>
 	</tr>
 	<tr>
-		<td>Item 9&nbsp;&nbsp;</td>
-		<td><input name="item-9" type="text" value="">
+		<td>Type Bayar</td>
+		<td><select name="tipe_bayar">
+		<option value="tunai">tunai</option>
+	    <option value="kredit">kredit</option>
+</select></td>
 		</td>
 	</tr>	
+	<tr>
+		<td>Catatan</td>
+		<td><input name="catatan" type="text" value="">
+		</td>
+	</tr>
 </table>
 </p>
 </div>

@@ -97,10 +97,10 @@
 				</tr>
                 <tr>
                     <td class="item">
-                        Department 
+                        Cabang 
                     </td>
                     <td class="item">
-                        <input type="text" size=30 name="department" value="<%=user.getDepartemen()%>" onKeypress="uppercase();">
+                        <input type="text" size=30 name="cabang" value="<%=user.getCabang()%>" onKeypress="uppercase();">
                     </td>
                 </tr>
                 <tr>
