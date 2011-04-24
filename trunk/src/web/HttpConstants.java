@@ -18,7 +18,7 @@ public class HttpConstants {
     public static final String HTTP_VAR_FULLNAME="fullname";
     public static final String HTTP_VAR_NIK="nik";
     public static final String HTTP_VAR_EMAIL_ADDRESS="email";
-    public static final String HTTP_VAR_DEPARTEMEN="department";
+    public static final String HTTP_VAR_CABANG="cabang";
     public static final String HTTP_VAR_DIVISION="division";
     public static final String HTTP_VAR_ADDRESS="address";
     public static final String HTTP_VAR_ADMIN_ROLE="admin";

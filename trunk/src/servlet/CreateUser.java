@@ -85,8 +85,8 @@ public class CreateUser extends HttpServlet {
             user.setNik(request.getParameter(HttpConstants.HTTP_VAR_NIK));
             user.setEmailAddress(request
                     .getParameter(HttpConstants.HTTP_VAR_EMAIL_ADDRESS));
-            user.setDepartemen(request
-                    .getParameter(HttpConstants.HTTP_VAR_DEPARTEMEN));
+            user.setCabang(request
+                    .getParameter(HttpConstants.HTTP_VAR_CABANG));
             user.setDivision(request
                     .getParameter(HttpConstants.HTTP_VAR_DIVISION));
             user.setAddress(request
