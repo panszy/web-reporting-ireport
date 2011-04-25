@@ -33,15 +33,14 @@ String currentDate = sdf.format(new Date());
 <table>
 <tr>
 <td>Tanggal SO</td>
-<td>Dari<input type="text" size="30" name="tanggal_so_awal" value="<%=tanggaSOAwal %>" ></td>
-<td>Sampai<input type="text" size="30" name="tanggal_so_akhir" value="<%=tanggaSOAkhir %>" ></td>
+<td><input type="text" size="30" name="tanggal_so_awal" value="<%=tanggaSOAwal %>" ></td>
+<td>-<input type="text" size="30" name="tanggal_so_akhir" value="<%=tanggaSOAkhir %>" ></td>
 </tr>
 <tr>
 <td>Nomor SO</td>
-<td colspan="2"><input type="text" size="30" name="nomor_so" value="<%=nomorSO %>" ></td>
+<td colspan="2"><input type="text" size="30" readonly name="nomor_so" value="<%=nomorSO %>" >&nbsp;<a onclick="OpenPop_UpList('<%=request.getContextPath()%>/pages/list?title=Cari%20NO%20SO%20SMS&tableTitle=Daftar%20NO%20SO%20SMS&itemName=nomor_so&showFields=no_so_sms,tgl_so_sms,no_po,tgl_po&queryData=kodeSOQuery');return false;" href="">Look up</a></td>
 </tr>
 </table>
-&nbsp;&nbsp;&nbsp;
 <input type="submit" value="Search" name="Action"></p>
 <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <%if(tableColumn!=null && tableColumn.size() > 0){ %>
