@@ -1,7 +1,7 @@
 <%@ page import="java.text.SimpleDateFormat"%>
 <%@ page import="java.util.Date"%>
 <%
-	String title = "Stock Order";
+	String title = "Create Stock Order";
 %>
 <%@ include file="/includes/header.jsp"%>
 <link rel="stylesheet" href="/ireport/script/example.css"
