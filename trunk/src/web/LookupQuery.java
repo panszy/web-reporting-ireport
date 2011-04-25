@@ -18,12 +18,15 @@ public class LookupQuery {
 	final public static String userAuditQuery = "select user_audit.user,ip_address,date_time,action, ROW_NUMBER() OVER(ORDER BY user DESC) AS ROWNUMBER  from user_audit";
 	final public static String userAuditQueryTable = "user_audit";
 	final public static String userAuditQueryCount = "select count(1) from user_audit";
-	final public static String kodeBarangQuery = "select DB2ADMIN.TBMASBAR.kode_bar,DB2ADMIN.TBMASBAR.nama_bar, ROW_NUMBER() OVER(ORDER BY DB2ADMIN.TBMASBAR.kode_bar DESC) AS ROWNUMBER from DB2ADMIN.TBMASBAR";
-	final public static String kodeBarangQueryTable = "DB2ADMIN.TBMASBAR";
-	final public static String kodeBarangQueryCount = "select count(1) from DB2ADMIN.TBMASBAR";
-	final public static String kodeSalesmanQuery = "select DB2ADMIN.TBMASBAR.nama_bar,DB2ADMIN.TBMASBAR.kode_bar, ROW_NUMBER() OVER(ORDER BY DB2ADMIN.TBMASBAR.kode_bar DESC) AS ROWNUMBER from DB2ADMIN.TBMASBAR";
-	final public static String kodeSalesmanQueryTable = "DB2ADMIN.TBMASBAR";
-	final public static String kodeSalesmanQueryCount = "select count(1) from DB2ADMIN.TBMASBAR";
+	final public static String kodeBarangQuery = "select \"VISITEK-117\".TBMASBAR.kode_bar,\"VISITEK-117\".TBMASBAR.nama_bar, ROW_NUMBER() OVER(ORDER BY \"VISITEK-117\".TBMASBAR.kode_bar DESC) AS ROWNUMBER from \"VISITEK-117\".TBMASBAR";
+	final public static String kodeBarangQueryTable = "\"VISITEK-117\".TBMASBAR";
+	final public static String kodeBarangQueryCount = "select count(1) from \"VISITEK-117\".TBMASBAR";
+	final public static String kodeSalesmanQuery = "select \"VISITEK-117\".TBMASBAR.nama_bar,\"VISITEK-117\".TBMASBAR.kode_bar, ROW_NUMBER() OVER(ORDER BY \"VISITEK-117\".TBMASBAR.kode_bar DESC) AS ROWNUMBER from \"VISITEK-117\".TBMASBAR";
+	final public static String kodeSalesmanQueryTable = "\"VISITEK-117\".TBMASBAR";
+	final public static String kodeSalesmanQueryCount = "select count(1) from \"VISITEK-117\".TBMASBAR";
+	final public static String kodeSOQuery = "select \"VISITEK-117\".TBSO_SMS.no_so_sms,\"VISITEK-117\".TBSO_SMS.tgl_so_sms,\"VISITEK-117\".TBSO_SMS.no_po,\"VISITEK-117\".TBSO_SMS.tgl_po, ROW_NUMBER() OVER(ORDER BY \"VISITEK-117\".TBSO_SMS.tgl_so_sms DESC) AS ROWNUMBER from \"VISITEK-117\".TBSO_SMS";
+	final public static String kodeSOQueryTable = "\"VISITEK-117\".TBSO_SMS";
+	final public static String kodeSOQueryCount = "select count(1) from \"VISITEK-117\".TBSO_SMS";
 
 	public static int countNumberLike(Connection conn, String filter,
 			String field, String STMT_QUERY) throws DaoException {
