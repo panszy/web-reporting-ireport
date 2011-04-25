@@ -19,7 +19,7 @@ import exception.DaoException;
  * Servlet implementation class StockApprove
  */
 public class StockApprove extends HttpServlet {
-	private final String tableQuery = "SELECT KODE_CAB as \"kode cabang\",KODE_TRN as \"kode transaksi\",KODE_CUST as \"kode customer\",KODE_PEG as \"kode pegawai\",KODE_TYPESO as \"type SO\",KODE_TYPEDO as \"type DO\",TGL_SO_SMS as \"tgl SO\",NO_SO_SMS as \"no SO\",TGL_PO as \"tgl PO\",NO_PO as \"no PO\",TYPE_BAYAR as \"tipe bayar\",case when F_SOBATAL = 1 then 'Batal' else case when F_APPCAB = 1 then 'Setuju' else case when F_APPPROTEK = 1 then 'Proteksi' else 'Menunggu' end end end as status,F_KONSINYASI,KET_SO as keterangan FROM DB2ADMIN.TBSO_SMS";
+	private final String tableQuery = "SELECT KODE_CAB as \"kode cabang\",KODE_TRN as \"kode transaksi\",KODE_CUST as \"kode customer\",KODE_PEG as \"kode pegawai\",KODE_TYPESO as \"type SO\",KODE_TYPEDO as \"type DO\",TGL_SO_SMS as \"tgl SO\",NO_SO_SMS as \"no SO\",TGL_PO as \"tgl PO\",NO_PO as \"no PO\",TYPE_BAYAR as \"tipe bayar\",case when F_SOBATAL = 1 then 'Batal' else case when F_APPCAB = 1 then 'Setuju' else case when F_APPPROTEK = 1 then 'Proteksi' else 'Menunggu' end end end as status,F_KONSINYASI,KET_SO as keterangan FROM \"VISITEK-117\".TBSO_SMS";	
 	
 	private static final long serialVersionUID = 1L;
        

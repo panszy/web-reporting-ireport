@@ -28,10 +28,10 @@ import exception.DaoException;
  * Servlet implementation class StockOrder
  */
 public class StockOrder extends HttpServlet {
-	private final String comboTypeSOQuery = "select NAMA_TYPESO,KODE_TYPESO from db2admin.tbmastypeso where KODE_TYPESO=2 or KODE_TYPESO=4";
-	private final String comboJenisTransaksi = "select NAMA_TRN,KODE_TRN from db2admin.tbmastrn where KODE_TRN=1 or KODE_TRN=3";
-	private final String comboTipeTransaksi = "select NAMA_TYPEDO,KODE_TYPEDO from db2admin.tbmastypedo where KODE_TYPEDO=1 or KODE_TYPEDO=2";
-	private final String getKodeCabang = "select KODE_CAB from db2admin.tbmasuserid where KODE_USER=?";
+	private final String comboTypeSOQuery = "select NAMA_TYPESO,KODE_TYPESO from \"VISITEK-117\".tbmastypeso where KODE_TYPESO=2 or KODE_TYPESO=4";
+	private final String comboJenisTransaksi = "select NAMA_TRN,KODE_TRN from \"VISITEK-117\".tbmastrn where KODE_TRN=1 or KODE_TRN=3";
+	private final String comboTipeTransaksi = "select NAMA_TYPEDO,KODE_TYPEDO from \"VISITEK-117\".tbmastypedo where KODE_TYPEDO=1 or KODE_TYPEDO=2";
+	private final String getKodeCabang = "select KODE_CAB from \"VISITEK-117\".tbmasuserid where KODE_USER=?";
 	private final String getKodeCustomer = "call P_JVMASCUST(?,?)";
 	private final String simpanOrder = "call SPIUSO_SMS(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 	private final String hapusOrder = "call SPDELSO_SMS(?,?,?)";
