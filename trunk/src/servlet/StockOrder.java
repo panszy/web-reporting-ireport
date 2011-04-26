@@ -220,8 +220,7 @@ public class StockOrder extends HttpServlet {
 			pstmt.setString(4,kodeBarang);
 			pstmt.setString(5,quantity);
 			pstmt.setString(6,quantity);			
-			pstmt.executeUpdate();	
-			System.out.println("PEMBERITAHUAN: simpanOrderDetail OK");
+			pstmt.executeUpdate();				
 			
 		} catch (DaoException e) {
 			// TODO Auto-generated catch block

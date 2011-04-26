@@ -26,7 +26,7 @@ String currentDate = sdf.format(new Date());
 	width: 800px;
 }
 </style>
-<form id="myForm" name="myForm" action="" method="post">
+<form id="info" name="info" action="" method="post">
 <img src="<%=request.getContextPath()%>/images/icons/system-users.png">
 <b>Search Stock Order</b> <br><br>
 
@@ -34,7 +34,7 @@ String currentDate = sdf.format(new Date());
 <tr>
 <td>Tanggal SO</td>
 <td><input type="text" size="30" name="tanggal_so_awal" value="<%=tanggaSOAwal %>" ></td>
-<td>-<input type="text" size="30" name="tanggal_so_akhir" value="<%=tanggaSOAkhir %>" ></td>
+<td>-&nbsp;<input type="text" size="30" name="tanggal_so_akhir" value="<%=tanggaSOAkhir %>" ></td>
 </tr>
 <tr>
 <td>Nomor SO</td>
@@ -47,39 +47,7 @@ String currentDate = sdf.format(new Date());
 <table class="item"
 	style="background-image: url('<%=request.getContextPath()%>/images/item-header-space.jpg'); background-repeat: repeat-x;"
 	width=400>
-	<script type="text/javascript">
-    function checkAll(field,total)
-    {
-        if(document.frmSearch.checkall.checked == true){
-            if(total>0){
-                field.checked=true;
-            }
-            for (i = 0; i < field.length; i++)
-                field[i].checked = true ;
-        } else {
-            if(total>0){
-                field.checked=false;
-            }
-            for (i = 0; i < field.length; i++)
-                field[i].checked = false ;
-        }
-    }
-    
-    function uncheckcheckAll(field,total)
-    {
-        var condition = false;
-        if(document.frmSearch.checkall.checked == true){
-            for (i = 0; i < field.length; i++){
-                if(field[i].checked == false){
-                    condition = true;
-                    break;
-                }
-            }
-            if(condition || (total>0 && field.checked==false)){
-                document.frmSearch.checkall.checked = false;
-            }
-        }       
-    }
+	<script type="text/javascript">    
         
     function deletes(total) {
         i = 0;
@@ -98,26 +66,7 @@ String currentDate = sdf.format(new Date());
         } else {
             alert ('You didn\'t choose any of the checkboxes!');
         }
-    }
-    
-        function deactives(total) {
-        i = 0;
-        var condition = false;      
-        while(i < document.frmSearch.deleted.length){
-            if(document.frmSearch.deleted[i].checked==true){
-                condition = true;
-                break;
-            }
-            i++;
-        }
-        if(condition || (total>0 && document.frmSearch.deleted.checked==true)){
-            if (confirm("Are you sure you want to deactive")) {
-                document.frmSearch.submit();
-            }                       
-        } else {
-            alert ('You didn\'t choose any of the checkboxes!');
-        }
-    }
+    }            
     
     
     </script>
@@ -144,21 +93,22 @@ String currentDate = sdf.format(new Date());
 		<%
 			}
 		%>
-		<td class="item"><a href="<%=request.getContextPath()%>/pages/stock-order-update?no_so=<%=rowData.get(0)%>"><u>Edit</u></a></td>
-		<td class="item"><input onClick="uncheckcheckAll(document.frmSearch.deleted,<%=tableData.size()%>)" type="checkbox" value="<%=rowData.get(0)%>" name=deleted></td>
-	</tr>
-	<tr>
-    <td colspan="<%=rowData.size()-1%>">
-        <input type="submit" name="Action" value="Delete" onClick="deletes(<%=i%>)"></button>      
-    </td>
-    <td>
-        <input onClick="checkAll(document.frmSearch.deleted,<%=i%>)" type="checkbox" value="" name=checkall> All
-    </td>
-    </tr>
+		<td class="item"><a href="<%=request.getContextPath()%>/pages/stock-order-update?no_so=<%=rowData.get(2)%>"><u>Edit</u></a></td>
+		<td class="item"><input onClick="CheckItem(document.info.deleted,document.info.deletedData)" type="checkbox" value="<%=rowData.get(2)%>" name=deleted></td>
+	</tr>	
 	<%	
 		i++;
 		}
 	%>	
+	<tr>
+    <td class="item" colspan="<%=tableColumn.size()+1%>">
+        <input type="submit" name="Action" value="Delete" onClick="deletes(<%=i%>)"></button>      
+    </td>
+    <td class="item">
+        <input onClick="CheckAll(document.info.deleted,document.info.deletedData)" type="checkbox" value="" name="all">
+    </td>
+    </tr>
+    <input type="hidden" name="deletedData">
 </table>
 <p align="right">
 <%  if(pages>1){ %>

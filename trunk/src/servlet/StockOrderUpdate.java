@@ -1,11 +1,18 @@
 package servlet;
 
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.naming.NamingException;
@@ -29,8 +36,18 @@ public class StockOrderUpdate extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
 	static Logger logger = Logger.getLogger(StockOrderUpdate.class);
-	private final String tableQuery = "SELECT KODE_CUST as \"kode customer\",TGL_SO_SMS as \"tgl SO\",NO_SO_SMS as \"no SO\",TGL_PO as \"tgl PO\",NO_PO as \"no PO\",TYPE_BAYAR as \"tipe bayar\",case when F_SOBATAL = 1 then 'Batal' else case when F_APPCAB = 1 then 'Setuju' else case when F_APPPROTEK = 1 then 'Proteksi' else 'Menunggu' end end end as status,F_KONSINYASI,KET_SO as keterangan, ROW_NUMBER() OVER(ORDER BY TGL_SO_SMS DESC) AS ROWNUMBER FROM \"VISITEK-117\".TBSO_SMS where (NO_SO_SMS=? or TGL_SO_SMS between ? and ?) and F_SOBATAL = 0 and F_APPCAB = 0 and F_APPPROTEK = 0";
+	private final String tableQuery = "SELECT KODE_CUST as \"kode customer\",TGL_SO_SMS as \"tgl SO\",NO_SO_SMS as \"no SO\",TGL_PO as \"tgl PO\",NO_PO as \"no PO\",case when TYPE_BAYAR = 1.0 then 'kredit' else 'tunai' end as \"tipe bayar\",case when F_SOBATAL = 1 then 'Batal' else case when F_APPCAB = 1 then 'Setuju' else case when F_APPPROTEK = 1 then 'Proteksi' else 'Menunggu' end end end as status,KET_SO as keterangan, ROW_NUMBER() OVER(ORDER BY TGL_SO_SMS DESC) AS ROWNUMBER FROM \"VISITEK-117\".TBSO_SMS where (NO_SO_SMS=? or TGL_SO_SMS between ? and ?) and F_SOBATAL = 0 and F_APPCAB = 0 and F_APPPROTEK = 0";
 	private final String tableQueryCount = "SELECT count(1) FROM \"VISITEK-117\".TBSO_SMS where (NO_SO_SMS=? or TGL_SO_SMS between ? and ?) and F_SOBATAL = 0 and F_APPCAB = 0 and F_APPPROTEK = 0";
+	private final String editQuery = "SELECT A.TYPE_BAYAR,A.TGL_SO_SMS,A.TGL_PO,B.QTY_SO,B.QTY_PO,B.NO_URUT,A.NO_SO_SMS,A.NO_PO,A.KODE_TYPESO,A.KODE_TYPEDO,A.KODE_TRN,A.KODE_PEG,A.KODE_CUST,A.KODE_CAB,B.KODE_BAR,A.KET_SO FROM \"VISITEK-117\".TBSO_SMS as A,\"VISITEK-117\".TBDTSO_SMS as B where A.NO_SO_SMS=B.NO_SO_SMS and A.NO_SO_SMS=?";
+	private final String comboTypeSOQuery = "select NAMA_TYPESO,KODE_TYPESO from \"VISITEK-117\".tbmastypeso where KODE_TYPESO=2 or KODE_TYPESO=4";
+	private final String comboJenisTransaksi = "select NAMA_TRN,KODE_TRN from \"VISITEK-117\".tbmastrn where KODE_TRN=1 or KODE_TRN=3";
+	private final String comboTipeTransaksi = "select NAMA_TYPEDO,KODE_TYPEDO from \"VISITEK-117\".tbmastypedo where KODE_TYPEDO=1 or KODE_TYPEDO=2";
+	private final String simpanOrder = "call SPIUSO_SMS(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+	private final String hapusOrder = "call SPDELSO_SMS(?,?,?)";
+	private final String simpanOrderDetail = "call SPIUDTSO_SMS(?,?,?,?,?,?)";
+	private final String updateOrderDetail = "update \"VISITEK-117\".TBDTSO_SMS set KODE_BAR=?, QTY_SO=?, QTY_PO=? where NO_SO_SMS=?";
+	private final String hapusOrderDetail = "call SPDELDTSO_SMS(?,?)";
+	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); 
        
     /**
      * @see HttpServlet#HttpServlet()
@@ -46,9 +63,13 @@ public class StockOrderUpdate extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String page = (String) request.getParameter("page");
 		String tanggaSOAwal =request.getParameter("tanggal_so_awal");
+		tanggaSOAwal = (tanggaSOAwal==null || tanggaSOAwal.equals("")) ? sdf.format(new Date()):tanggaSOAwal;
 		String tanggaSOAkhir =request.getParameter("tanggal_so_akhir");
+		tanggaSOAkhir = (tanggaSOAkhir==null || tanggaSOAkhir.equals("")) ? tanggaSOAwal:tanggaSOAkhir;
 		String nomorSO =request.getParameter("nomor_so");
-        if (page != null) {            
+		String nomorSOEdit = request.getParameter("no_so");
+		
+        if (page != null && nomorSOEdit==null) {            
         	PreparedStatement pstmt = null;
     		ResultSet rs = null;
             try {
@@ -111,6 +132,70 @@ public class StockOrderUpdate extends HttpServlet {
         				e.printStackTrace();
         			}
                 }                           
+        } else if(nomorSOEdit!=null){
+        	PreparedStatement pstmt = null;
+    		ResultSet rs = null;
+    		
+    		try {
+				Connection conn = Connector.getInstance().getConnectionAdmin();
+				pstmt = conn
+				        .prepareStatement(editQuery);					
+				pstmt.setString(1, nomorSOEdit);				
+				rs = pstmt.executeQuery();
+				HashMap<String,String> data = new HashMap<String,String>();				
+				int totalColumn = rs.getMetaData().getColumnCount();											
+				if(rs.next())					
+					for(int i = 1; i <=totalColumn ; i++)					
+						data.put(rs.getMetaData().getColumnName(i), rs.getString(i));				
+				request.setAttribute("data", data);
+				rs.close();
+				pstmt.close();
+				
+				conn = Connector.getInstance().getConnectionAdmin();
+				pstmt = conn.prepareStatement(comboTypeSOQuery);
+				rs = pstmt.executeQuery();
+				ArrayList<String> comboTypeSOQuery = new ArrayList<String>();
+				while(rs.next()){
+					comboTypeSOQuery.add(rs.getString(1)+","+rs.getString(2));
+				}
+				request.setAttribute("comboTypeSO", comboTypeSOQuery);			
+				rs.close();
+				pstmt.close();
+				
+				conn = Connector.getInstance().getConnectionAdmin();
+				pstmt = conn.prepareStatement(comboJenisTransaksi);
+				rs = pstmt.executeQuery();
+				ArrayList<String> comboJenisTransaksi = new ArrayList<String>();
+				while(rs.next()){
+					comboJenisTransaksi.add(rs.getString(1)+","+rs.getString(2));
+				}
+				request.setAttribute("comboJenisTransaksi", comboJenisTransaksi);
+				rs.close();
+				pstmt.close();
+				
+				conn = Connector.getInstance().getConnectionAdmin();
+				pstmt = conn.prepareStatement(comboTipeTransaksi);
+				rs = pstmt.executeQuery();
+				ArrayList<String> comboTipeTransaksi = new ArrayList<String>();
+				while(rs.next()){
+					comboTipeTransaksi.add(rs.getString(1)+","+rs.getString(2));
+				}
+				request.setAttribute("comboTipeTransaksi", comboTipeTransaksi);
+			} catch (NumberFormatException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (DaoException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (NamingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+        	request.getRequestDispatcher("/pages/so/stock-order-modify.jsp").forward(
+                    request, response);
         }
 
         request.getRequestDispatcher("/pages/so/stock-order-update.jsp").forward(
@@ -126,7 +211,9 @@ public class StockOrderUpdate extends HttpServlet {
             String action = request.getParameter("Action");
             if (action.equalsIgnoreCase("Search")) {
             	String tanggaSOAwal =request.getParameter("tanggal_so_awal");
+            	tanggaSOAwal = (tanggaSOAwal==null || tanggaSOAwal.equals("")) ? sdf.format(new Date()):tanggaSOAwal;
         		String tanggaSOAkhir =request.getParameter("tanggal_so_akhir");
+        		tanggaSOAkhir = (tanggaSOAkhir==null || tanggaSOAkhir.equals("")) ? tanggaSOAwal:tanggaSOAkhir;
         		String nomorSO =request.getParameter("nomor_so");        		
         		PreparedStatement pstmt = null;
         		ResultSet rs = null;
@@ -227,12 +314,92 @@ public class StockOrderUpdate extends HttpServlet {
                                     "/pages/admin/user-delete-success.jsp?message=delete")
                             .forward(request, response);
                 }
+            } else if (action.equalsIgnoreCase("Modify")) {   
+            	String noSO = request.getParameter("NO_SO_SMS");
+            	String kodeCabang = request.getParameter("KODE_CAB");
+            	String kodeCustomer = request.getParameter("KODE_CUST");
+        		String tanggalSo = request.getParameter("tanggal_so");
+        		String noPo = request.getParameter("po");
+        		String tanggalPo = request.getParameter("tanggal_po");
+        		String kodeBarang = request.getParameter("kode_barang");
+        		String kodeTransaksi = request.getParameter("jenis_transaksi");
+        		String quantity = request.getParameter("quantity_so");
+        		String tipeBayar = request.getParameter("tipe_bayar");
+        		String tipeDO = request.getParameter("tipe_transaksi");
+        		String catatan = request.getParameter("catatan");
+        		String tipeSO = request.getParameter("type_so");
+        		String konsinyasi = tipeSO.equals("4")?"1":"0";        				        		
+        				
+        		PreparedStatement pstmt = null;        			        	
+        		try {
+        			Connection conn = Connector.getInstance().getConnectionAdmin();
+        			pstmt = conn.prepareStatement(simpanOrder);
+        			pstmt.setString(1,kodeCabang);
+        			pstmt.setString(2,kodeTransaksi);
+        			pstmt.setString(3,kodeCustomer);
+        			pstmt.setString(4,"9999");
+        			pstmt.setString(5,tipeSO);
+        			pstmt.setString(6,tipeDO);
+        			pstmt.setString(7,tanggalSo);
+        			pstmt.setString(8,noSO);
+        			pstmt.setString(9,tanggalPo);
+        			pstmt.setString(10,noPo);
+        			pstmt.setString(11,tipeBayar.equals("tunai")?"0":"1");
+        			pstmt.setString(12,"0");
+        			pstmt.setString(13,konsinyasi);
+        			pstmt.setString(14,"0");
+        			pstmt.setString(15,"0");
+        			pstmt.setString(16,catatan);
+        			pstmt.setInt(17,1);
+        			pstmt.executeUpdate();	
+        			pstmt.close();			
+        						
+        			conn = Connector.getInstance().getConnectionAdmin();
+        			pstmt = conn.prepareStatement(updateOrderDetail);
+        			pstmt.setString(1,kodeBarang);
+        			pstmt.setString(2,quantity);
+        			pstmt.setString(3,quantity);
+        			pstmt.setString(4,noSO);        			        						
+        			pstmt.executeUpdate();				
+        			
+        		} catch (DaoException e) {
+        			// TODO Auto-generated catch block
+        			e.printStackTrace();
+        		} catch (NamingException e) {
+        			// TODO Auto-generated catch block
+        			e.printStackTrace();
+        		} catch (SQLException e) {
+        			// TODO Auto-generated catch block
+        			e.printStackTrace();
+        		} finally {
+        			try {        				
+        				if(pstmt!=null)
+        					pstmt.close();
+        			} catch (Exception e) {
+        				// TODO Auto-generated catch block
+        				e.printStackTrace();
+        			}
+        		}
+        		        		
+        		request.setAttribute("no_so",noSO);
+        		request.setAttribute("tanggal_so",tanggalSo);
+        		request.setAttribute("no_po",noPo);
+        		request.setAttribute("tanggal_po",tanggalPo);
+        		request.setAttribute("kode_barang",kodeBarang);
+        		request.setAttribute("quantity",quantity);
+        		request.setAttribute("tipe_bayar",tipeBayar);
+        		request.setAttribute("catatan",catatan);
+        		request.setAttribute("message", "Stock Order has been modified successfully");
+        		request.getRequestDispatcher("/pages/so/stock-order-modify-success.jsp")
+        				.forward(request, response);        	
             }            
 
         } else {
           
         	String tanggaSOAwal =request.getParameter("tanggal_so_awal");
+        	tanggaSOAwal = (tanggaSOAwal==null || tanggaSOAwal.equals("")) ? sdf.format(new Date()):tanggaSOAwal;
     		String tanggaSOAkhir =request.getParameter("tanggal_so_akhir");
+    		tanggaSOAkhir = (tanggaSOAkhir==null || tanggaSOAkhir.equals("")) ? tanggaSOAwal:tanggaSOAkhir;
     		String nomorSO =request.getParameter("nomor_so");
     		PreparedStatement pstmt = null;
     		ResultSet rs = null;

@@ -83,7 +83,7 @@ String KindOfsearch =request.getParameter("KindOfsearch")==null?"":request.getPa
     <% for (String data: listofuser.get(i)){
     	if(j==0){
     %>    
-        <td><a href="" onclick="validepopupform(window.opener.document.forms['myForm'].elements['<%=itemName%>'],'<%=data%>');return false;"><%=data%></a></td>
+        <td><a href="" onclick="validepopupform(window.opener.document.forms['info'].elements['<%=itemName%>'],'<%=data%>');return false;"><%=data%></a></td>
         <%} else { %> 
         <td><%=data%></td>
         <%     	

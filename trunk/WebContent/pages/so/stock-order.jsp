@@ -15,7 +15,7 @@
 	width: 800px;
 }
 </style>
-<form id="myForm" name="myForm" action="<%=request.getContextPath()%>/pages/stock-order"
+<form id="info" name="info" action="<%=request.getContextPath()%>/pages/stock-order"
 	method="post">
 	<%	
 	ArrayList<String> comboTypeSO = (ArrayList<String>) request
