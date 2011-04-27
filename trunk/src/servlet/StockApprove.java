@@ -36,8 +36,8 @@ public class StockApprove extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	static Logger logger = Logger.getLogger(StockOrderUpdate.class);
-	private final String tableQuery = "SELECT KODE_CAB as \"kode cabang\",KODE_CUST as \"kode customer\",TGL_SO_SMS as \"tgl SO\",NO_SO_SMS as \"no SO\",TGL_PO as \"tgl PO\",NO_PO as \"no PO\",case when TYPE_BAYAR = 1.0 then 'kredit' else 'tunai' end as \"tipe bayar\",case when F_SOBATAL = 1 then 'Batal' else case when F_APPCAB = 1 then 'Setuju' else case when F_APPPROTEK = 1 then 'Proteksi' else 'Menunggu' end end end as status,KET_SO as keterangan, ROW_NUMBER() OVER(ORDER BY TGL_SO_SMS DESC) AS ROWNUMBER FROM \"VISITEK-117\".TBSO_SMS where (NO_SO_SMS=? or TGL_SO_SMS between ? and ?) and F_SOBATAL = 0 and F_APPCAB = 0 and F_APPPROTEK = 0";
-	private final String tableQueryCount = "SELECT count(1) FROM \"VISITEK-117\".TBSO_SMS where (NO_SO_SMS=? or TGL_SO_SMS between ? and ?) and F_SOBATAL = 0 and F_APPCAB = 0 and F_APPPROTEK = 0";	
+	private final String tableQuery = "SELECT KODE_CAB as \"kode cabang\",KODE_CUST as \"kode customer\",TGL_SO_SMS as \"tgl SO\",NO_SO_SMS as \"no SO\",TGL_PO as \"tgl PO\",NO_PO as \"no PO\",case when TYPE_BAYAR = 1.0 then 'kredit' else 'tunai' end as \"tipe bayar\",case when F_SOBATAL = 1 then 'Batal' else case when F_APPCAB = 1 then 'Setuju' else case when F_APPPROTEK = 1 then 'Proteksi' else 'Menunggu' end end end as status,KET_SO as keterangan, ROW_NUMBER() OVER(ORDER BY TGL_SO_SMS DESC) AS ROWNUMBER FROM \"DB2ADMIN\".TBSO_SMS where (NO_SO_SMS=? or TGL_SO_SMS between ? and ?) and F_SOBATAL = 0 and F_APPCAB = 0 and F_APPPROTEK = 0";
+	private final String tableQueryCount = "SELECT count(1) FROM \"DB2ADMIN\".TBSO_SMS where (NO_SO_SMS=? or TGL_SO_SMS between ? and ?) and F_SOBATAL = 0 and F_APPCAB = 0 and F_APPPROTEK = 0";	
 	private final String approveOrder = "call SPIUSO_SMS2(?,?,?,?,?)";	
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -83,7 +83,7 @@ public class StockApprove extends HttpServlet {
 
 				conn = Connector.getInstance().getConnectionAdmin();
 				pstmt = conn.prepareStatement("select * from (" + tableQuery
-						+ ") where ROWNUMBER between ? and ?");
+						+ ") as tbl where tbl.ROWNUMBER between ? and ?");
 				pstmt.setString(1, nomorSO);
 				pstmt.setString(2, tanggaSOAwal);
 				pstmt.setString(3, tanggaSOAkhir);
@@ -143,7 +143,7 @@ public class StockApprove extends HttpServlet {
 			HttpServletResponse response) throws ServletException, IOException {
 		if (request.getParameter("Action") != null) {
 
-			String action = request.getParameter("Action");
+			String action = request.getParameter("Action");			
 			if (action.equalsIgnoreCase("Search")) {
 				String tanggaSOAwal = request.getParameter("tanggal_so_awal");
 				tanggaSOAwal = (tanggaSOAwal == null || tanggaSOAwal.equals("")) ? sdf
@@ -170,7 +170,7 @@ public class StockApprove extends HttpServlet {
 
 					conn = Connector.getInstance().getConnectionAdmin();
 					pstmt = conn.prepareStatement("select * from ("
-							+ tableQuery + ") where ROWNUMBER between ? and ?");
+							+ tableQuery + ") as tbl where tbl.ROWNUMBER between ? and ?");
 					pstmt.setString(1, nomorSO);
 					pstmt.setString(2, tanggaSOAwal);
 					pstmt.setString(3, tanggaSOAkhir);
@@ -214,7 +214,7 @@ public class StockApprove extends HttpServlet {
 								+ tanggaSOAkhir + "&nomor_so=" + nomorSO)
 						.forward(request, response);
 			} else if (request.getParameterValues("approved") != null) {
-				if (action.equalsIgnoreCase("Approve")) {				
+				if (action.equalsIgnoreCase("approve")) {				
 					String[] approve = (String[]) request
 							.getParameterValues("approved");
 					PreparedStatement pstmt = null;
@@ -277,7 +277,7 @@ public class StockApprove extends HttpServlet {
 					request.getRequestDispatcher(
 							"/pages/so/stock-approval-success.jsp").forward(
 							request, response);
-				} else if (action.equalsIgnoreCase("Protect")) {
+				} else if (action.equalsIgnoreCase("protect")) {
 					String[] protect = (String[]) request
 							.getParameterValues("approved");
 					PreparedStatement pstmt = null;
@@ -340,7 +340,7 @@ public class StockApprove extends HttpServlet {
 					request.getRequestDispatcher(
 							"/pages/so/stock-approval-success.jsp").forward(
 							request, response);
-				} else if (action.equalsIgnoreCase("Cancel")) {
+				} else if (action.equalsIgnoreCase("cancel")) {
 					String[] cancel = (String[]) request
 							.getParameterValues("approved");
 					PreparedStatement pstmt = null;
@@ -431,7 +431,7 @@ public class StockApprove extends HttpServlet {
 
 					conn = Connector.getInstance().getConnectionAdmin();
 					pstmt = conn.prepareStatement("select * from ("
-							+ tableQuery + ") where ROWNUMBER between ? and ?");
+							+ tableQuery + ") as tbl where tbl.ROWNUMBER between ? and ?");
 					pstmt.setString(1, nomorSO);
 					pstmt.setString(2, tanggaSOAwal);
 					pstmt.setString(3, tanggaSOAkhir);
