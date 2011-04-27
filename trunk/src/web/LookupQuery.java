@@ -24,21 +24,25 @@ public class LookupQuery {
 	final public static String kodeSalesmanQuery = "select \"VISITEK-117\".TBMASBAR.nama_bar,\"VISITEK-117\".TBMASBAR.kode_bar, ROW_NUMBER() OVER(ORDER BY \"VISITEK-117\".TBMASBAR.kode_bar DESC) AS ROWNUMBER from \"VISITEK-117\".TBMASBAR";
 	final public static String kodeSalesmanQueryTable = "\"VISITEK-117\".TBMASBAR";
 	final public static String kodeSalesmanQueryCount = "select count(1) from \"VISITEK-117\".TBMASBAR";
-	final public static String kodeSOQuery = "select \"VISITEK-117\".TBSO_SMS.no_so_sms,\"VISITEK-117\".TBSO_SMS.tgl_so_sms,\"VISITEK-117\".TBSO_SMS.no_po,\"VISITEK-117\".TBSO_SMS.tgl_po, ROW_NUMBER() OVER(ORDER BY \"VISITEK-117\".TBSO_SMS.tgl_so_sms DESC) AS ROWNUMBER from \"VISITEK-117\".TBSO_SMS";
+	final public static String kodeSOQuery = "select \"VISITEK-117\".TBSO_SMS.no_so_sms,\"VISITEK-117\".TBSO_SMS.tgl_so_sms,\"VISITEK-117\".TBSO_SMS.no_po,\"VISITEK-117\".TBSO_SMS.tgl_po, ROW_NUMBER() OVER(ORDER BY \"VISITEK-117\".TBSO_SMS.tgl_so_sms DESC) AS ROWNUMBER from \"VISITEK-117\".TBSO_SMS where \"VISITEK-117\".TBSO_SMS.F_SOBATAL=0 and \"VISITEK-117\".TBSO_SMS.F_APPCAB=0 and \"VISITEK-117\".TBSO_SMS.F_APPPROTEK=0";
 	final public static String kodeSOQueryTable = "\"VISITEK-117\".TBSO_SMS";
-	final public static String kodeSOQueryCount = "select count(1) from \"VISITEK-117\".TBSO_SMS";
+	final public static String kodeSOQueryCount = "select count(1) from \"VISITEK-117\".TBSO_SMS where \"VISITEK-117\".TBSO_SMS.F_SOBATAL=0 and \"VISITEK-117\".TBSO_SMS.F_APPCAB=0 and \"VISITEK-117\".TBSO_SMS.F_APPPROTEK=0";
 
 	public static int countNumberLike(Connection conn, String filter,
 			String field, String STMT_QUERY) throws DaoException {
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		try {
-			Field f = LookupQuery.class.getDeclaredField(STMT_QUERY+"Count");
+			Field f = LookupQuery.class.getDeclaredField(STMT_QUERY + "Count");
 			String query = (String) f.get(LookupQuery.class);
 			f = LookupQuery.class.getDeclaredField(STMT_QUERY + "Table");
 			String table = (String) f.get(LookupQuery.class);
-			stmt = conn.prepareStatement(query + " where " + table + "."
-					+ filter + " like '%" + field + "%'");
+			if (query.indexOf("where") > 0)
+				stmt = conn.prepareStatement(query + " and " + table + "."
+						+ filter + " like '%" + field + "%'");
+			else
+				stmt = conn.prepareStatement(query + " where " + table + "."
+						+ filter + " like '%" + field + "%'");
 			rs = stmt.executeQuery();
 			if (rs.next()) {
 				return rs.getInt(1);
@@ -75,12 +79,19 @@ public class LookupQuery {
 			if ((start == -1) || (rows == -1)) {
 				stmt = conn.prepareStatement(query);
 			} else {
-				stmt = conn.prepareStatement("select * from (" + query
-						+ " where " + table + "." + filter + " like '%" + field
-						+ "%') as tbl where tbl.ROWNUMBER between ? and ?");
+				if (query.indexOf("where") > 0)
+					stmt = conn.prepareStatement("select * from (" + query
+							+ " and " + table + "." + filter + " like '%"
+							+ field
+							+ "%') as tbl where tbl.ROWNUMBER between ? and ?");
+				else
+					stmt = conn.prepareStatement("select * from (" + query
+							+ " where " + table + "." + filter + " like '%"
+							+ field
+							+ "%') as tbl where tbl.ROWNUMBER between ? and ?");
 				stmt.setInt(1, start);
 				stmt.setInt(2, start + rows);
-			}			
+			}
 			rs = stmt.executeQuery();
 
 			while (rs.next()) {
