@@ -130,7 +130,7 @@ public class User implements Serializable {
                     stmt = conn.prepareStatement(STMT_QUERY_USERS);
                 } else {
                     stmt = conn.prepareStatement("select * from ("+STMT_QUERY_USERS
-                            + ") where RN between ? and ?");
+                            + ") as tbl where tbl.RN between ? and ?");
                     stmt.setInt(1, start);
                     stmt.setInt(2, start+rows);
                 }
@@ -170,8 +170,8 @@ public class User implements Serializable {
                 if ((start == -1) || (rows == -1)) {
                     stmt = conn.prepareStatement(STMT_QUERY_USERS);
                 } else {
-                    stmt = conn.prepareStatement("select * from ("+STMT_QUERY_USERS + ") where "
-                            + filter + " like '%" + field + "%' and RN between ? and ?");
+                    stmt = conn.prepareStatement("select * from ("+STMT_QUERY_USERS + ") as tbl where tbl."
+                            + filter + " like '%" + field + "%' and tbl.RN between ? and ?");
                     stmt.setInt(1, start);
                     stmt.setInt(2, start+rows);
                 }
@@ -215,8 +215,8 @@ public class User implements Serializable {
                     stmt = conn.prepareStatement(STMT_QUERY_USERS_ADMIN + " where u1.user_id=?");
                     stmt.setInt(1, userid);
                 } else {
-                    stmt = conn.prepareStatement("select * from ("+STMT_QUERY_USERS_ADMIN + "  where u1."
-                            + filter + " like '%" + field + "%'  and RN between ? and ?");
+                    stmt = conn.prepareStatement("select * from ("+STMT_QUERY_USERS_ADMIN + " where u1."
+                            + filter + " like '%" + field + "%'  and RN between ? and ?)");
                     stmt.setInt(1, userid);
                     stmt.setInt(2, start);
                     stmt.setInt(3, start+rows);

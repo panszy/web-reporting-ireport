@@ -81,26 +81,7 @@ String KindOfsearch =request.getParameter("KindOfsearch")==null?"":request.getPa
                 document.frmSearch.checkall.checked = false;
             }
         }       
-    }
-        
-    function deletes(total) {
-        i = 0;
-        var condition = false;      
-        while(i < document.frmSearch.deleted.length){
-            if(document.frmSearch.deleted[i].checked==true){
-                condition = true;
-                break;
-            }
-            i++;
-        }
-        if(condition || (total>0 && document.frmSearch.deleted.checked==true)){
-            if (confirm("Are you sure you want to delete")) {
-                document.frmSearch.submit();
-            }                       
-        } else {
-            alert ('You didn\'t choose any of the checkboxes!');
-        }
-    }
+    }            
     
         function deactives(total) {
         i = 0;
