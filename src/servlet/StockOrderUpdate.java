@@ -354,7 +354,7 @@ public class StockOrderUpdate extends HttpServlet {
 						request.setAttribute("message",
 						"Stock Order has been deleted successfully");
 					request.getRequestDispatcher(
-							"/pages/admin/stock-order-update-success.jsp")
+							"/pages/so/stock-order-update-success.jsp")
 							.forward(request, response);
 				} else {
 					PreparedStatement pstmt = null;
@@ -423,7 +423,7 @@ public class StockOrderUpdate extends HttpServlet {
 					request.setAttribute("message",
 							"Stock Order has been deleted successfully");
 					request.getRequestDispatcher(
-							"/pages/admin/stock-order-modify-success.jsp")
+							"/pages/so/stock-order-modify-success.jsp")
 							.forward(request, response);
 				}
 			} else if (action.equalsIgnoreCase("Modify")) {
