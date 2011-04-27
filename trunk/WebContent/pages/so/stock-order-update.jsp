@@ -93,8 +93,8 @@ String currentDate = sdf.format(new Date());
 		<%
 			}
 		%>
-		<td class="item"><a href="<%=request.getContextPath()%>/pages/stock-order-update?no_so=<%=rowData.get(2)%>"><u>Edit</u></a></td>
-		<td class="item"><input onClick="CheckItem(document.info.deleted,document.info.deletedData)" type="checkbox" value="<%=rowData.get(2)%>" name=deleted></td>
+		<td class="item"><a href="<%=request.getContextPath()%>/pages/stock-order-update?no_so=<%=rowData.get(3)%>"><u>Edit</u></a></td>
+		<td class="item"><input onClick="CheckItem(document.info.deleted,document.info.deletedData)" type="checkbox" value="<%=rowData.get(0)+";"+rowData.get(3)+";"+rowData.get(5)%>" name=deleted></td>
 	</tr>	
 	<%	
 		i++;
