@@ -110,7 +110,7 @@ String KindOfsearch =request.getParameter("KindOfsearch")==null?"":request.getPa
             i++;
         }
         if(condition || (total>0 && document.frmSearch.deleted.checked==true)){
-            if (confirm("Are you sure you want to deactive")) {
+            if (confirm("Are you sure you want to deactivate")) {
                 document.frmSearch.submit();
             }                       
         } else {
@@ -193,10 +193,10 @@ String KindOfsearch =request.getParameter("KindOfsearch")==null?"":request.getPa
 	%>	
 	<tr>
 	<td colspan=10>
-	    <input type="submit" name="Action" value="Deactive" onClick="deactives(<%=i%>)"></button>      
+	    <input type="button" name="Action" value="Deactivate" onClick="deactives(<%=i%>)"></button>      
     </td>
 	<td>
-	    <input onClick="checkAll(document.frmSearch.deleted,<%=i%>)" type="checkbox" value="" name=checkall> All
+	    <input onClick="checkAll(document.frmSearch.deleted,<%=i%>)" type="checkbox" value="" name="checkall"> All
 	</td>
 	</tr>	
 </table>

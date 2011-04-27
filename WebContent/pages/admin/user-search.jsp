@@ -24,32 +24,12 @@ String KindOfsearch =request.getParameter("KindOfsearch")==null?"":request.getPa
 <%@ include file="/includes/header.jsp"%>
 <%@page import="java.util.ArrayList"%>
 <form action="" method="post" name="frmSearch">
-
-<img src="<%=request.getContextPath()%>/images/icons/system-users.png">
-<b>Search User</b> <br><br>
-<select
-    size=1 name=field>
-    <option value="Username" <%if(KindOfsearch.equalsIgnoreCase("Username")){ %> selected <%} %>>Username</option>
-    <option value="full_name" <%if(KindOfsearch.equalsIgnoreCase("full_name")){ %> selected <%} %>>Full Name</option>
-    <option value="NIK" <%if(KindOfsearch.equalsIgnoreCase("NIK")){ %> selected <%} %>>NIK</option>
-    <option value="email_address" <%if(KindOfsearch.equalsIgnoreCase("email_address")){ %> selected <%} %>>Email address</option>
-    <option value="status" <%if(KindOfsearch.equalsIgnoreCase("status")){ %> selected <%} %>>Status</option>
-    &lt;\SELECT&gt;
-</select>
-&nbsp;&nbsp;&nbsp;&nbsp; 
-<%if(WordOfsearch!=null){ %>
-<input type="text" size="30" name="User" value="<%=WordOfsearch%>">
-<%}else{ %>
-
-<input type="text" size="30" name="User" value="" >
-<%} %>
-&nbsp;&nbsp;&nbsp;
-<input type="submit" value="Search" name="Action"></p>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-
-<%if (listofuser != null && listofuser.size() > 0){ %>
-<table class="item" border=1 cellSpacing=0 cellPadding=3 style="background-image: url('<%=request.getContextPath()%>/images/item-header-space.jpg'); background-repeat: repeat-x;" width=800>
-    <script type="text/javascript">
+<script type="text/javascript">
+	function search(){
+    	ChangeValue(document.frmSearch.Action,'Search')
+    	document.info.submit();
+    }
+    
     function checkAll(field,total)
     {
         if(document.frmSearch.checkall.checked == true){
@@ -94,16 +74,44 @@ String KindOfsearch =request.getParameter("KindOfsearch")==null?"":request.getPa
             i++;
         }
         if(condition || (total>0 && document.frmSearch.deleted.checked==true)){
-            if (confirm("Are you sure you want to deactive")) {
+            if (confirm("Are you sure you want to deactivate")) {
+            	ChangeValue(document.frmSearch.Action,'Deactivate');
                 document.frmSearch.submit();
             }                       
         } else {
             alert ('You didn\'t choose any of the checkboxes!');
+            return;
         }
     }
     
     
-    </script>                       
+    </script> 
+<img src="<%=request.getContextPath()%>/images/icons/system-users.png">
+<b>Search User</b> <br><br>
+<select
+    size=1 name=field>
+    <option value="Username" <%if(KindOfsearch.equalsIgnoreCase("Username")){ %> selected <%} %>>Username</option>
+    <option value="full_name" <%if(KindOfsearch.equalsIgnoreCase("full_name")){ %> selected <%} %>>Full Name</option>
+    <option value="NIK" <%if(KindOfsearch.equalsIgnoreCase("NIK")){ %> selected <%} %>>NIK</option>
+    <option value="email_address" <%if(KindOfsearch.equalsIgnoreCase("email_address")){ %> selected <%} %>>Email address</option>
+    <option value="status" <%if(KindOfsearch.equalsIgnoreCase("status")){ %> selected <%} %>>Status</option>
+    &lt;\SELECT&gt;
+</select>
+&nbsp;&nbsp;&nbsp;&nbsp; 
+<%if(WordOfsearch!=null){ %>
+<input type="text" size="30" name="User" value="<%=WordOfsearch%>">
+<%}else{ %>
+
+<input type="text" size="30" name="User" value="" >
+<%} %>
+&nbsp;&nbsp;&nbsp;
+<input type="submit" value="Search" onClick="search()">
+<input type="hidden" size=30 name="Action" value=""></p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+<%if (listofuser != null && listofuser.size() > 0){ %>
+<table class="item" border=1 cellSpacing=0 cellPadding=3 style="background-image: url('<%=request.getContextPath()%>/images/item-header-space.jpg'); background-repeat: repeat-x;" width=800>
+                          
     <tr>
                     <td class="item-header" colspan=8>
                         List of Users
@@ -161,7 +169,7 @@ String KindOfsearch =request.getParameter("KindOfsearch")==null?"":request.getPa
     %>  
     <tr>
     <td colspan=10>
-        <input type="submit" name="Action" value="Deactivate" onClick="deactives(<%=i%>)"></button>      
+        <input type="button" value="Deactivate" onClick="deactives(<%=i%>)"></button>      
     </td>
     <td>
         <input onClick="checkAll(document.frmSearch.deleted,<%=i%>)" type="checkbox" value="" name=checkall> All
