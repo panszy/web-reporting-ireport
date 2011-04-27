@@ -109,7 +109,7 @@
         Cabang
     </td>
     <td class="item">
-        <input type="text" size=30 name="department" value="<%=user.getCabang()%>" onKeypress="uppercase();">
+        <input type="text" size=30 name="cabang" value="<%=user.getCabang()%>" onKeypress="uppercase();">
     </td>
 </tr>
 <tr>
@@ -140,7 +140,7 @@
             while (iter.hasNext()) {
                 group = (String) iter.next();
         %>
-        <option value="<%=group%>"><%=groupMap.get(group)%>
+        <option value="<%=group%>" <%if(group.equals(user.getGroup())){ %> selected <%} %>><%=groupMap.get(group)%>
         </option>
         <%} %></select></td>
 </tr>

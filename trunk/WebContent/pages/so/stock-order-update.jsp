@@ -49,19 +49,19 @@ String currentDate = sdf.format(new Date());
 	width=400>
 	<script type="text/javascript">    
         
-    function deletes(total) {
+    function deletes(total) {        
         i = 0;
         var condition = false;      
-        while(i < document.frmSearch.deleted.length){
-            if(document.frmSearch.deleted[i].checked==true){
+        while(i < document.info.deleted.length){
+            if(document.info.deleted[i].checked==true){
                 condition = true;
                 break;
             }
             i++;
         }
-        if(condition || (total>0 && document.frmSearch.deleted.checked==true)){
+        if(condition || (total>0 && document.info.deleted.checked==true)){
             if (confirm("Are you sure you want to delete")) {
-                document.frmSearch.submit();
+                document.info.submit();
             }                       
         } else {
             alert ('You didn\'t choose any of the checkboxes!');

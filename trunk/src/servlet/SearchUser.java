@@ -103,51 +103,7 @@ public class SearchUser extends HttpServlet {
                         "/pages/admin/user-search.jsp?KindOfsearch="
                                 + KindOfsearch + "&WordOfsearch="
                                 + WordOfsearch).forward(request, response);
-            } else if (action.equalsIgnoreCase("Delete")) {
-                if (request.getParameterValues("deleted") != null) {
-                    String[] delete = (String[]) request
-                            .getParameterValues("deleted");
-                    for (@SuppressWarnings("unused") String str : delete)
-
-                        try {
-
-                            Connection conn2 = Connector.getInstance().getConnection();
-                            PreparedStatement pstmt = conn2
-                                    .prepareStatement(User.Factory.STMT_INSERT_USER_AUDIT);
-                            UserSession userSession = UserSession.Factory
-                                    .getUserSession(request);
-                            pstmt.setString(1, delete[0]);
-                            pstmt.setString(2, request.getRemoteAddr());
-                            pstmt.setString(3, "Delete username " + delete[0]
-                                    + " by "
-                                    + userSession.getUser().getUsername());
-                            pstmt.executeUpdate();
-
-                            int i = 0;
-                            while (delete.length > i) {
-                                User.Factory.delete(Connector.getInstance().getConnection(), delete[i]);
-                                i++;
-                            }
-                            pstmt.close(); 
-
-                        } catch (DaoException ex) {
-                            logger.error(ex);
-                        } catch (NamingException ex) {
-                            logger.error(ex);
-                        } catch (SQLException ex) {
-                            logger.error(ex);
-                        } catch (UserNotFoundException ex) {
-                            logger.error(ex);
-                        } catch (Exception e) {
-							e.printStackTrace();
-						}
-                    request
-                            .getRequestDispatcher(
-                                    "/pages/admin/user-delete-success.jsp?message=delete")
-                            .forward(request, response);
-                }
-            }
-            if (action.equalsIgnoreCase("Deactive")) {
+            } else if (action.equalsIgnoreCase("Deactivate")) {
                 if (request.getParameterValues("deleted") != null) {
                     String[] delete = (String[]) request
                             .getParameterValues("deleted");
