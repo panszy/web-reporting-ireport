@@ -26,7 +26,10 @@ String currentDate = sdf.format(new Date());
 	width: 800px;
 }
 </style>
-<form id="info" name="info" action="stock-order-update" method="post">
+<script type="text/javascript" src="/ireport/script/calendar.js"></script>
+<script type="text/javascript" src="/ireport/script/calendar-en.js"></script>
+<script type="text/javascript" src="/ireport/script/calendar-setup.js"></script>
+<link href="/ireport/script/calendar-blue2.css"rel="stylesheet" type="text/css" />
 <script type="text/javascript">    
         
     function search(){
@@ -55,15 +58,42 @@ String currentDate = sdf.format(new Date());
     }            
     
     
-    </script>
+</script>
+
+<form id="info" name="info" action="stock-order-update" method="post">
+
 <img src="<%=request.getContextPath()%>/images/icons/system-users.png">
 <b>Search Stock Order</b> <br><br>
 
 <table>
 <tr>
 <td>Tanggal SO</td>
-<td><input type="text" size="30" name="tanggal_so_awal" value="<%=tanggaSOAwal %>" ></td>
-<td>-&nbsp;<input type="text" size="30" name="tanggal_so_akhir" value="<%=tanggaSOAkhir %>" ></td>
+<td><input type="text" size="10" readonly name="tanggal_so_awal" id="datebeforefrom" value="<%=tanggaSOAwal %>" >
+<img src="<%=request.getContextPath()%>/script/calbtn.gif" width="18" height="18"
+            id="datebeforefrom_trigger"
+            style="cursor: pointer;" title="Date selector" align="middle"/>
+		<script type="text/javascript">
+            Calendar.setup(
+            {
+                inputField  : "datebeforefrom",
+                ifFormat    : "%Y-%m-%d",
+                button      : "datebeforefrom_trigger"
+            }
+                    );
+        </script></td>
+<td>-&nbsp;<input type="text" size="10" readonly name="tanggal_so_akhir" id="datebeforeto" value="<%=tanggaSOAkhir %>" >
+<img src="<%=request.getContextPath()%>/script/calbtn.gif" width="18" height="18"
+            id="datebeforeto_trigger"
+            style="cursor: pointer;" title="Date selector" align="middle"/>
+		<script type="text/javascript">
+            Calendar.setup(
+            {
+                inputField  : "datebeforeto",
+                ifFormat    : "%Y-%m-%d",
+                button      : "datebeforeto_trigger"
+            }
+                    );
+        </script></td>
 </tr>
 <tr>
 <td>Nomor SO</td>

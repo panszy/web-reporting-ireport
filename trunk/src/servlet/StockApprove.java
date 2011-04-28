@@ -36,9 +36,9 @@ public class StockApprove extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	static Logger logger = Logger.getLogger(StockOrderUpdate.class);
-	private final String tableQuery = "SELECT KODE_CAB as \"kode cabang\",KODE_CUST as \"kode customer\",TGL_SO_SMS as \"tgl SO\",NO_SO_SMS as \"no SO\",TGL_PO as \"tgl PO\",NO_PO as \"no PO\",case when TYPE_BAYAR = 1.0 then 'kredit' else 'tunai' end as \"tipe bayar\",case when F_SOBATAL = 1 then 'Batal' else case when F_APPCAB = 1 then 'Setuju' else case when F_APPPROTEK = 1 then 'Proteksi' else 'Menunggu' end end end as status,KET_SO as keterangan, ROW_NUMBER() OVER(ORDER BY TGL_SO_SMS DESC) AS ROWNUMBER FROM \"DB2ADMIN\".TBSO_SMS where (NO_SO_SMS=? or TGL_SO_SMS between ? and ?) and F_SOBATAL = 0 and F_APPCAB = 0 and F_APPPROTEK = 0";
-	private final String tableQueryCount = "SELECT count(1) FROM \"DB2ADMIN\".TBSO_SMS where (NO_SO_SMS=? or TGL_SO_SMS between ? and ?) and F_SOBATAL = 0 and F_APPCAB = 0 and F_APPPROTEK = 0";	
-	private final String approveOrder = "call SPIUSO_SMS2(?,?,?,?,?)";	
+	private final String tableQuery = "SELECT KODE_CAB as \"kode cabang\",KODE_CUST as \"kode customer\",TGL_SO_SMS as \"tgl SO\",NO_SO_SMS as \"no SO\",TGL_PO as \"tgl PO\",NO_PO as \"no PO\",case when TYPE_BAYAR = 1.0 then 'kredit' else 'tunai' end as \"tipe bayar\",case when F_SOBATAL = 1 then 'Batal' else case when F_APPCAB = 1 then 'Setuju' else case when F_APPPROTEK = 1 then 'Proteksi' else 'Menunggu' end end end as status,KET_SO as keterangan, ROW_NUMBER() OVER(ORDER BY TGL_SO_SMS DESC) AS ROWNUMBER FROM \"VISITEK-117\".TBSO_SMS where (NO_SO_SMS=? or TGL_SO_SMS between ? and ?) and F_SOBATAL = 0 and F_APPCAB = 0 and F_APPPROTEK = 0";
+	private final String tableQueryCount = "SELECT count(1) FROM \"VISITEK-117\".TBSO_SMS where (NO_SO_SMS=? or TGL_SO_SMS between ? and ?) and F_SOBATAL = 0 and F_APPCAB = 0 and F_APPPROTEK = 0";
+	private final String approveOrder = "call SPIUSO_SMS2(?,?,?,?,?)";
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
 	/**
@@ -57,14 +57,10 @@ public class StockApprove extends HttpServlet {
 			HttpServletResponse response) throws ServletException, IOException {
 		String page = (String) request.getParameter("page");
 		String tanggaSOAwal = request.getParameter("tanggal_so_awal");
-		tanggaSOAwal = (tanggaSOAwal == null || tanggaSOAwal.equals("")) ? sdf
-				.format(new Date()) : tanggaSOAwal;
 		String tanggaSOAkhir = request.getParameter("tanggal_so_akhir");
-		tanggaSOAkhir = (tanggaSOAkhir == null || tanggaSOAkhir.equals("")) ? tanggaSOAwal
-				: tanggaSOAkhir;
 		String nomorSO = request.getParameter("nomor_so");
 		String nomorSOEdit = request.getParameter("no_so");
-
+		
 		if (page != null && nomorSOEdit == null) {
 			PreparedStatement pstmt = null;
 			ResultSet rs = null;
@@ -73,8 +69,10 @@ public class StockApprove extends HttpServlet {
 				Connection conn = Connector.getInstance().getConnectionAdmin();
 				pstmt = conn.prepareStatement(tableQueryCount);
 				pstmt.setString(1, nomorSO);
-				pstmt.setString(2, tanggaSOAwal);
-				pstmt.setString(3, tanggaSOAkhir);
+				pstmt.setString(2, (tanggaSOAwal == null || tanggaSOAwal
+						.equals("")) ? sdf.format(new Date(System.currentTimeMillis()+86400000)) : tanggaSOAwal);
+				pstmt.setString(3, (tanggaSOAkhir == null || tanggaSOAkhir
+						.equals("")) ? sdf.format(new Date(System.currentTimeMillis()+86400000)) : tanggaSOAkhir);
 				rs = pstmt.executeQuery();
 				if (rs.next())
 					total_pages = rs.getInt(1);
@@ -85,8 +83,11 @@ public class StockApprove extends HttpServlet {
 				pstmt = conn.prepareStatement("select * from (" + tableQuery
 						+ ") as tbl where tbl.ROWNUMBER between ? and ?");
 				pstmt.setString(1, nomorSO);
-				pstmt.setString(2, tanggaSOAwal);
-				pstmt.setString(3, tanggaSOAkhir);
+				pstmt.setString(2, (tanggaSOAwal == null || tanggaSOAwal
+						.equals("")) ? sdf.format(new Date(System.currentTimeMillis()+86400000))
+								: tanggaSOAwal);
+				pstmt.setString(3, (tanggaSOAkhir == null || tanggaSOAkhir
+						.equals("")) ? sdf.format(new Date(System.currentTimeMillis()+86400000)) : tanggaSOAkhir);
 				pstmt.setInt(4, 10 * (Integer.parseInt(page) - 1));
 				pstmt.setInt(5, (10 * (Integer.parseInt(page) - 1)) + 10);
 				rs = pstmt.executeQuery();
@@ -143,14 +144,12 @@ public class StockApprove extends HttpServlet {
 			HttpServletResponse response) throws ServletException, IOException {
 		if (request.getParameter("Action") != null) {
 
-			String action = request.getParameter("Action");			
+			String action = request.getParameter("Action");
 			if (action.equalsIgnoreCase("Search")) {
 				String tanggaSOAwal = request.getParameter("tanggal_so_awal");
-				tanggaSOAwal = (tanggaSOAwal == null || tanggaSOAwal.equals("")) ? sdf
-						.format(new Date()) : tanggaSOAwal;
+				System.out.println("tanggaSOAwal="+tanggaSOAwal);
 				String tanggaSOAkhir = request.getParameter("tanggal_so_akhir");
-				tanggaSOAkhir = (tanggaSOAkhir == null || tanggaSOAkhir
-						.equals("")) ? tanggaSOAwal : tanggaSOAkhir;
+				System.out.println("tanggaSOAkhir="+tanggaSOAkhir);
 				String nomorSO = request.getParameter("nomor_so");
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
@@ -160,8 +159,12 @@ public class StockApprove extends HttpServlet {
 							.getConnectionAdmin();
 					pstmt = conn.prepareStatement(tableQueryCount);
 					pstmt.setString(1, nomorSO);
-					pstmt.setString(2, tanggaSOAwal);
-					pstmt.setString(3, tanggaSOAkhir);
+					pstmt.setString(2, (tanggaSOAwal == null || tanggaSOAwal
+							.equals("")) ? sdf.format(new Date(System.currentTimeMillis()+86400000))
+							: tanggaSOAwal);
+					pstmt.setString(3, (tanggaSOAkhir == null || tanggaSOAkhir
+							.equals("")) ? sdf.format(new Date(System.currentTimeMillis()+86400000))
+							: tanggaSOAkhir);
 					rs = pstmt.executeQuery();
 					if (rs.next())
 						total_pages = rs.getInt(1);
@@ -170,10 +173,15 @@ public class StockApprove extends HttpServlet {
 
 					conn = Connector.getInstance().getConnectionAdmin();
 					pstmt = conn.prepareStatement("select * from ("
-							+ tableQuery + ") as tbl where tbl.ROWNUMBER between ? and ?");
+							+ tableQuery
+							+ ") as tbl where tbl.ROWNUMBER between ? and ?");
 					pstmt.setString(1, nomorSO);
-					pstmt.setString(2, tanggaSOAwal);
-					pstmt.setString(3, tanggaSOAkhir);
+					pstmt.setString(2, (tanggaSOAwal == null || tanggaSOAwal
+							.equals("")) ? sdf.format(new Date(System.currentTimeMillis()+86400000))
+									: tanggaSOAwal);
+					pstmt.setString(3, (tanggaSOAkhir == null || tanggaSOAkhir
+							.equals("")) ? sdf.format(new Date(System.currentTimeMillis()+86400000))
+									: tanggaSOAkhir);
 					pstmt.setInt(4, 0);
 					pstmt.setInt(5, 10);
 					rs = pstmt.executeQuery();
@@ -214,7 +222,7 @@ public class StockApprove extends HttpServlet {
 								+ tanggaSOAkhir + "&nomor_so=" + nomorSO)
 						.forward(request, response);
 			} else if (request.getParameterValues("approved") != null) {
-				if (action.equalsIgnoreCase("approve")) {				
+				if (action.equalsIgnoreCase("approve")) {
 					String[] approve = (String[]) request
 							.getParameterValues("approved");
 					PreparedStatement pstmt = null;
@@ -252,7 +260,7 @@ public class StockApprove extends HttpServlet {
 								pstmt.executeUpdate();
 								pstmt.close();
 								i++;
-							}							
+							}
 
 						} catch (DaoException ex) {
 							logger.error(ex);
@@ -315,7 +323,7 @@ public class StockApprove extends HttpServlet {
 								pstmt.executeUpdate();
 								pstmt.close();
 								i++;
-							}							
+							}
 
 						} catch (DaoException ex) {
 							logger.error(ex);
@@ -378,7 +386,7 @@ public class StockApprove extends HttpServlet {
 								pstmt.executeUpdate();
 								pstmt.close();
 								i++;
-							}							
+							}
 
 						} catch (DaoException ex) {
 							logger.error(ex);
@@ -407,11 +415,7 @@ public class StockApprove extends HttpServlet {
 			} else {
 
 				String tanggaSOAwal = request.getParameter("tanggal_so_awal");
-				tanggaSOAwal = (tanggaSOAwal == null || tanggaSOAwal.equals("")) ? sdf
-						.format(new Date()) : tanggaSOAwal;
 				String tanggaSOAkhir = request.getParameter("tanggal_so_akhir");
-				tanggaSOAkhir = (tanggaSOAkhir == null || tanggaSOAkhir
-						.equals("")) ? tanggaSOAwal : tanggaSOAkhir;
 				String nomorSO = request.getParameter("nomor_so");
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
@@ -421,8 +425,12 @@ public class StockApprove extends HttpServlet {
 							.getConnectionAdmin();
 					pstmt = conn.prepareStatement(tableQueryCount);
 					pstmt.setString(1, nomorSO);
-					pstmt.setString(2, tanggaSOAwal);
-					pstmt.setString(3, tanggaSOAkhir);
+					pstmt.setString(2, (tanggaSOAwal == null || tanggaSOAwal
+							.equals("")) ? sdf.format(new Date(System.currentTimeMillis()+86400000))
+							: tanggaSOAwal);
+					pstmt.setString(3, (tanggaSOAkhir == null || tanggaSOAkhir
+							.equals("")) ? sdf.format(new Date(System.currentTimeMillis()+86400000))
+							: tanggaSOAkhir);
 					rs = pstmt.executeQuery();
 					if (rs.next())
 						total_pages = rs.getInt(1);
@@ -431,10 +439,15 @@ public class StockApprove extends HttpServlet {
 
 					conn = Connector.getInstance().getConnectionAdmin();
 					pstmt = conn.prepareStatement("select * from ("
-							+ tableQuery + ") as tbl where tbl.ROWNUMBER between ? and ?");
+							+ tableQuery
+							+ ") as tbl where tbl.ROWNUMBER between ? and ?");
 					pstmt.setString(1, nomorSO);
-					pstmt.setString(2, tanggaSOAwal);
-					pstmt.setString(3, tanggaSOAkhir);
+					pstmt.setString(2, (tanggaSOAwal == null || tanggaSOAwal
+							.equals("")) ? sdf.format(new Date(System.currentTimeMillis()+86400000))
+									: tanggaSOAwal);
+					pstmt.setString(3, (tanggaSOAkhir == null || tanggaSOAkhir
+							.equals("")) ? sdf.format(new Date(System.currentTimeMillis()+86400000))
+									: tanggaSOAkhir);
 					pstmt.setInt(4, 0);
 					pstmt.setInt(5, 10);
 					rs = pstmt.executeQuery();

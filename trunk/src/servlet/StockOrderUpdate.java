@@ -36,15 +36,15 @@ public class StockOrderUpdate extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	static Logger logger = Logger.getLogger(StockOrderUpdate.class);
-	private final String tableQuery = "SELECT KODE_CAB as \"kode cabang\",KODE_CUST as \"kode customer\",TGL_SO_SMS as \"tgl SO\",NO_SO_SMS as \"no SO\",TGL_PO as \"tgl PO\",NO_PO as \"no PO\",case when TYPE_BAYAR = 1.0 then 'kredit' else 'tunai' end as \"tipe bayar\",case when F_SOBATAL = 1 then 'Batal' else case when F_APPCAB = 1 then 'Setuju' else case when F_APPPROTEK = 1 then 'Proteksi' else 'Menunggu' end end end as status,KET_SO as keterangan, ROW_NUMBER() OVER(ORDER BY TGL_SO_SMS DESC) AS ROWNUMBER FROM \"DB2ADMIN\".TBSO_SMS where (NO_SO_SMS=? or TGL_SO_SMS between ? and ?) and F_SOBATAL = 0 and F_APPCAB = 0 and F_APPPROTEK = 0";
-	private final String tableQueryCount = "SELECT count(1) FROM \"DB2ADMIN\".TBSO_SMS where (NO_SO_SMS=? or TGL_SO_SMS between ? and ?) and F_SOBATAL = 0 and F_APPCAB = 0 and F_APPPROTEK = 0";
-	private final String editQuery = "SELECT A.TYPE_BAYAR,A.TGL_SO_SMS,A.TGL_PO,B.QTY_SO,B.QTY_PO,B.NO_URUT,A.NO_SO_SMS,A.NO_PO,A.KODE_TYPESO,A.KODE_TYPEDO,A.KODE_TRN,A.KODE_PEG,A.KODE_CUST,A.KODE_CAB,B.KODE_BAR,A.KET_SO FROM \"DB2ADMIN\".TBSO_SMS as A,\"DB2ADMIN\".TBDTSO_SMS as B where A.NO_SO_SMS=B.NO_SO_SMS and A.NO_SO_SMS=?";
-	private final String comboTypeSOQuery = "select NAMA_TYPESO,KODE_TYPESO from \"DB2ADMIN\".tbmastypeso where KODE_TYPESO=2 or KODE_TYPESO=4";
-	private final String comboJenisTransaksi = "select NAMA_TRN,KODE_TRN from \"DB2ADMIN\".tbmastrn where KODE_TRN=1 or KODE_TRN=3";
-	private final String comboTipeTransaksi = "select NAMA_TYPEDO,KODE_TYPEDO from \"DB2ADMIN\".tbmastypedo where KODE_TYPEDO=1 or KODE_TYPEDO=2";
+	private final String tableQuery = "SELECT KODE_CAB as \"kode cabang\",KODE_CUST as \"kode customer\",TGL_SO_SMS as \"tgl SO\",NO_SO_SMS as \"no SO\",TGL_PO as \"tgl PO\",NO_PO as \"no PO\",case when TYPE_BAYAR = 1.0 then 'kredit' else 'tunai' end as \"tipe bayar\",case when F_SOBATAL = 1 then 'Batal' else case when F_APPCAB = 1 then 'Setuju' else case when F_APPPROTEK = 1 then 'Proteksi' else 'Menunggu' end end end as status,KET_SO as keterangan, ROW_NUMBER() OVER(ORDER BY TGL_SO_SMS DESC) AS ROWNUMBER FROM \"VISITEK-117\".TBSO_SMS where (NO_SO_SMS=? or TGL_SO_SMS between ? and ?) and F_SOBATAL = 0 and F_APPCAB = 0 and F_APPPROTEK = 0";
+	private final String tableQueryCount = "SELECT count(1) FROM \"VISITEK-117\".TBSO_SMS where (NO_SO_SMS=? or TGL_SO_SMS between ? and ?) and F_SOBATAL = 0 and F_APPCAB = 0 and F_APPPROTEK = 0";
+	private final String editQuery = "SELECT A.TYPE_BAYAR,A.TGL_SO_SMS,A.TGL_PO,B.QTY_SO,B.QTY_PO,B.NO_URUT,A.NO_SO_SMS,A.NO_PO,A.KODE_TYPESO,A.KODE_TYPEDO,A.KODE_TRN,A.KODE_PEG,A.KODE_CUST,A.KODE_CAB,B.KODE_BAR,A.KET_SO FROM \"VISITEK-117\".TBSO_SMS as A,\"VISITEK-117\".TBDTSO_SMS as B where A.NO_SO_SMS=B.NO_SO_SMS and A.NO_SO_SMS=?";
+	private final String comboTypeSOQuery = "select NAMA_TYPESO,KODE_TYPESO from \"VISITEK-117\".tbmastypeso where KODE_TYPESO=2 or KODE_TYPESO=4";
+	private final String comboJenisTransaksi = "select NAMA_TRN,KODE_TRN from \"VISITEK-117\".tbmastrn where KODE_TRN=1 or KODE_TRN=3";
+	private final String comboTipeTransaksi = "select NAMA_TYPEDO,KODE_TYPEDO from \"VISITEK-117\".tbmastypedo where KODE_TYPEDO=1 or KODE_TYPEDO=2";
 	private final String simpanOrder = "call SPIUSO_SMS(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 	private final String hapusOrder = "call SPDELSO_SMS(?,?,?)";
-	private final String updateOrderDetail = "update \"DB2ADMIN\".TBDTSO_SMS set KODE_BAR=?, QTY_SO=?, QTY_PO=? where NO_SO_SMS=?";
+	private final String updateOrderDetail = "update \"VISITEK-117\".TBDTSO_SMS set KODE_BAR=?, QTY_SO=?, QTY_PO=? where NO_SO_SMS=?";
 	private final String hapusOrderDetail = "call SPDELDTSO_SMS(?,?)";
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -64,11 +64,7 @@ public class StockOrderUpdate extends HttpServlet {
 			HttpServletResponse response) throws ServletException, IOException {
 		String page = (String) request.getParameter("page");
 		String tanggaSOAwal = request.getParameter("tanggal_so_awal");
-		tanggaSOAwal = (tanggaSOAwal == null || tanggaSOAwal.equals("")) ? sdf
-				.format(new Date()) : tanggaSOAwal;
 		String tanggaSOAkhir = request.getParameter("tanggal_so_akhir");
-		tanggaSOAkhir = (tanggaSOAkhir == null || tanggaSOAkhir.equals("")) ? tanggaSOAwal
-				: tanggaSOAkhir;
 		String nomorSO = request.getParameter("nomor_so");
 		String nomorSOEdit = request.getParameter("no_so");
 
@@ -80,8 +76,10 @@ public class StockOrderUpdate extends HttpServlet {
 				Connection conn = Connector.getInstance().getConnectionAdmin();
 				pstmt = conn.prepareStatement(tableQueryCount);
 				pstmt.setString(1, nomorSO);
-				pstmt.setString(2, tanggaSOAwal);
-				pstmt.setString(3, tanggaSOAkhir);
+				pstmt.setString(2, (tanggaSOAwal == null || tanggaSOAwal
+						.equals("")) ? sdf.format(new Date()) : tanggaSOAwal);
+				pstmt.setString(3, (tanggaSOAkhir == null || tanggaSOAkhir
+						.equals("")) ? sdf.format(new Date()) : tanggaSOAkhir);
 				rs = pstmt.executeQuery();
 				if (rs.next())
 					total_pages = rs.getInt(1);
@@ -92,8 +90,10 @@ public class StockOrderUpdate extends HttpServlet {
 				pstmt = conn.prepareStatement("select * from (" + tableQuery
 						+ ") as tbl where tbl.ROWNUMBER between ? and ?");
 				pstmt.setString(1, nomorSO);
-				pstmt.setString(2, tanggaSOAwal);
-				pstmt.setString(3, tanggaSOAkhir);
+				pstmt.setString(2, (tanggaSOAwal == null || tanggaSOAwal
+						.equals("")) ? sdf.format(new Date()) : tanggaSOAwal);
+				pstmt.setString(3, (tanggaSOAkhir == null || tanggaSOAkhir
+						.equals("")) ? sdf.format(new Date()) : tanggaSOAkhir);
 				pstmt.setInt(4, 10 * (Integer.parseInt(page) - 1));
 				pstmt.setInt(5, (10 * (Integer.parseInt(page) - 1)) + 10);
 				rs = pstmt.executeQuery();
@@ -220,11 +220,7 @@ public class StockOrderUpdate extends HttpServlet {
 			String action = request.getParameter("Action");
 			if (action.equalsIgnoreCase("Search")) {
 				String tanggaSOAwal = request.getParameter("tanggal_so_awal");
-				tanggaSOAwal = (tanggaSOAwal == null || tanggaSOAwal.equals("")) ? sdf
-						.format(new Date()) : tanggaSOAwal;
 				String tanggaSOAkhir = request.getParameter("tanggal_so_akhir");
-				tanggaSOAkhir = (tanggaSOAkhir == null || tanggaSOAkhir
-						.equals("")) ? tanggaSOAwal : tanggaSOAkhir;
 				String nomorSO = request.getParameter("nomor_so");
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
@@ -234,8 +230,12 @@ public class StockOrderUpdate extends HttpServlet {
 							.getConnectionAdmin();
 					pstmt = conn.prepareStatement(tableQueryCount);
 					pstmt.setString(1, nomorSO);
-					pstmt.setString(2, tanggaSOAwal);
-					pstmt.setString(3, tanggaSOAkhir);
+					pstmt.setString(2, (tanggaSOAwal == null || tanggaSOAwal
+							.equals("")) ? sdf.format(new Date(System.currentTimeMillis()+86400000))
+							: tanggaSOAwal);
+					pstmt.setString(3, (tanggaSOAkhir == null || tanggaSOAkhir
+							.equals("")) ? sdf.format(new Date(System.currentTimeMillis()+86400000))
+							: tanggaSOAkhir);
 					rs = pstmt.executeQuery();
 					if (rs.next())
 						total_pages = rs.getInt(1);
@@ -244,10 +244,15 @@ public class StockOrderUpdate extends HttpServlet {
 
 					conn = Connector.getInstance().getConnectionAdmin();
 					pstmt = conn.prepareStatement("select * from ("
-							+ tableQuery + ") as tbl where tbl.ROWNUMBER between ? and ?");
+							+ tableQuery
+							+ ") as tbl where tbl.ROWNUMBER between ? and ?");
 					pstmt.setString(1, nomorSO);
-					pstmt.setString(2, tanggaSOAwal);
-					pstmt.setString(3, tanggaSOAkhir);
+					pstmt.setString(2, (tanggaSOAwal == null || tanggaSOAwal
+							.equals("")) ? sdf.format(new Date(System.currentTimeMillis()+86400000))
+							: tanggaSOAwal);
+					pstmt.setString(3, (tanggaSOAkhir == null || tanggaSOAkhir
+							.equals("")) ? sdf.format(new Date(System.currentTimeMillis()+86400000))
+							: tanggaSOAkhir);
 					pstmt.setInt(4, 0);
 					pstmt.setInt(5, 10);
 					rs = pstmt.executeQuery();
@@ -350,9 +355,9 @@ public class StockOrderUpdate extends HttpServlet {
 								e.printStackTrace();
 							}
 						}
-						request.setAttribute("deletedData",delete);
-						request.setAttribute("message",
-						"Stock Order has been deleted successfully");
+					request.setAttribute("deletedData", delete);
+					request.setAttribute("message",
+							"Stock Order has been deleted successfully");
 					request.getRequestDispatcher(
 							"/pages/so/stock-order-update-success.jsp")
 							.forward(request, response);
@@ -512,11 +517,7 @@ public class StockOrderUpdate extends HttpServlet {
 		} else {
 
 			String tanggaSOAwal = request.getParameter("tanggal_so_awal");
-			tanggaSOAwal = (tanggaSOAwal == null || tanggaSOAwal.equals("")) ? sdf
-					.format(new Date()) : tanggaSOAwal;
 			String tanggaSOAkhir = request.getParameter("tanggal_so_akhir");
-			tanggaSOAkhir = (tanggaSOAkhir == null || tanggaSOAkhir.equals("")) ? tanggaSOAwal
-					: tanggaSOAkhir;
 			String nomorSO = request.getParameter("nomor_so");
 			PreparedStatement pstmt = null;
 			ResultSet rs = null;
@@ -525,8 +526,10 @@ public class StockOrderUpdate extends HttpServlet {
 				Connection conn = Connector.getInstance().getConnectionAdmin();
 				pstmt = conn.prepareStatement(tableQueryCount);
 				pstmt.setString(1, nomorSO);
-				pstmt.setString(2, tanggaSOAwal);
-				pstmt.setString(3, tanggaSOAkhir);
+				pstmt.setString(2, (tanggaSOAwal == null || tanggaSOAwal
+						.equals("")) ? sdf.format(new Date(System.currentTimeMillis()+86400000)) : tanggaSOAwal);
+				pstmt.setString(3, (tanggaSOAkhir == null || tanggaSOAkhir
+						.equals("")) ? sdf.format(new Date(System.currentTimeMillis()+86400000)) : tanggaSOAkhir);
 				rs = pstmt.executeQuery();
 				if (rs.next())
 					total_pages = rs.getInt(1);
@@ -537,8 +540,10 @@ public class StockOrderUpdate extends HttpServlet {
 				pstmt = conn.prepareStatement("select * from (" + tableQuery
 						+ ") as tbl where tbl.ROWNUMBER between ? and ?");
 				pstmt.setString(1, nomorSO);
-				pstmt.setString(2, tanggaSOAwal);
-				pstmt.setString(3, tanggaSOAkhir);
+				pstmt.setString(2, (tanggaSOAwal == null || tanggaSOAwal
+						.equals("")) ? sdf.format(new Date(System.currentTimeMillis()+86400000)) : tanggaSOAwal);
+				pstmt.setString(3, (tanggaSOAkhir == null || tanggaSOAkhir
+						.equals("")) ? sdf.format(new Date(System.currentTimeMillis()+86400000)) : tanggaSOAkhir);
 				pstmt.setInt(4, 0);
 				pstmt.setInt(5, 10);
 				rs = pstmt.executeQuery();
