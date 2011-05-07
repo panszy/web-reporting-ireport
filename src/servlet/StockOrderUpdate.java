@@ -1,9 +1,13 @@
 package servlet;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -36,7 +40,7 @@ public class StockOrderUpdate extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	static Logger logger = Logger.getLogger(StockOrderUpdate.class);
-	private final String tableQuery = "SELECT KODE_CAB as \"kode cabang\",KODE_CUST as \"kode customer\",TGL_SO_SMS as \"tgl SO\",NO_SO_SMS as \"no SO\",TGL_PO as \"tgl PO\",NO_PO as \"no PO\",case when TYPE_BAYAR = 1.0 then 'kredit' else 'tunai' end as \"tipe bayar\",case when F_SOBATAL = 1 then 'Batal' else case when F_APPCAB = 1 then 'Setuju' else case when F_APPPROTEK = 1 then 'Proteksi' else 'Menunggu' end end end as status,KET_SO as keterangan, ROW_NUMBER() OVER(ORDER BY TGL_SO_SMS DESC) AS ROWNUMBER FROM \"DB2ADMIN\".TBSO_SMS where (NO_SO_SMS=? or TGL_SO_SMS between ? and ?) and F_SOBATAL = 0 and F_APPCAB = 0 and F_APPPROTEK = 0";
+	private final String tableQuery = "SELECT ROW_NUMBER() OVER(ORDER BY TGL_SO_SMS DESC) as \"No\", TGL_SO_SMS as \"Tgl SO\",NO_SO_SMS as \"No SO\",TGL_PO as \"Tgl PO\",NO_PO as \"No PO\",case when TYPE_BAYAR = 1.0 then 'kredit' else 'tunai' end as \"tipe bayar\",case when F_SOBATAL = 1 then 'Batal' else case when F_APPCAB = 1 then 'Setuju' else case when F_APPPROTEK = 1 then 'Proteksi' else 'Menunggu' end end end as \"Status\",KET_SO as \"Keterangan\", ROW_NUMBER() OVER(ORDER BY TGL_SO_SMS DESC) AS ROWNUMBER FROM \"DB2ADMIN\".TBSO_SMS where (NO_SO_SMS=? or TGL_SO_SMS between ? and ?) and F_SOBATAL = 0 and F_APPCAB = 0 and F_APPPROTEK = 0";
 	private final String tableQueryCount = "SELECT count(1) FROM \"DB2ADMIN\".TBSO_SMS where (NO_SO_SMS=? or TGL_SO_SMS between ? and ?) and F_SOBATAL = 0 and F_APPCAB = 0 and F_APPPROTEK = 0";
 	private final String editQuery = "SELECT A.TYPE_BAYAR,A.TGL_SO_SMS,A.TGL_PO,B.QTY_SO,B.QTY_PO,B.NO_URUT,A.NO_SO_SMS,A.NO_PO,A.KODE_TYPESO,A.KODE_TYPEDO,A.KODE_TRN,A.KODE_PEG,A.KODE_CUST,A.KODE_CAB,B.KODE_BAR,A.KET_SO FROM \"DB2ADMIN\".TBSO_SMS as A,\"DB2ADMIN\".TBDTSO_SMS as B where A.NO_SO_SMS=B.NO_SO_SMS and A.NO_SO_SMS=?";
 	private final String comboTypeSOQuery = "select NAMA_TYPESO,KODE_TYPESO from \"DB2ADMIN\".tbmastypeso where KODE_TYPESO=2 or KODE_TYPESO=4";
@@ -136,6 +140,7 @@ public class StockOrderUpdate extends HttpServlet {
 					e.printStackTrace();
 				}
 			}
+
 		} else if (nomorSOEdit != null) {
 			PreparedStatement pstmt = null;
 			ResultSet rs = null;
@@ -230,12 +235,16 @@ public class StockOrderUpdate extends HttpServlet {
 							.getConnectionAdmin();
 					pstmt = conn.prepareStatement(tableQueryCount);
 					pstmt.setString(1, nomorSO);
-					pstmt.setString(2, (tanggaSOAwal == null || tanggaSOAwal
-							.equals("")) ? sdf.format(new Date(System.currentTimeMillis()+86400000))
-							: tanggaSOAwal);
-					pstmt.setString(3, (tanggaSOAkhir == null || tanggaSOAkhir
-							.equals("")) ? sdf.format(new Date(System.currentTimeMillis()+86400000))
-							: tanggaSOAkhir);
+					pstmt.setString(
+							2,
+							(tanggaSOAwal == null || tanggaSOAwal.equals("")) ? sdf.format(new Date(
+									System.currentTimeMillis() + 86400000))
+									: tanggaSOAwal);
+					pstmt.setString(
+							3,
+							(tanggaSOAkhir == null || tanggaSOAkhir.equals("")) ? sdf.format(new Date(
+									System.currentTimeMillis() + 86400000))
+									: tanggaSOAkhir);
 					rs = pstmt.executeQuery();
 					if (rs.next())
 						total_pages = rs.getInt(1);
@@ -247,12 +256,16 @@ public class StockOrderUpdate extends HttpServlet {
 							+ tableQuery
 							+ ") as tbl where tbl.ROWNUMBER between ? and ?");
 					pstmt.setString(1, nomorSO);
-					pstmt.setString(2, (tanggaSOAwal == null || tanggaSOAwal
-							.equals("")) ? sdf.format(new Date(System.currentTimeMillis()+86400000))
-							: tanggaSOAwal);
-					pstmt.setString(3, (tanggaSOAkhir == null || tanggaSOAkhir
-							.equals("")) ? sdf.format(new Date(System.currentTimeMillis()+86400000))
-							: tanggaSOAkhir);
+					pstmt.setString(
+							2,
+							(tanggaSOAwal == null || tanggaSOAwal.equals("")) ? sdf.format(new Date(
+									System.currentTimeMillis() + 86400000))
+									: tanggaSOAwal);
+					pstmt.setString(
+							3,
+							(tanggaSOAkhir == null || tanggaSOAkhir.equals("")) ? sdf.format(new Date(
+									System.currentTimeMillis() + 86400000))
+									: tanggaSOAkhir);
 					pstmt.setInt(4, 0);
 					pstmt.setInt(5, 10);
 					rs = pstmt.executeQuery();
@@ -292,7 +305,7 @@ public class StockOrderUpdate extends HttpServlet {
 								+ tanggaSOAwal + "&tanggal_so_akhir="
 								+ tanggaSOAkhir + "&nomor_so=" + nomorSO)
 						.forward(request, response);
-			} else if (action.equalsIgnoreCase("Delete")) {
+			} else if (action.equalsIgnoreCase("Hapus")) {
 				if (request.getParameterValues("deleted") != null) {
 					String[] delete = (String[]) request
 							.getParameterValues("deleted");
@@ -322,7 +335,8 @@ public class StockOrderUpdate extends HttpServlet {
 								conn = Connector.getInstance()
 										.getConnectionAdmin();
 								pstmt = conn.prepareStatement(hapusOrder);
-								pstmt.setString(1, delete[i].split(";")[0]);
+								pstmt.setString(1, userSession.getUser()
+										.getKodeCabang());
 								pstmt.setString(2, delete[i].split(";")[1]);
 								pstmt.setString(3, delete[i].split(";")[2]);
 								pstmt.executeUpdate();
@@ -331,7 +345,8 @@ public class StockOrderUpdate extends HttpServlet {
 								conn = Connector.getInstance()
 										.getConnectionAdmin();
 								pstmt = conn.prepareStatement(hapusOrderDetail);
-								pstmt.setString(1, delete[i].split(";")[0]);
+								pstmt.setString(1, userSession.getUser()
+										.getKodeCabang());
 								pstmt.setString(2, delete[i].split(";")[1]);
 								pstmt.executeUpdate();
 								i++;
@@ -431,6 +446,18 @@ public class StockOrderUpdate extends HttpServlet {
 							"/pages/so/stock-order-modify-success.jsp")
 							.forward(request, response);
 				}
+			} else if (action.equalsIgnoreCase("Koreksi")) {
+				String[] delete = null;
+				if (request.getParameterValues("deleted") != null) {
+					delete = (String[]) request.getParameterValues("deleted");
+				}			
+				response.sendRedirect(request.getContextPath()+"/pages/stock-order-update?no_so="
+						+ delete[0].split(";")[1]);								
+			} else if (action.equalsIgnoreCase("Baru")) {
+				StockOrder so = new StockOrder();
+				so.doGet(request, response);
+			} else if (action.equalsIgnoreCase("Keluar")) {
+				request.getRequestDispatcher("/").forward(request, response);
 			} else if (action.equalsIgnoreCase("Modify")) {
 				String noSO = request.getParameter("NO_SO_SMS");
 				String kodeCabang = request.getParameter("KODE_CAB");
@@ -526,10 +553,18 @@ public class StockOrderUpdate extends HttpServlet {
 				Connection conn = Connector.getInstance().getConnectionAdmin();
 				pstmt = conn.prepareStatement(tableQueryCount);
 				pstmt.setString(1, nomorSO);
-				pstmt.setString(2, (tanggaSOAwal == null || tanggaSOAwal
-						.equals("")) ? sdf.format(new Date(System.currentTimeMillis()+86400000)) : tanggaSOAwal);
-				pstmt.setString(3, (tanggaSOAkhir == null || tanggaSOAkhir
-						.equals("")) ? sdf.format(new Date(System.currentTimeMillis()+86400000)) : tanggaSOAkhir);
+				pstmt.setString(
+						2,
+						(tanggaSOAwal == null || tanggaSOAwal.equals("")) ? sdf
+								.format(new Date(
+										System.currentTimeMillis() + 86400000))
+								: tanggaSOAwal);
+				pstmt.setString(
+						3,
+						(tanggaSOAkhir == null || tanggaSOAkhir.equals("")) ? sdf
+								.format(new Date(
+										System.currentTimeMillis() + 86400000))
+								: tanggaSOAkhir);
 				rs = pstmt.executeQuery();
 				if (rs.next())
 					total_pages = rs.getInt(1);
@@ -540,10 +575,18 @@ public class StockOrderUpdate extends HttpServlet {
 				pstmt = conn.prepareStatement("select * from (" + tableQuery
 						+ ") as tbl where tbl.ROWNUMBER between ? and ?");
 				pstmt.setString(1, nomorSO);
-				pstmt.setString(2, (tanggaSOAwal == null || tanggaSOAwal
-						.equals("")) ? sdf.format(new Date(System.currentTimeMillis()+86400000)) : tanggaSOAwal);
-				pstmt.setString(3, (tanggaSOAkhir == null || tanggaSOAkhir
-						.equals("")) ? sdf.format(new Date(System.currentTimeMillis()+86400000)) : tanggaSOAkhir);
+				pstmt.setString(
+						2,
+						(tanggaSOAwal == null || tanggaSOAwal.equals("")) ? sdf
+								.format(new Date(
+										System.currentTimeMillis() + 86400000))
+								: tanggaSOAwal);
+				pstmt.setString(
+						3,
+						(tanggaSOAkhir == null || tanggaSOAkhir.equals("")) ? sdf
+								.format(new Date(
+										System.currentTimeMillis() + 86400000))
+								: tanggaSOAkhir);
 				pstmt.setInt(4, 0);
 				pstmt.setInt(5, 10);
 				rs = pstmt.executeQuery();

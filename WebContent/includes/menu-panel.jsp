@@ -56,14 +56,7 @@
     <td>
     </td>
     <td>
-        <a href="<%=request.getContextPath()%>/pages/stock-order">Create</a>
-    </td>
-</tr>
-<tr>
-    <td>
-    </td>
-    <td>
-        <a href="<%=request.getContextPath()%>/pages/stock-order-update">Modify</a>
+        <a href="<%=request.getContextPath()%>/pages/stock-order-update">Stock Order</a>
     </td>
 </tr>
 <% } 

@@ -11,6 +11,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.apache.log4j.Logger;
+
+import database.Connector;
 import exception.DaoException;
 import exception.UserNotFoundException;
 
@@ -49,11 +51,16 @@ public class User implements Serializable {
         public static final String STMT_QUERY_INSERTED_USER_ID = "select user_id from user where username=?";                      
 
         public static final String STMT_INSERT_USER_AUDIT = "insert into user_audit(user,ip_address,action) values (?,?,?)";
+        
+        public static final String getKodeCabang = "select KODE_CAB,KODE_CUST from \"DB2ADMIN\".tbmasuserid where KODE_USER=?";
+    	
+        public static final String getKodeCustomer = "call P_JVMASCUST(?,?,?)";
 
         public static ArrayList<String> getMenus(Connection conn, int userid)
                 throws DaoException {
+        	PreparedStatement stmt = null;
             try {
-                PreparedStatement stmt = conn
+                stmt = conn
                         .prepareStatement(STMT_QUERY_MENU);
                 stmt.setInt(1, userid);
                 ArrayList<String> result = new ArrayList<String>();
@@ -64,6 +71,14 @@ public class User implements Serializable {
                 return result;
             } catch (SQLException ex) {
                 throw new DaoException(ex);
+	        } finally{
+	            try {					
+					if(stmt!=null)
+						stmt.close();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
             }
         }
 
@@ -275,13 +290,15 @@ public class User implements Serializable {
 
         public static User load(Connection conn, int userId)
                 throws UserNotFoundException, DaoException {
-            try {
+        	PreparedStatement pstmt = null;
+        	ResultSet rs = null;        	
+            try {            	    			            	
                 // get the user            	
-                PreparedStatement stmt = conn.prepareStatement(STMT_QUERY_USER);
-                stmt.setInt(1, userId);
-                ResultSet rs = stmt.executeQuery();
-                if (rs.next()) {
-                    User user = new User();
+    			pstmt = conn.prepareStatement(STMT_QUERY_USER);
+    			pstmt.setInt(1, userId);
+                rs = pstmt.executeQuery();
+                if (rs.next()) {   
+                	User user = new User();
                     user.setUserId(userId);
                     user.setUsername(rs.getString(1));
                     user.setPassword(rs.getString(2));
@@ -297,18 +314,55 @@ public class User implements Serializable {
                     user.setGroup(rs.getString(12));                         
                     Set<Integer> setRole = new HashSet<Integer>();                                            
                     setRole.add(Integer.parseInt(user.getGroup()));                    
-                    user.setRoles(setRole);                    
+                    user.setRoles(setRole);        
+                    rs.close();
+        			pstmt.close();
                     // load the menus
                     user.setMenus(getMenus(conn, userId));
+                    
+                    conn = Connector.getInstance().getConnectionAdmin();
+                    pstmt = conn.prepareStatement(getKodeCabang);
+        			pstmt.setString(1,user.getUsername().toUpperCase());
+        			rs = pstmt.executeQuery();
+        			if(rs.next()){
+        				user.setKodeCabang(rs.getString(1));
+        				user.setKodeCustomer(rs.getString(2));
+        			}
+        			rs.close();
+        			pstmt.close();					
+        			
+        			conn = Connector.getInstance().getConnectionAdmin();
+        			pstmt = conn.prepareStatement(getKodeCustomer);
+        			pstmt.setString(1,user.getKodeCabang());
+        			pstmt.setString(2,user.getKodeCustomer());
+        			pstmt.setInt(3,1);
+        			rs = pstmt.executeQuery();
+        			if(rs.next()){
+        				user.setNamaCustomer(rs.getString(2));
+        				user.setAlamatCustomer(rs.getString(3));
+        				user.setKotaCustomer(rs.getString(4));
+        				user.setNpwpCustomer(rs.getString(5));
+        			}
+        			
                     return user;
                 } else {
                     throw new UserNotFoundException(
                             "No user found with user_id " + userId);
                 }
-            } catch (SQLException ex) {
+            } catch (Exception ex) {
                 ex.printStackTrace();
                 throw new DaoException(ex);
-            }
+            } finally {
+    			try {
+    				if(rs!=null)
+    					rs.close();
+    				if(pstmt!=null)
+    					pstmt.close();
+    			} catch (Exception e) {
+    				// TODO Auto-generated catch block
+    				e.printStackTrace();
+    			}
+    		}
         }        
 
         public static void newsave(Connection conn, User user) throws DaoException {
@@ -436,6 +490,18 @@ public class User implements Serializable {
     String address;
 
     String group;
+    
+    String kodeCabang;
+    
+	String kodeCustomer;
+    
+    String namaCustomer;
+    
+	String alamatCustomer;
+	
+	String kotaCustomer;
+	
+	String npwpCustomer;
 
     ArrayList<String> menus;
 
@@ -571,4 +637,53 @@ public class User implements Serializable {
     public void setMenus(ArrayList<String> menus) {
         this.menus = menus;
     }
+
+	public String getNamaCustomer() {
+		return namaCustomer;
+	}
+
+	public void setNamaCustomer(String namaCustomer) {
+		this.namaCustomer = namaCustomer;
+	}
+
+	public String getAlamatCustomer() {
+		return alamatCustomer;
+	}
+
+	public void setAlamatCustomer(String alamatCustomer) {
+		this.alamatCustomer = alamatCustomer;
+	}
+
+	public String getKotaCustomer() {
+		return kotaCustomer;
+	}
+
+	public void setKotaCustomer(String kotaCustomer) {
+		this.kotaCustomer = kotaCustomer;
+	}
+
+	public String getNpwpCustomer() {
+		return npwpCustomer;
+	}
+
+	public void setNpwpCustomer(String npwpCustomer) {
+		this.npwpCustomer = npwpCustomer;
+	}
+
+	public String getKodeCabang() {
+		return kodeCabang;
+	}
+
+	public void setKodeCabang(String kodeCabang) {
+		this.kodeCabang = kodeCabang;
+	}
+
+	public String getKodeCustomer() {
+		return kodeCustomer;
+	}
+
+	public void setKodeCustomer(String kodeCustomer) {
+		this.kodeCustomer = kodeCustomer;
+	}		
+    
 }

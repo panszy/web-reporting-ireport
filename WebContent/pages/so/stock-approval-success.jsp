@@ -10,7 +10,7 @@
 	style="background-image: url('<%=request.getContextPath()%>/images/item-header-space.jpg'); background-repeat: repeat-x;"
 	width=400>
 	<tr>
-		<td class="item-header">Kode Cabang</td>
+		<td class="item-header">No</td>
 		<td class="item-header">No. SO</td>		
 		<td class="item-header">No. PO</td>								
 	</tr>
