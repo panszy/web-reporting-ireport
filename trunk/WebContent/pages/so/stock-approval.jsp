@@ -93,6 +93,22 @@ String currentDate = sdf.format(new Date());
             }
                     );
         </script></td>
+        <td rowspan="3">
+ <table bgcolor="white">
+ <tr>
+ <td>[<%=user.getKodeCustomer()%>]&nbsp;<%=user.getNamaCustomer()%> </td>
+ </tr>
+ <tr>
+ <td><%=user.getAlamatCustomer()%> </td>
+ </tr>
+ <tr>
+ <td><%=user.getKotaCustomer()%> </td>
+ </tr>
+ <tr>
+ <td>NPWP&nbsp;:&nbsp;<%=user.getNpwpCustomer()%> </td>
+ </tr>
+ </table>
+ </td>
 </tr>
 <tr>
 <td>Nomor SO</td>
@@ -128,7 +144,7 @@ String currentDate = sdf.format(new Date());
 		<%
 			}
 		%>		
-		<td class="item"><input onClick="CheckItem(document.info.approved,document.info.deletedData)" type="checkbox" value="<%=rowData.get(0)+";"+rowData.get(3)+";"+rowData.get(5)%>" name="approved"></td>
+		<td class="item"><input onClick="CheckItem(document.info.approved,document.info.deletedData)" type="checkbox" value="<%=rowData.get(0)+";"+rowData.get(2)+";"+rowData.get(4)%>" name="approved"></td>
 	</tr>	
 	<%	
 		i++;

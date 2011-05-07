@@ -30,9 +30,7 @@ import exception.DaoException;
 public class StockOrder extends HttpServlet {
 	private final String comboTypeSOQuery = "select NAMA_TYPESO,KODE_TYPESO from \"DB2ADMIN\".tbmastypeso where KODE_TYPESO=2 or KODE_TYPESO=4";
 	private final String comboJenisTransaksi = "select NAMA_TRN,KODE_TRN from \"DB2ADMIN\".tbmastrn where KODE_TRN=1 or KODE_TRN=3";
-	private final String comboTipeTransaksi = "select NAMA_TYPEDO,KODE_TYPEDO from \"DB2ADMIN\".tbmastypedo where KODE_TYPEDO=1 or KODE_TYPEDO=2";
-	private final String getKodeCabang = "select KODE_CAB from \"DB2ADMIN\".tbmasuserid where KODE_USER=?";
-	private final String getKodeCustomer = "call P_JVMASCUST(?,?)";
+	private final String comboTipeTransaksi = "select NAMA_TYPEDO,KODE_TYPEDO from \"DB2ADMIN\".tbmastypedo where KODE_TYPEDO=1 or KODE_TYPEDO=2";	
 	private final String simpanOrder = "call SPIUSO_SMS(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 	private final String hapusOrder = "call SPDELSO_SMS(?,?,?)";
 	private final String simpanOrderDetail = "call SPIUDTSO_SMS(?,?,?,?,?,?)";
@@ -168,29 +166,11 @@ public class StockOrder extends HttpServlet {
 				
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;	
-		String kodeCabang = "";
-		String kodeCustomer = "";
-		try {
+		String kodeCabang = UserSession.Factory.getUserSession(request).getUser().getKodeCabang();
+		String kodeCustomer = UserSession.Factory.getUserSession(request).getUser().getKodeCustomer();		
+
+		try {								
 			Connection conn = Connector.getInstance().getConnectionAdmin();
-			pstmt = conn.prepareStatement(getKodeCabang);
-			pstmt.setString(1,UserSession.Factory.getUserSession(request).getUser().getUsername().toUpperCase());
-			rs = pstmt.executeQuery();
-			if(rs.next())
-				kodeCabang = rs.getString(1);
-			rs.close();
-			pstmt.close();					
-			
-			conn = Connector.getInstance().getConnectionAdmin();
-			pstmt = conn.prepareStatement(getKodeCustomer);
-			pstmt.setString(1,kodeCabang);
-			pstmt.setString(2,UserSession.Factory.getUserSession(request).getUser().getFullName());
-			rs = pstmt.executeQuery();
-			if(rs.next())
-				kodeCustomer = rs.getString(1);			
-			rs.close();
-			pstmt.close();			
-			
-			conn = Connector.getInstance().getConnectionAdmin();
 			pstmt = conn.prepareStatement(simpanOrder);
 			pstmt.setString(1,kodeCabang);
 			pstmt.setString(2,kodeTransaksi);
@@ -201,7 +181,7 @@ public class StockOrder extends HttpServlet {
 			pstmt.setString(7,tanggalSo);
 			pstmt.setString(8,noSo);
 			pstmt.setString(9,tanggalPo);
-			pstmt.setString(10,noPo);
+			pstmt.setString(10,"PO."+noPo);
 			pstmt.setString(11,tipeBayar.equals("tunai")?"0":"1");
 			pstmt.setString(12,"0");
 			pstmt.setString(13,konsinyasi);

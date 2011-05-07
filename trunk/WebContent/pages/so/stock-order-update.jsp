@@ -1,5 +1,7 @@
-<%@ page import="java.text.SimpleDateFormat"%>
-<%@ page import="java.util.Date"%>
+<%@page import="java.text.SimpleDateFormat"%>
+<%@page import="java.util.Date"%>
+<%@page import="web.UserSession"%>
+<%@page import="web.User"%>
 <%
 String title = "Stock Update";
 int pages=request.getAttribute("pages")==null?1:Integer.parseInt((String)request.getAttribute("pages"));
@@ -13,6 +15,7 @@ ArrayList<String> tableColumn = (ArrayList<String>) request
 .getAttribute("tableColumn");
 SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy");
 String currentDate = sdf.format(new Date());
+User user = UserSession.Factory.getUserSession(request).getUser();
 %>
 <%@ include file="/includes/header.jsp"%>
 <link rel="stylesheet" href="/ireport/script/example.css"
@@ -33,7 +36,7 @@ String currentDate = sdf.format(new Date());
 <script type="text/javascript">    
         
     function search(){
-    	ChangeValue(document.info.Action,'Search')
+    	ChangeValue(document.info.Action,'Search');
     	document.info.submit();
     }
         
@@ -49,14 +52,45 @@ String currentDate = sdf.format(new Date());
         }
         if(condition || (total>0 && document.info.deleted.checked==true)){
             if (confirm("Are you sure you want to delete")) {  
-                ChangeValue(document.info.Action,'Delete')         
+                ChangeValue(document.info.Action,'Hapus');         
                 document.info.submit();
             }                       
         } else {
             alert ('You didn\'t choose any of the checkboxes!');
         }
     }            
-    
+
+    function updates() {        
+    	i = 0;
+    	counter = 0;
+        var condition = false;      
+        while(i < document.info.deleted.length){
+            if(document.info.deleted[i].checked==true){
+                counter++;
+                if(counter>1){
+                	condition = true;
+                    break;
+                }
+            }
+            i++;
+        }        
+        if(condition){
+        	alert ('You can only choose one of the checkboxes!');
+        } else {      
+        	ChangeValue(document.info.Action,'Koreksi');         
+            document.info.submit();        
+        }        
+    }
+
+    function creates() {                
+        ChangeValue(document.info.Action,'Baru');         
+        document.info.submit();                   
+    }
+
+    function exits() {                
+        ChangeValue(document.info.Action,'Keluar');         
+        document.info.submit();                   
+    }
     
 </script>
 
@@ -94,19 +128,39 @@ String currentDate = sdf.format(new Date());
             }
                     );
         </script></td>
+ <td rowspan="3">
+ <table bgcolor="white">
+ <tr>
+ <td>[<%=user.getKodeCustomer()%>]&nbsp;<%=user.getNamaCustomer()%> </td>
+ </tr>
+ <tr>
+ <td><%=user.getAlamatCustomer()%> </td>
+ </tr>
+ <tr>
+ <td><%=user.getKotaCustomer()%> </td>
+ </tr>
+ <tr>
+ <td>NPWP&nbsp;:&nbsp;<%=user.getNpwpCustomer()%> </td>
+ </tr>
+ </table>
+ </td>       
 </tr>
 <tr>
 <td>Nomor SO</td>
 <td colspan="2"><input type="text" size="30" readonly name="nomor_so" value="<%=nomorSO %>" >&nbsp;<a onclick="OpenPop_UpList('<%=request.getContextPath()%>/pages/list?title=Cari%20NO%20SO%20SMS&tableTitle=Daftar%20NO%20SO%20SMS&itemName=nomor_so&showFields=no_so_sms,tgl_so_sms,no_po,tgl_po&queryData=kodeSOQuery');return false;" href="">Look up</a></td>
 </tr>
-</table>
+<tr>
+<td colspan="3">
 <input type="button" value="Search" onClick="search()">
-<input type="hidden" size=30 name="Action" value=""></p>
+<input type="hidden" size=30 name="Action" value="">
+</td>
+</tr>
+</table>
 <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <%if(tableColumn!=null && tableColumn.size() > 0){ %>
 <table class="item"
 	style="background-image: url('<%=request.getContextPath()%>/images/item-header-space.jpg'); background-repeat: repeat-x;"
-	width=400>	
+	width=500>	
 	<tr>
 		<%
 			for (String column : tableColumn) {
@@ -114,9 +168,8 @@ String currentDate = sdf.format(new Date());
 		<td class="item-header"><%=column%></td>
 		<%
 			}
-		%>
-		<td class="item-header">Edit</td>
-		<td class="item-header">Check</td>
+		%>		
+		<td class="item-header">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Check</td>
 	</tr>
 	<%	
 	int i=0;
@@ -129,37 +182,44 @@ String currentDate = sdf.format(new Date());
 		<td class="item"><%=columnData%></td>
 		<%
 			}
-		%>
-		<td class="item"><a href="<%=request.getContextPath()%>/pages/stock-order-update?no_so=<%=rowData.get(3)%>"><u>Edit</u></a></td>
-		<td class="item"><input onClick="CheckItem(document.info.deleted,document.info.deletedData)" type="checkbox" value="<%=rowData.get(0)+";"+rowData.get(3)+";"+rowData.get(5)%>" name=deleted></td>
+		%>	
+		<td class="item" align="right"><input onClick="CheckItem(document.info.deleted,document.info.deletedData)" type="checkbox" value="<%=rowData.get(0)+";"+rowData.get(2)+";"+rowData.get(4)%>" name=deleted></td>
 	</tr>	
 	<%	
 		i++;
 		}
 	%>	
-	<tr>
-    <td class="item" colspan="<%=tableColumn.size()+1%>">
-        <input type="button" name="btnDelete" value="Delete" onClick="deletes(<%=i%>)"></button>      
-    </td>
-    <td class="item">
-        <input onClick="CheckAll(document.info.deleted,document.info.deletedData)" type="checkbox" value="" name="all">
+	<tr>    
+	<td class="item" colspan="<%=tableColumn.size()%>"></td>
+    <td class="item" align="right">
+        All&nbsp;<input onClick="CheckAll(document.info.deleted,document.info.deletedData)" type="checkbox" value="" name="all">
     </td>
     </tr>
     <input type="hidden" name="deletedData">
 </table>
-<p align="right">
+<table>
+<p>
+<div align="right">
 <%  if(pages>1){ %>
-        <a href="<%=request.getContextPath()%>/pages/stock-order-update?page=<%=pages-1%>&tanggal_so_awal=<%=tanggaSOAwal%>&tanggal_so_akhir=<%=tanggaSOAkhir%>&nomor_so=<%=nomorSO%>"><u>Prev</u></a>
+        <a href="<%=request.getContextPath()%>/pages/stock-order-update?page=<%=pages-1%>&tanggal_so_awal=<%=tanggaSOAwal%>&tanggal_so_akhir=<%=tanggaSOAkhir%>&nomor_so=<%=nomorSO%>"><u><%="<<" %></u></a>
 <%
     }
 %>
    Page <%=pages%> of <%=total_pages%>   
 <%  if (pages<total_pages){ %>   
-        <a href="<%=request.getContextPath()%>/pages/stock-order-update?page=<%=pages+1%>&tanggal_so_awal=<%=tanggaSOAwal%>&tanggal_so_akhir=<%=tanggaSOAkhir%>&nomor_so=<%=nomorSO%>"><u>Next</u></a>
+        <a href="<%=request.getContextPath()%>/pages/stock-order-update?page=<%=pages+1%>&tanggal_so_awal=<%=tanggaSOAwal%>&tanggal_so_akhir=<%=tanggaSOAkhir%>&nomor_so=<%=nomorSO%>"><u><%=">>" %></u></a>
 <% 
     }
-%>        
+%>    
+</div>    
+<div align="left">
+<input type="button" name="btnBaru" value="Baru" onClick="creates()"></button>
+<input type="button" name="btnKoreksi" value="Koreksi" onClick="updates()"></button>
+<input type="button" name="btnHapus" value="Hapus" onClick="deletes(<%=i%>)"></button>
+<input type="button" name="btnKeluar" value="Keluar" onClick="exits()"></button>
+</div>
 </p>
+</table>
 <%} %>
 </form>
 <%@ include file="/includes/footer.jsp"%>
