@@ -46,6 +46,7 @@ public class StockOrderUpdate extends HttpServlet {
 	private final String comboTypeSOQuery = "select NAMA_TYPESO,KODE_TYPESO from \"DB2ADMIN\".tbmastypeso where KODE_TYPESO=2 or KODE_TYPESO=4";
 	private final String comboJenisTransaksi = "select NAMA_TRN,KODE_TRN from \"DB2ADMIN\".tbmastrn where KODE_TRN=1 or KODE_TRN=3";
 	private final String comboTipeTransaksi = "select NAMA_TYPEDO,KODE_TYPEDO from \"DB2ADMIN\".tbmastypedo where KODE_TYPEDO=1 or KODE_TYPEDO=2";
+	private final String comboJenisObat = "select NAMA_JNSOBAT,KODE_JNSOBAT from \"DB2ADMIN\".tbmasjnsobat where KODE_JNSOBAT = 1 AND F_AKTIF =1";
 	private final String simpanOrder = "call SPIUSO_SMS(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 	private final String hapusOrder = "call SPDELSO_SMS(?,?,?)";
 	private final String updateOrderDetail = "update \"DB2ADMIN\".TBDTSO_SMS set KODE_BAR=?, QTY_SO=?, QTY_PO=? where NO_SO_SMS=?";
@@ -181,6 +182,17 @@ public class StockOrderUpdate extends HttpServlet {
 							+ rs.getString(2));
 				}
 				request.setAttribute("comboJenisTransaksi", comboJenisTransaksi);
+				rs.close();
+				pstmt.close();
+				
+				conn = Connector.getInstance().getConnectionAdmin();
+				pstmt = conn.prepareStatement(comboJenisObat);
+				rs = pstmt.executeQuery();
+				ArrayList<String> comboJenisObat = new ArrayList<String>();
+				while(rs.next()){
+					comboJenisObat.add(rs.getString(1)+","+rs.getString(2));
+				}
+				request.setAttribute("comboJenisObat", comboJenisObat);
 				rs.close();
 				pstmt.close();
 
@@ -458,7 +470,7 @@ public class StockOrderUpdate extends HttpServlet {
 				so.doGet(request, response);
 			} else if (action.equalsIgnoreCase("Keluar")) {
 				request.getRequestDispatcher("/").forward(request, response);
-			} else if (action.equalsIgnoreCase("Modify")) {
+			} else if (action.equalsIgnoreCase("Simpan")) {
 				String noSO = request.getParameter("NO_SO_SMS");
 				String kodeCabang = request.getParameter("KODE_CAB");
 				String kodeCustomer = request.getParameter("KODE_CUST");

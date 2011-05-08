@@ -9,7 +9,7 @@
 <%
 String title = request.getParameter("title");
 String tableTitle = request.getParameter("tableTitle");
-String[] showFields = request.getParameter("showFields").split(","); 
+String[] showFields = request.getParameter("showFields").replace(';',' ').split(","); 
 String showFieldsFlat = request.getParameter("showFields");
 String itemName = request.getParameter("itemName");
 String queryData = request.getParameter("queryData");
@@ -40,13 +40,16 @@ String KindOfsearch =request.getParameter("KindOfsearch")==null?"":request.getPa
 			window.close();
 		}    	  
     </script>
-
-<b><%=title%></b> <br><br>
+<p style="font: 16" align="right"><b><%=title%></b></p>
 <select
     size=1 name=field>
-    <% for(String showField : showFields){ %>
-    <option value="<%=showField %>" <%if(KindOfsearch.equalsIgnoreCase(showField)){ %> selected <%} %>><%=showField %></option>
-    <%} %>    
+    <%
+    int a = 0;
+    for(String showField : showFields){ %>
+    <option value="<%=a%>" <%if(KindOfsearch.equalsIgnoreCase(Integer.toString(a))){ %> selected <%} %>><%=showField %></option>
+    <%
+    a++;
+    } %>    
     &lt;\SELECT&gt;
 </select>
 &nbsp;&nbsp;&nbsp;&nbsp; 
@@ -99,13 +102,13 @@ String KindOfsearch =request.getParameter("KindOfsearch")==null?"":request.getPa
 </table>
 <p align="right">
 <%  if(pages>1){ %>
-        <a href="<%=request.getContextPath()%>/pages/list?page=<%=pages-1%>&KindOfsearch=<%=KindOfsearch%>&WordOfsearch=<%=WordOfsearch%>&title=<%= title.replaceAll(" ","%20")%>&tableTitle=<%= tableTitle.replaceAll(" ","%20")%>&itemName=<%= itemName.replaceAll(" ","%20")%>&showFields=<%= showFieldsFlat.replaceAll(" ","%20")%>&queryData=<%= queryData.replaceAll(" ","%20")%>"><u>Prev</u></a>
+        <a href="<%=request.getContextPath()%>/pages/list?page=<%=pages-1%>&KindOfsearch=<%=KindOfsearch%>&WordOfsearch=<%=WordOfsearch%>&title=<%= title.replaceAll(" ","%20")%>&tableTitle=<%= tableTitle.replaceAll(" ","%20")%>&itemName=<%= itemName.replaceAll(" ","%20")%>&showFields=<%= showFieldsFlat.replaceAll(" ","%20")%>&queryData=<%= queryData.replaceAll(" ","%20")%>"><u><%="<<" %></u></a>
 <%
     }
 %>
    Page <%=pages%> of <%=total_pages%>   
 <%  if (pages<total_pages){ %>   
-        <a href="<%=request.getContextPath()%>/pages/list?page=<%=pages+1%>&KindOfsearch=<%=KindOfsearch%>&WordOfsearch=<%=WordOfsearch%>&title=<%= title.replaceAll(" ","%20")%>&tableTitle=<%= tableTitle.replaceAll(" ","%20")%>&itemName=<%= itemName.replaceAll(" ","%20")%>&showFields=<%= showFieldsFlat.replaceAll(" ","%20")%>&queryData=<%= queryData.replaceAll(" ","%20")%>"><u>Next</u></a>
+        <a href="<%=request.getContextPath()%>/pages/list?page=<%=pages+1%>&KindOfsearch=<%=KindOfsearch%>&WordOfsearch=<%=WordOfsearch%>&title=<%= title.replaceAll(" ","%20")%>&tableTitle=<%= tableTitle.replaceAll(" ","%20")%>&itemName=<%= itemName.replaceAll(" ","%20")%>&showFields=<%= showFieldsFlat.replaceAll(" ","%20")%>&queryData=<%= queryData.replaceAll(" ","%20")%>"><u><%=">>" %></u></a>
 <% 
     }
 %>        
