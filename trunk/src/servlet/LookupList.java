@@ -41,10 +41,10 @@ public class LookupList extends HttpServlet {
 		String showFields = request.getParameter("showFields"); 
 		String itemName = request.getParameter("itemName");		
 		String queryData = (String)request.getParameter("queryData");		
-		String page = (String) request.getParameter("page");
-		String KindOfsearch = (String) request.getParameter("KindOfsearch");
-		String WordOfsearch = (String) request.getParameter("WordOfsearch");
+		String page = (String) request.getParameter("page");		
 		if (page != null) {
+			int KindOfsearch = Integer.parseInt((String) request.getParameter("KindOfsearch"));
+			String WordOfsearch = (String) request.getParameter("WordOfsearch");
 			try {
 				int total_pages = LookupQuery.countNumberLike(
 						Connector.getInstance().getConnectionAdmin(), KindOfsearch,
@@ -91,7 +91,7 @@ public class LookupList extends HttpServlet {
 		if (request.getParameter("Action") != null) {
 			String action = request.getParameter("Action");
 			if (action.equalsIgnoreCase("Search")) {
-				String KindOfsearch = (String) request.getParameter("field");
+				int KindOfsearch = Integer.parseInt((String) request.getParameter("field"));
 				String WordOfsearch = (String) request.getParameter("Value");
 				try {
 					List<ArrayList<String>> datas = LookupQuery
