@@ -22,8 +22,7 @@
 <script type="text/javascript">    
         
     function batal(){    	
-    	document.getElementById('tab1').tabber.tabShow(0);
-    	return false;
+    	document.info.reset();
     }                               
     
 </script>
@@ -167,7 +166,7 @@
 <br><br><br><br><br><br><br><br><br><br><br>
 <input type="submit" value="Simpan" name="Action">
 <input type="submit" value="Hapus" name="Action">
-<input type="reset" value="Batal" onClick="batal()">
+<input type="submit" value="Batal" name="Action" onClick="batal()">
 
 </div>
 

@@ -52,7 +52,7 @@ public class StockOrder extends HttpServlet {
 	 *      response)
 	 */
 	protected void doGet(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {		
+			HttpServletResponse response) throws ServletException, IOException {
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try {
@@ -60,41 +60,42 @@ public class StockOrder extends HttpServlet {
 			pstmt = conn.prepareStatement(comboTypeSOQuery);
 			rs = pstmt.executeQuery();
 			ArrayList<String> comboTypeSOQuery = new ArrayList<String>();
-			while(rs.next()){
-				comboTypeSOQuery.add(rs.getString(1)+","+rs.getString(2));
+			while (rs.next()) {
+				comboTypeSOQuery.add(rs.getString(1) + "," + rs.getString(2));
 			}
-			request.setAttribute("comboTypeSO", comboTypeSOQuery);			
+			request.setAttribute("comboTypeSO", comboTypeSOQuery);
 			rs.close();
 			pstmt.close();
-			
+
 			conn = Connector.getInstance().getConnectionAdmin();
 			pstmt = conn.prepareStatement(comboJenisTransaksi);
 			rs = pstmt.executeQuery();
 			ArrayList<String> comboJenisTransaksi = new ArrayList<String>();
-			while(rs.next()){
-				comboJenisTransaksi.add(rs.getString(1)+","+rs.getString(2));
+			while (rs.next()) {
+				comboJenisTransaksi
+						.add(rs.getString(1) + "," + rs.getString(2));
 			}
 			request.setAttribute("comboJenisTransaksi", comboJenisTransaksi);
 			rs.close();
 			pstmt.close();
-			
+
 			conn = Connector.getInstance().getConnectionAdmin();
 			pstmt = conn.prepareStatement(comboJenisObat);
 			rs = pstmt.executeQuery();
 			ArrayList<String> comboJenisObat = new ArrayList<String>();
-			while(rs.next()){
-				comboJenisObat.add(rs.getString(1)+","+rs.getString(2));
+			while (rs.next()) {
+				comboJenisObat.add(rs.getString(1) + "," + rs.getString(2));
 			}
 			request.setAttribute("comboJenisObat", comboJenisObat);
 			rs.close();
 			pstmt.close();
-			
+
 			conn = Connector.getInstance().getConnectionAdmin();
 			pstmt = conn.prepareStatement(comboTipeTransaksi);
 			rs = pstmt.executeQuery();
 			ArrayList<String> comboTipeTransaksi = new ArrayList<String>();
-			while(rs.next()){
-				comboTipeTransaksi.add(rs.getString(1)+","+rs.getString(2));
+			while (rs.next()) {
+				comboTipeTransaksi.add(rs.getString(1) + "," + rs.getString(2));
 			}
 			request.setAttribute("comboTipeTransaksi", comboTipeTransaksi);
 		} catch (DaoException e) {
@@ -108,15 +109,15 @@ public class StockOrder extends HttpServlet {
 			e.printStackTrace();
 		} finally {
 			try {
-				if(rs!=null)
+				if (rs != null)
 					rs.close();
-				if(pstmt!=null)
+				if (pstmt != null)
 					pstmt.close();
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		}		
+		}
 		request.getRequestDispatcher("/pages/so/stock-order.jsp").forward(
 				request, response);
 	}
@@ -127,126 +128,136 @@ public class StockOrder extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-		
+
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy");
 		SimpleDateFormat sdfOutput = new SimpleDateFormat("yyyy-MM-dd");
-		
-		String noSo = "";
-		File f = new File("counter.donotdelete");
-		if(f.exists()){
-			FileReader fr = new FileReader(f);
-			char[] buffer = new char[1024];
-			int length = fr.read(buffer);
-			fr.close();
-			noSo = String.copyValueOf(buffer,0,length);
-			long counter = Long.parseLong(String.copyValueOf(buffer,0,length).substring(8));						
-			if(f.delete()){
-				String tempCounter = Long.toString(++counter);
-				while(tempCounter.length() < 9)
-					tempCounter = "0"+tempCounter;
-				String newValue = "SM.5.11."+tempCounter;
+		String action = request.getParameter("Action");
+		if (action.equalsIgnoreCase("Batal")) {
+			response.sendRedirect(request.getContextPath()
+					+ "/pages/stock-order-update?page=1&tanggal_so_awal="
+					+ sdfOutput.format(new Date()) + "&tanggal_so_akhir="
+					+ sdfOutput.format(new Date()) + "&nomor_so=");
+		} else {
+			String noSo = "";
+			File f = new File("counter.donotdelete");
+			if (f.exists()) {
+				FileReader fr = new FileReader(f);
+				char[] buffer = new char[1024];
+				int length = fr.read(buffer);
+				fr.close();
+				noSo = String.copyValueOf(buffer, 0, length);
+				long counter = Long.parseLong(String.copyValueOf(buffer, 0,
+						length).substring(8));
+				if (f.delete()) {
+					String tempCounter = Long.toString(++counter);
+					while (tempCounter.length() < 9)
+						tempCounter = "0" + tempCounter;
+					String newValue = "SM.5.11." + tempCounter;
+					FileWriter fw = new FileWriter("counter.donotdelete");
+					fw.write(newValue);
+					fw.close();
+				}
+			} else {
+				noSo = "SM.5.11.000000001";
 				FileWriter fw = new FileWriter("counter.donotdelete");
-				fw.write(newValue);
+				fw.write("SM.5.11.000000001");
 				fw.close();
 			}
-		} else {
-			noSo = "SM.5.11.000000001";
-			FileWriter fw = new FileWriter("counter.donotdelete");
-			fw.write("SM.5.11.000000001");
-			fw.close();
-		}
-				
-		String tanggalSo = request.getParameter("tanggal_so");
-		String noPo = request.getParameter("po");
-		String tanggalPo = request.getParameter("tanggal_po");
-		String kodeBarang = request.getParameter("kode_barang");
-		String kodeTransaksi = request.getParameter("jenis_transaksi");
-		String quantity = request.getParameter("quantity_so");
-		String tipeBayar = request.getParameter("tipe_bayar");
-		String tipeDO = request.getParameter("tipe_transaksi");
-		String catatan = request.getParameter("catatan");
-		String tipeSO = request.getParameter("type_so");
-		String konsinyasi = tipeSO.equals("4")?"1":"0";
-				
-		try {
-			tanggalPo = sdfOutput.format(sdf.parse(tanggalPo));
-			tanggalSo = sdfOutput.format(sdf.parse(tanggalSo));
-		} catch (ParseException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-				
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;	
-		String kodeCabang = UserSession.Factory.getUserSession(request).getUser().getKodeCabang();
-		String kodeCustomer = UserSession.Factory.getUserSession(request).getUser().getKodeCustomer();		
 
-		try {								
-			Connection conn = Connector.getInstance().getConnectionAdmin();
-			pstmt = conn.prepareStatement(simpanOrder);
-			pstmt.setString(1,kodeCabang);
-			pstmt.setString(2,kodeTransaksi);
-			pstmt.setString(3,kodeCustomer);
-			pstmt.setString(4,"9999");
-			pstmt.setString(5,tipeSO);
-			pstmt.setString(6,tipeDO);
-			pstmt.setString(7,tanggalSo);
-			pstmt.setString(8,noSo);
-			pstmt.setString(9,tanggalPo);
-			pstmt.setString(10,"PO."+noPo);
-			pstmt.setString(11,tipeBayar.equals("tunai")?"0":"1");
-			pstmt.setString(12,"0");
-			pstmt.setString(13,konsinyasi);
-			pstmt.setString(14,"0");
-			pstmt.setString(15,"0");
-			pstmt.setString(16,catatan);
-			pstmt.setInt(17,0);
-			pstmt.executeUpdate();	
-			pstmt.close();			
-						
-			conn = Connector.getInstance().getConnectionAdmin();
-			pstmt = conn.prepareStatement(simpanOrderDetail);
-			pstmt.setString(1,kodeCabang);
-			pstmt.setString(2,noSo);
-			pstmt.setInt(3,1);
-			pstmt.setString(4,kodeBarang);
-			pstmt.setString(5,quantity);
-			pstmt.setString(6,quantity);			
-			pstmt.executeUpdate();				
-			
-		} catch (DaoException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (NamingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally {
+			String tanggalSo = request.getParameter("tanggal_so");
+			String noPo = request.getParameter("po");
+			String tanggalPo = request.getParameter("tanggal_po");
+			String kodeBarang = request.getParameter("kode_barang");
+			String kodeTransaksi = request.getParameter("jenis_transaksi");
+			String quantity = request.getParameter("quantity_so");
+			String tipeBayar = request.getParameter("tipe_bayar");
+			String tipeDO = request.getParameter("tipe_transaksi");
+			String catatan = request.getParameter("catatan");
+			String tipeSO = request.getParameter("type_so");
+			String konsinyasi = tipeSO.equals("4") ? "1" : "0";
+
 			try {
-				if(rs!=null)
-					rs.close();
-				if(pstmt!=null)
-					pstmt.close();
-			} catch (Exception e) {
+				tanggalPo = sdfOutput.format(sdf.parse(tanggalPo));
+				tanggalSo = sdfOutput.format(sdf.parse(tanggalSo));
+			} catch (ParseException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			String kodeCabang = UserSession.Factory.getUserSession(request)
+					.getUser().getKodeCabang();
+			String kodeCustomer = UserSession.Factory.getUserSession(request)
+					.getUser().getKodeCustomer();
+
+			try {
+				Connection conn = Connector.getInstance().getConnectionAdmin();
+				pstmt = conn.prepareStatement(simpanOrder);
+				pstmt.setString(1, kodeCabang);
+				pstmt.setString(2, kodeTransaksi);
+				pstmt.setString(3, kodeCustomer);
+				pstmt.setString(4, "9999");
+				pstmt.setString(5, tipeSO);
+				pstmt.setString(6, tipeDO);
+				pstmt.setString(7, tanggalSo);
+				pstmt.setString(8, noSo);
+				pstmt.setString(9, tanggalPo);
+				pstmt.setString(10, "PO." + noPo);
+				pstmt.setString(11, tipeBayar.equals("tunai") ? "0" : "1");
+				pstmt.setString(12, "0");
+				pstmt.setString(13, konsinyasi);
+				pstmt.setString(14, "0");
+				pstmt.setString(15, "0");
+				pstmt.setString(16, catatan);
+				pstmt.setInt(17, 0);
+				pstmt.executeUpdate();
+				pstmt.close();
+
+				conn = Connector.getInstance().getConnectionAdmin();
+				pstmt = conn.prepareStatement(simpanOrderDetail);
+				pstmt.setString(1, kodeCabang);
+				pstmt.setString(2, noSo);
+				pstmt.setInt(3, 1);
+				pstmt.setString(4, kodeBarang);
+				pstmt.setString(5, quantity);
+				pstmt.setString(6, quantity);
+				pstmt.executeUpdate();
+
+			} catch (DaoException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+			} catch (NamingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} finally {
+				try {
+					if (rs != null)
+						rs.close();
+					if (pstmt != null)
+						pstmt.close();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
+
+			request.setAttribute("no_so", noSo);
+			request.setAttribute("tanggal_so", tanggalSo);
+			request.setAttribute("no_po", noPo);
+			request.setAttribute("tanggal_po", tanggalPo);
+			request.setAttribute("kode_barang", kodeBarang);
+			request.setAttribute("quantity", quantity);
+			request.setAttribute("tipe_bayar", tipeBayar);
+			request.setAttribute("catatan", catatan);
+			request.setAttribute("message",
+					"Stock has been ordered successfully");
+			request.getRequestDispatcher("/pages/so/stock-order-success.jsp")
+					.forward(request, response);
 		}
-		
-		
-		request.setAttribute("no_so",noSo);
-		request.setAttribute("tanggal_so",tanggalSo);
-		request.setAttribute("no_po",noPo);
-		request.setAttribute("tanggal_po",tanggalPo);
-		request.setAttribute("kode_barang",kodeBarang);
-		request.setAttribute("quantity",quantity);
-		request.setAttribute("tipe_bayar",tipeBayar);
-		request.setAttribute("catatan",catatan);
-		request.setAttribute("message", "Stock has been ordered successfully");
-		request.getRequestDispatcher("/pages/so/stock-order-success.jsp")
-				.forward(request, response);
 	}
 
 }

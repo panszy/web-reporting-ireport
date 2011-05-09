@@ -1,7 +1,9 @@
 <%@ page import="web.UserSession" %>
 <%@ page import="web.User" %>
 <%@ page import="java.util.ArrayList" %>
-<%
+<%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="java.util.Date" %>
+<%	
     UserSession userSess = UserSession.Factory.getUserSession(request);
     if (userSess.isLoggedIn()) {
         User us = userSess.getUser();        
