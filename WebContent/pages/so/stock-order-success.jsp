@@ -1,8 +1,18 @@
 
 <%
+SimpleDateFormat sdfOutput = new SimpleDateFormat("yyyy-MM-dd");
 	String title = "Stock Order";
 %>
 <%@ include file="/includes/header.jsp"%>
+<script type="text/javascript">    
+
+var timer2;
+timer2=setInterval("redirect()",1000);                      
+function redirect(){    	
+	window.location.href ='<%=request.getContextPath()%>/pages/stock-order-update?page=1&tanggal_so_awal=<%=sdfOutput.format(new Date())%>&tanggal_so_akhir=<%=sdfOutput.format(new Date())%>&nomor_so=';	
+}
+    
+</script>
 <b><%=request.getAttribute("message")%></b>
 <br><br>
 <table class="item"

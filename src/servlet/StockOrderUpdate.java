@@ -72,8 +72,8 @@ public class StockOrderUpdate extends HttpServlet {
 		String tanggaSOAkhir = request.getParameter("tanggal_so_akhir");
 		String nomorSO = request.getParameter("nomor_so");
 		String nomorSOEdit = request.getParameter("no_so");
-
 		if (page != null && nomorSOEdit == null) {
+			
 			PreparedStatement pstmt = null;
 			ResultSet rs = null;
 			try {
@@ -392,7 +392,7 @@ public class StockOrderUpdate extends HttpServlet {
 					PreparedStatement pstmt = null;
 					String noSO = request.getParameter("NO_SO_SMS");
 					String kodeCabang = request.getParameter("KODE_CAB");
-					String noPO = request.getParameter("po");
+					String noPO = "PO."+request.getParameter("po");
 					try {
 						Connection conn = Connector.getInstance()
 								.getConnection();
@@ -469,7 +469,9 @@ public class StockOrderUpdate extends HttpServlet {
 				StockOrder so = new StockOrder();
 				so.doGet(request, response);
 			} else if (action.equalsIgnoreCase("Keluar")) {
-				request.getRequestDispatcher("/").forward(request, response);
+				request.getRequestDispatcher("/").forward(request, response);				
+			} else if (action.equalsIgnoreCase("Batal")) {						
+				response.sendRedirect(request.getContextPath()+"/pages/stock-order-update?page=1&tanggal_so_awal="+sdf.format(new Date())+"&tanggal_so_akhir="+sdf.format(new Date())+"&nomor_so=");								
 			} else if (action.equalsIgnoreCase("Simpan")) {
 				String noSO = request.getParameter("NO_SO_SMS");
 				String kodeCabang = request.getParameter("KODE_CAB");

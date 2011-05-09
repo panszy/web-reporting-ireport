@@ -63,7 +63,11 @@ User user = UserSession.Factory.getUserSession(request).getUser();
     function updates() {        
     	i = 0;
     	counter = 0;
-        var condition = false;      
+        var condition = false;    
+        if(document.info.deleted.checked==false)
+        	condition = true;        	
+        else
+        	counter = 1;
         while(i < document.info.deleted.length){
             if(document.info.deleted[i].checked==true){
                 counter++;
@@ -74,13 +78,14 @@ User user = UserSession.Factory.getUserSession(request).getUser();
             }
             i++;
         }        
-        if(condition){
-        	alert ('You can only choose one of the checkboxes!');
+        
+        if(condition || counter==0){
+        	alert ('You have to choose one of the checkboxes!');
         } else {      
         	ChangeValue(document.info.Action,'Koreksi');         
             document.info.submit();        
         }        
-    }
+    } 
 
     function creates() {                
         ChangeValue(document.info.Action,'Baru');         
