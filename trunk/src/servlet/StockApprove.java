@@ -36,8 +36,8 @@ public class StockApprove extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	static Logger logger = Logger.getLogger(StockOrderUpdate.class);
-	private final String tableQuery = "SELECT ROW_NUMBER() OVER(ORDER BY TGL_SO_SMS DESC) as \"No\",TGL_SO_SMS as \"tgl SO\",NO_SO_SMS as \"no SO\",TGL_PO as \"tgl PO\",NO_PO as \"no PO\",case when TYPE_BAYAR = 1.0 then 'kredit' else 'tunai' end as \"tipe bayar\",case when F_SOBATAL = 1 then 'Batal' else case when F_APPCAB = 1 then 'Setuju' else case when F_APPPROTEK = 1 then 'Proteksi' else 'Menunggu' end end end as status,KET_SO as keterangan, ROW_NUMBER() OVER(ORDER BY TGL_SO_SMS DESC) AS ROWNUMBER FROM \"DB2ADMIN\".TBSO_SMS where (NO_SO_SMS=? or TGL_SO_SMS between ? and ?) and F_SOBATAL = 0 and F_APPCAB = 0 and F_APPPROTEK = 0";
-	private final String tableQueryCount = "SELECT count(1) FROM \"DB2ADMIN\".TBSO_SMS where (NO_SO_SMS=? or TGL_SO_SMS between ? and ?) and F_SOBATAL = 0 and F_APPCAB = 0 and F_APPPROTEK = 0";
+	private final String tableQuery = "SELECT ROW_NUMBER() OVER(ORDER BY TGL_SO_SMS DESC) as \"No\",TGL_SO_SMS as \"tgl SO\",NO_SO_SMS as \"no SO\",TGL_PO as \"tgl PO\",NO_PO as \"no PO\",case when TYPE_BAYAR = 1.0 then 'kredit' else 'tunai' end as \"tipe bayar\",case when F_SOBATAL = 1 then 'Batal' else case when F_APPCAB = 1 then 'Setuju' else case when F_APPPROTEK = 1 then 'Proteksi' else 'Menunggu' end end end as status,KET_SO as keterangan, ROW_NUMBER() OVER(ORDER BY TGL_SO_SMS DESC) AS ROWNUMBER FROM \"DB2ADMIN\".TBSO_SMS where (NO_SO_SMS=? or TGL_SO_SMS between ? and ?) and F_SOBATAL = 0 and F_APPCAB = 0 and F_APPPROTEK = 0 and KODE_CAB=? and KODE_CUST=?";
+	private final String tableQueryCount = "SELECT count(1) FROM \"DB2ADMIN\".TBSO_SMS where (NO_SO_SMS=? or TGL_SO_SMS between ? and ?) and F_SOBATAL = 0 and F_APPCAB = 0 and F_APPPROTEK = 0 and KODE_CAB=? and KODE_CUST=?";
 	private final String approveOrder = "call SPIUSO_SMS2(?,?,?,?,?)";
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -73,6 +73,8 @@ public class StockApprove extends HttpServlet {
 						.equals("")) ? sdf.format(new Date(System.currentTimeMillis()+86400000)) : tanggaSOAwal);
 				pstmt.setString(3, (tanggaSOAkhir == null || tanggaSOAkhir
 						.equals("")) ? sdf.format(new Date(System.currentTimeMillis()+86400000)) : tanggaSOAkhir);
+				pstmt.setString(4, UserSession.Factory.getUserSession(request).getUser().getKodeCabang());
+				pstmt.setString(5, UserSession.Factory.getUserSession(request).getUser().getKodeCustomer());
 				rs = pstmt.executeQuery();
 				if (rs.next())
 					total_pages = rs.getInt(1);
@@ -88,8 +90,10 @@ public class StockApprove extends HttpServlet {
 								: tanggaSOAwal);
 				pstmt.setString(3, (tanggaSOAkhir == null || tanggaSOAkhir
 						.equals("")) ? sdf.format(new Date(System.currentTimeMillis()+86400000)) : tanggaSOAkhir);
-				pstmt.setInt(4, 10 * (Integer.parseInt(page) - 1));
-				pstmt.setInt(5, (10 * (Integer.parseInt(page) - 1)) + 10);
+				pstmt.setString(4, UserSession.Factory.getUserSession(request).getUser().getKodeCabang());
+				pstmt.setString(5, UserSession.Factory.getUserSession(request).getUser().getKodeCustomer());
+				pstmt.setInt(6, 10 * (Integer.parseInt(page) - 1));
+				pstmt.setInt(7, (10 * (Integer.parseInt(page) - 1)) + 10);
 				rs = pstmt.executeQuery();
 				ArrayList<String> tableColumn = new ArrayList<String>();
 				ArrayList<ArrayList<String>> tableData = new ArrayList<ArrayList<String>>();
@@ -146,10 +150,8 @@ public class StockApprove extends HttpServlet {
 
 			String action = request.getParameter("Action");
 			if (action.equalsIgnoreCase("Search")) {
-				String tanggaSOAwal = request.getParameter("tanggal_so_awal");
-				System.out.println("tanggaSOAwal="+tanggaSOAwal);
-				String tanggaSOAkhir = request.getParameter("tanggal_so_akhir");
-				System.out.println("tanggaSOAkhir="+tanggaSOAkhir);
+				String tanggaSOAwal = request.getParameter("tanggal_so_awal");				
+				String tanggaSOAkhir = request.getParameter("tanggal_so_akhir");				
 				String nomorSO = request.getParameter("nomor_so");
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
@@ -165,6 +167,8 @@ public class StockApprove extends HttpServlet {
 					pstmt.setString(3, (tanggaSOAkhir == null || tanggaSOAkhir
 							.equals("")) ? sdf.format(new Date(System.currentTimeMillis()+86400000))
 							: tanggaSOAkhir);
+					pstmt.setString(4, UserSession.Factory.getUserSession(request).getUser().getKodeCabang());
+					pstmt.setString(5, UserSession.Factory.getUserSession(request).getUser().getKodeCustomer());
 					rs = pstmt.executeQuery();
 					if (rs.next())
 						total_pages = rs.getInt(1);
@@ -182,8 +186,10 @@ public class StockApprove extends HttpServlet {
 					pstmt.setString(3, (tanggaSOAkhir == null || tanggaSOAkhir
 							.equals("")) ? sdf.format(new Date(System.currentTimeMillis()+86400000))
 									: tanggaSOAkhir);
-					pstmt.setInt(4, 0);
-					pstmt.setInt(5, 10);
+					pstmt.setString(4, UserSession.Factory.getUserSession(request).getUser().getKodeCabang());
+					pstmt.setString(5, UserSession.Factory.getUserSession(request).getUser().getKodeCustomer());
+					pstmt.setInt(6, 0);
+					pstmt.setInt(7, 10);
 					rs = pstmt.executeQuery();
 
 					ArrayList<String> tableColumn = new ArrayList<String>();
@@ -431,6 +437,8 @@ public class StockApprove extends HttpServlet {
 					pstmt.setString(3, (tanggaSOAkhir == null || tanggaSOAkhir
 							.equals("")) ? sdf.format(new Date(System.currentTimeMillis()+86400000))
 							: tanggaSOAkhir);
+					pstmt.setString(4, UserSession.Factory.getUserSession(request).getUser().getKodeCabang());
+					pstmt.setString(5, UserSession.Factory.getUserSession(request).getUser().getKodeCustomer());
 					rs = pstmt.executeQuery();
 					if (rs.next())
 						total_pages = rs.getInt(1);
@@ -448,8 +456,10 @@ public class StockApprove extends HttpServlet {
 					pstmt.setString(3, (tanggaSOAkhir == null || tanggaSOAkhir
 							.equals("")) ? sdf.format(new Date(System.currentTimeMillis()+86400000))
 									: tanggaSOAkhir);
-					pstmt.setInt(4, 0);
-					pstmt.setInt(5, 10);
+					pstmt.setString(4, UserSession.Factory.getUserSession(request).getUser().getKodeCabang());
+					pstmt.setString(5, UserSession.Factory.getUserSession(request).getUser().getKodeCustomer());
+					pstmt.setInt(6, 0);
+					pstmt.setInt(7, 10);
 					rs = pstmt.executeQuery();
 
 					ArrayList<String> tableColumn = new ArrayList<String>();

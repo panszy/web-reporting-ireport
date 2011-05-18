@@ -41,19 +41,23 @@ public class LookupList extends HttpServlet {
 		String showFields = request.getParameter("showFields"); 
 		String itemName = request.getParameter("itemName");		
 		String queryData = (String)request.getParameter("queryData");		
-		String page = (String) request.getParameter("page");		
+		String page = (String) request.getParameter("page");
+		String parameter = request.getParameter("parameters"); 
+		String[] parameters = null; 
+		if(parameter!=null && !parameter.equals(""))
+			parameters = ((String)parameter).split(",");					
 		if (page != null) {
 			int KindOfsearch = Integer.parseInt((String) request.getParameter("KindOfsearch"));
 			String WordOfsearch = (String) request.getParameter("WordOfsearch");
 			try {
 				int total_pages = LookupQuery.countNumberLike(
 						Connector.getInstance().getConnectionAdmin(), KindOfsearch,
-						WordOfsearch,queryData);
+						WordOfsearch,queryData,parameters);
 				try {
 					List<ArrayList<String>> datas = LookupQuery
 							.listlike(Connector.getInstance().getConnectionAdmin(),
 									KindOfsearch, WordOfsearch,
-									10 * (Integer.parseInt(page) - 1), 10,queryData,showFields);
+									10 * (Integer.parseInt(page) - 1), 10,queryData,showFields,parameters);
 					request.setAttribute("listOfUser", datas);
 				} catch (DaoException ex) {
 					ex.printStackTrace();
@@ -75,7 +79,10 @@ public class LookupList extends HttpServlet {
 			}
 		}
 
-		request.getRequestDispatcher("/pages/list.jsp?title="+title.replaceAll(" ","%20")+"&tableTitle="+tableTitle.replaceAll(" ","%20")+"&itemName="+itemName.replaceAll(" ","%20")+"&showFields="+showFields.replaceAll(" ","%20")+"&queryData="+queryData.replaceAll(" ","%20")).forward(request,
+		String destination = "/pages/list.jsp?title="+title.replaceAll(" ","%20")+"&tableTitle="+tableTitle.replaceAll(" ","%20")+"&itemName="+itemName.replaceAll(" ","%20")+"&showFields="+showFields.replaceAll(" ","%20")+"&queryData="+queryData.replaceAll(" ","%20");
+		if(parameter!=null && !parameter.equals(""))
+			destination+="&parameters="+parameter.replaceAll(" ","%20");
+		request.getRequestDispatcher(destination).forward(request,
 				response);
 	}
 
@@ -87,7 +94,11 @@ public class LookupList extends HttpServlet {
 		String tableTitle = (String)request.getParameter("tableTitle");
 		String showFields = (String)request.getParameter("showFields"); 
 		String itemName = (String)request.getParameter("itemName");				
-		String queryData = (String)request.getParameter("queryData");		
+		String queryData = (String)request.getParameter("queryData");
+		String parameter = request.getParameter("parameters");		
+		String[] parameters = null; 
+		if(parameter!=null && !parameter.equals(""))
+			parameters = ((String)parameter).split(",");
 		if (request.getParameter("Action") != null) {
 			String action = request.getParameter("Action");
 			if (action.equalsIgnoreCase("Search")) {
@@ -96,10 +107,10 @@ public class LookupList extends HttpServlet {
 				try {
 					List<ArrayList<String>> datas = LookupQuery
 					.listlike(Connector.getInstance().getConnectionAdmin(),
-							KindOfsearch, WordOfsearch, 0, 10, queryData,showFields);
+							KindOfsearch, WordOfsearch, 0, 10, queryData,showFields,parameters);
 					int total_pages = LookupQuery.countNumberLike(
 							Connector.getInstance().getConnectionAdmin(), KindOfsearch,
-							WordOfsearch,queryData);
+							WordOfsearch,queryData,parameters);
 					request.setAttribute("listOfUser", datas);
 					request.setAttribute(
 							"total_pages",
@@ -117,10 +128,11 @@ public class LookupList extends HttpServlet {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				request.getRequestDispatcher(
-						"/pages/list.jsp?KindOfsearch=" + KindOfsearch
-								+ "&WordOfsearch=" + WordOfsearch+"&title="+title.replaceAll(" ","%20")+"&tableTitle="+tableTitle.replaceAll(" ","%20")+"&itemName="+itemName.replaceAll(" ","%20")+"&showFields="+showFields.replaceAll(" ","%20")+"&queryData="+queryData.replaceAll(" ","%20")).forward(
-						request, response);
+				String destination = "/pages/list.jsp?KindOfsearch=" + KindOfsearch
+				+ "&WordOfsearch=" + WordOfsearch+"&title="+title.replaceAll(" ","%20")+"&tableTitle="+tableTitle.replaceAll(" ","%20")+"&itemName="+itemName.replaceAll(" ","%20")+"&showFields="+showFields.replaceAll(" ","%20")+"&queryData="+queryData.replaceAll(" ","%20");
+				if(parameter!=null && !parameter.equals(""))
+					destination+="&parameters="+parameter.replaceAll(" ","%20");
+				request.getRequestDispatcher(destination).forward(request, response);
 			}
 		}
 	}

@@ -40,16 +40,17 @@ public class StockOrderUpdate extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	static Logger logger = Logger.getLogger(StockOrderUpdate.class);
-	private final String tableQuery = "SELECT ROW_NUMBER() OVER(ORDER BY TGL_SO_SMS DESC) as \"No\", TGL_SO_SMS as \"Tgl SO\",NO_SO_SMS as \"No SO\",TGL_PO as \"Tgl PO\",NO_PO as \"No PO\",case when TYPE_BAYAR = 1.0 then 'kredit' else 'tunai' end as \"tipe bayar\",case when F_SOBATAL = 1 then 'Batal' else case when F_APPCAB = 1 then 'Setuju' else case when F_APPPROTEK = 1 then 'Proteksi' else 'Menunggu' end end end as \"Status\",KET_SO as \"Keterangan\", ROW_NUMBER() OVER(ORDER BY TGL_SO_SMS DESC) AS ROWNUMBER FROM \"DB2ADMIN\".TBSO_SMS where (NO_SO_SMS=? or TGL_SO_SMS between ? and ?) and F_SOBATAL = 0 and F_APPCAB = 0 and F_APPPROTEK = 0";
-	private final String tableQueryCount = "SELECT count(1) FROM \"DB2ADMIN\".TBSO_SMS where (NO_SO_SMS=? or TGL_SO_SMS between ? and ?) and F_SOBATAL = 0 and F_APPCAB = 0 and F_APPPROTEK = 0";
-	private final String editQuery = "SELECT A.TYPE_BAYAR,A.TGL_SO_SMS,A.TGL_PO,B.QTY_SO,B.QTY_PO,B.NO_URUT,A.NO_SO_SMS,A.NO_PO,A.KODE_TYPESO,A.KODE_TYPEDO,A.KODE_TRN,A.KODE_PEG,A.KODE_CUST,A.KODE_CAB,B.KODE_BAR,A.KET_SO FROM \"DB2ADMIN\".TBSO_SMS as A,\"DB2ADMIN\".TBDTSO_SMS as B where A.NO_SO_SMS=B.NO_SO_SMS and A.NO_SO_SMS=?";
+	private final String tableQuery = "SELECT ROW_NUMBER() OVER(ORDER BY TGL_SO_SMS DESC) as \"No\", TGL_SO_SMS as \"Tgl SO\",NO_SO_SMS as \"No SO\",TGL_PO as \"Tgl PO\",NO_PO as \"No PO\",case when TYPE_BAYAR = 1.0 then 'kredit' else 'tunai' end as \"tipe bayar\",case when F_SOBATAL = 1 then 'Batal' else case when F_APPCAB = 1 then 'Setuju' else case when F_APPPROTEK = 1 then 'Proteksi' else 'Menunggu' end end end as \"Status\",KET_SO as \"Keterangan\", ROW_NUMBER() OVER(ORDER BY TGL_SO_SMS DESC) AS ROWNUMBER FROM \"DB2ADMIN\".TBSO_SMS where (NO_SO_SMS=? or TGL_SO_SMS between ? and ?) and F_SOBATAL = 0 and F_APPCAB = 0 and F_APPPROTEK = 0 and KODE_CAB=? and KODE_CUST=?";
+	private final String tableQueryCount = "SELECT count(1) FROM \"DB2ADMIN\".TBSO_SMS where (NO_SO_SMS=? or TGL_SO_SMS between ? and ?) and F_SOBATAL = 0 and F_APPCAB = 0 and F_APPPROTEK = 0  and KODE_CAB=? and KODE_CUST=?";
+	private final String editQuery = "SELECT A.TYPE_BAYAR,A.TGL_SO_SMS,A.TGL_PO,A.NO_SO_SMS,A.NO_PO,A.KODE_TYPESO,A.KODE_TYPEDO,A.KODE_TRN,A.KODE_PEG,A.KODE_CUST,A.KODE_CAB,A.KET_SO FROM \"DB2ADMIN\".TBSO_SMS as A where A.NO_SO_SMS=?";
+	private final String editQueryDetail = "SELECT B.NO_URUT,B.KODE_BAR,A.nama_bar,A.satuan_bar, A.kemasan_bar,B.QTY_SO FROM \"DB2ADMIN\".TBMASBAR as A,\"DB2ADMIN\".TBDTSO_SMS as B where A.kode_bar=B.kode_bar and B.NO_SO_SMS=?";
 	private final String comboTypeSOQuery = "select NAMA_TYPESO,KODE_TYPESO from \"DB2ADMIN\".tbmastypeso where KODE_TYPESO=2 or KODE_TYPESO=4";
 	private final String comboJenisTransaksi = "select NAMA_TRN,KODE_TRN from \"DB2ADMIN\".tbmastrn where KODE_TRN=1 or KODE_TRN=3";
 	private final String comboTipeTransaksi = "select NAMA_TYPEDO,KODE_TYPEDO from \"DB2ADMIN\".tbmastypedo where KODE_TYPEDO=1 or KODE_TYPEDO=2";
 	private final String comboJenisObat = "select NAMA_JNSOBAT,KODE_JNSOBAT from \"DB2ADMIN\".tbmasjnsobat where KODE_JNSOBAT = 1 AND F_AKTIF =1";
 	private final String simpanOrder = "call SPIUSO_SMS(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 	private final String hapusOrder = "call SPDELSO_SMS(?,?,?)";
-	private final String updateOrderDetail = "update \"DB2ADMIN\".TBDTSO_SMS set KODE_BAR=?, QTY_SO=?, QTY_PO=? where NO_SO_SMS=?";
+	private final String simpanOrderDetail = "call SPIUDTSO_SMS(?,?,?,?,?,?)";
 	private final String hapusOrderDetail = "call SPDELDTSO_SMS(?,?)";
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -73,7 +74,7 @@ public class StockOrderUpdate extends HttpServlet {
 		String nomorSO = request.getParameter("nomor_so");
 		String nomorSOEdit = request.getParameter("no_so");
 		if (page != null && nomorSOEdit == null) {
-			
+
 			PreparedStatement pstmt = null;
 			ResultSet rs = null;
 			try {
@@ -85,6 +86,8 @@ public class StockOrderUpdate extends HttpServlet {
 						.equals("")) ? sdf.format(new Date()) : tanggaSOAwal);
 				pstmt.setString(3, (tanggaSOAkhir == null || tanggaSOAkhir
 						.equals("")) ? sdf.format(new Date()) : tanggaSOAkhir);
+				pstmt.setString(4, UserSession.Factory.getUserSession(request).getUser().getKodeCabang());
+				pstmt.setString(5, UserSession.Factory.getUserSession(request).getUser().getKodeCustomer());
 				rs = pstmt.executeQuery();
 				if (rs.next())
 					total_pages = rs.getInt(1);
@@ -99,8 +102,10 @@ public class StockOrderUpdate extends HttpServlet {
 						.equals("")) ? sdf.format(new Date()) : tanggaSOAwal);
 				pstmt.setString(3, (tanggaSOAkhir == null || tanggaSOAkhir
 						.equals("")) ? sdf.format(new Date()) : tanggaSOAkhir);
-				pstmt.setInt(4, 10 * (Integer.parseInt(page) - 1));
-				pstmt.setInt(5, (10 * (Integer.parseInt(page) - 1)) + 10);
+				pstmt.setString(4, UserSession.Factory.getUserSession(request).getUser().getKodeCabang());
+				pstmt.setString(5, UserSession.Factory.getUserSession(request).getUser().getKodeCustomer());
+				pstmt.setInt(6, 10 * (Integer.parseInt(page) - 1));
+				pstmt.setInt(7, (10 * (Integer.parseInt(page) - 1)) + 10);
 				rs = pstmt.executeQuery();
 				ArrayList<String> tableColumn = new ArrayList<String>();
 				ArrayList<ArrayList<String>> tableData = new ArrayList<ArrayList<String>>();
@@ -162,6 +167,22 @@ public class StockOrderUpdate extends HttpServlet {
 				pstmt.close();
 
 				conn = Connector.getInstance().getConnectionAdmin();
+				pstmt = conn.prepareStatement(editQueryDetail);
+				pstmt.setString(1, nomorSOEdit);
+				rs = pstmt.executeQuery();
+				ArrayList<ArrayList<String>> dataDetail = new ArrayList<ArrayList<String>>();
+				totalColumn = rs.getMetaData().getColumnCount();
+				while (rs.next()) {
+					ArrayList<String> singleData = new ArrayList<String>();
+					for (int i = 1; i <= totalColumn; i++)
+						singleData.add(rs.getString(i));
+					dataDetail.add(singleData);
+				}
+				request.setAttribute("dataDetail", dataDetail);
+				rs.close();
+				pstmt.close();
+
+				conn = Connector.getInstance().getConnectionAdmin();
 				pstmt = conn.prepareStatement(comboTypeSOQuery);
 				rs = pstmt.executeQuery();
 				ArrayList<String> comboTypeSOQuery = new ArrayList<String>();
@@ -184,13 +205,13 @@ public class StockOrderUpdate extends HttpServlet {
 				request.setAttribute("comboJenisTransaksi", comboJenisTransaksi);
 				rs.close();
 				pstmt.close();
-				
+
 				conn = Connector.getInstance().getConnectionAdmin();
 				pstmt = conn.prepareStatement(comboJenisObat);
 				rs = pstmt.executeQuery();
 				ArrayList<String> comboJenisObat = new ArrayList<String>();
-				while(rs.next()){
-					comboJenisObat.add(rs.getString(1)+","+rs.getString(2));
+				while (rs.next()) {
+					comboJenisObat.add(rs.getString(1) + "," + rs.getString(2));
 				}
 				request.setAttribute("comboJenisObat", comboJenisObat);
 				rs.close();
@@ -257,6 +278,8 @@ public class StockOrderUpdate extends HttpServlet {
 							(tanggaSOAkhir == null || tanggaSOAkhir.equals("")) ? sdf.format(new Date(
 									System.currentTimeMillis() + 86400000))
 									: tanggaSOAkhir);
+					pstmt.setString(4, UserSession.Factory.getUserSession(request).getUser().getKodeCabang());
+					pstmt.setString(5, UserSession.Factory.getUserSession(request).getUser().getKodeCustomer());
 					rs = pstmt.executeQuery();
 					if (rs.next())
 						total_pages = rs.getInt(1);
@@ -278,8 +301,10 @@ public class StockOrderUpdate extends HttpServlet {
 							(tanggaSOAkhir == null || tanggaSOAkhir.equals("")) ? sdf.format(new Date(
 									System.currentTimeMillis() + 86400000))
 									: tanggaSOAkhir);
-					pstmt.setInt(4, 0);
-					pstmt.setInt(5, 10);
+					pstmt.setString(4, UserSession.Factory.getUserSession(request).getUser().getKodeCabang());
+					pstmt.setString(5, UserSession.Factory.getUserSession(request).getUser().getKodeCustomer());
+					pstmt.setInt(6, 0);
+					pstmt.setInt(7, 10);
 					rs = pstmt.executeQuery();
 
 					ArrayList<String> tableColumn = new ArrayList<String>();
@@ -392,7 +417,7 @@ public class StockOrderUpdate extends HttpServlet {
 					PreparedStatement pstmt = null;
 					String noSO = request.getParameter("NO_SO_SMS");
 					String kodeCabang = request.getParameter("KODE_CAB");
-					String noPO = "PO."+request.getParameter("po");
+					String noPO = "PO." + request.getParameter("po");
 					try {
 						Connection conn = Connector.getInstance()
 								.getConnection();
@@ -462,16 +487,20 @@ public class StockOrderUpdate extends HttpServlet {
 				String[] delete = null;
 				if (request.getParameterValues("deleted") != null) {
 					delete = (String[]) request.getParameterValues("deleted");
-				}			
-				response.sendRedirect(request.getContextPath()+"/pages/stock-order-update?no_so="
-						+ delete[0].split(";")[1]);								
+				}
+				response.sendRedirect(request.getContextPath()
+						+ "/pages/stock-order-update?no_so="
+						+ delete[0].split(";")[1]);
 			} else if (action.equalsIgnoreCase("Baru")) {
 				StockOrder so = new StockOrder();
 				so.doGet(request, response);
 			} else if (action.equalsIgnoreCase("Keluar")) {
-				request.getRequestDispatcher("/").forward(request, response);				
-			} else if (action.equalsIgnoreCase("Batal")) {						
-				response.sendRedirect(request.getContextPath()+"/pages/stock-order-update?page=1&tanggal_so_awal="+sdf.format(new Date())+"&tanggal_so_akhir="+sdf.format(new Date())+"&nomor_so=");								
+				request.getRequestDispatcher("/").forward(request, response);
+			} else if (action.equalsIgnoreCase("Batal")) {
+				response.sendRedirect(request.getContextPath()
+						+ "/pages/stock-order-update?page=1&tanggal_so_awal="
+						+ sdf.format(new Date()) + "&tanggal_so_akhir="
+						+ sdf.format(new Date()) + "&nomor_so=");
 			} else if (action.equalsIgnoreCase("Simpan")) {
 				String noSO = request.getParameter("NO_SO_SMS");
 				String kodeCabang = request.getParameter("KODE_CAB");
@@ -479,14 +508,14 @@ public class StockOrderUpdate extends HttpServlet {
 				String tanggalSo = request.getParameter("tanggal_so");
 				String noPo = request.getParameter("po");
 				String tanggalPo = request.getParameter("tanggal_po");
-				String kodeBarang = request.getParameter("kode_barang");
+				String[] kodeBarang = request.getParameterValues("kodebarang");				
 				String kodeTransaksi = request.getParameter("jenis_transaksi");
-				String quantity = request.getParameter("quantity_so");
+				String[] qty = request.getParameterValues("qty");				
 				String tipeBayar = request.getParameter("tipe_bayar");
 				String tipeDO = request.getParameter("tipe_transaksi");
 				String catatan = request.getParameter("catatan");
 				String tipeSO = request.getParameter("type_so");
-				String konsinyasi = tipeSO.equals("4") ? "1" : "0";
+				String konsinyasi = tipeSO.equals("4") ? "1" : "0";				
 
 				PreparedStatement pstmt = null;
 				try {
@@ -512,14 +541,30 @@ public class StockOrderUpdate extends HttpServlet {
 					pstmt.setInt(17, 1);
 					pstmt.executeUpdate();
 					pstmt.close();
-
+					
 					conn = Connector.getInstance().getConnectionAdmin();
-					pstmt = conn.prepareStatement(updateOrderDetail);
-					pstmt.setString(1, kodeBarang);
-					pstmt.setString(2, quantity);
-					pstmt.setString(3, quantity);
-					pstmt.setString(4, noSO);
+					pstmt = conn.prepareStatement(hapusOrderDetail);
+					pstmt.setString(1,
+							UserSession.Factory.getUserSession(request)
+									.getUser().getKodeCabang());
+					pstmt.setString(2, noSO);
 					pstmt.executeUpdate();
+					pstmt.close();
+					
+					for (int cnt = 0; cnt < qty.length; cnt++) {												
+						conn = Connector.getInstance().getConnectionAdmin();
+						pstmt = conn.prepareStatement(simpanOrderDetail);
+						pstmt.setString(1, UserSession.Factory.getUserSession(request)
+								.getUser().getKodeCabang());
+						pstmt.setString(2, noSO);
+						pstmt.setInt(3, cnt);
+						pstmt.setString(4, kodeBarang[cnt]);
+						pstmt.setString(5, qty[cnt]);
+						pstmt.setString(6, qty[cnt]);
+						
+						pstmt.executeUpdate();
+						pstmt.close();
+					}					
 
 				} catch (DaoException e) {
 					// TODO Auto-generated catch block
@@ -545,7 +590,7 @@ public class StockOrderUpdate extends HttpServlet {
 				request.setAttribute("no_po", noPo);
 				request.setAttribute("tanggal_po", tanggalPo);
 				request.setAttribute("kode_barang", kodeBarang);
-				request.setAttribute("quantity", quantity);
+				request.setAttribute("quantity", qty);
 				request.setAttribute("tipe_bayar", tipeBayar);
 				request.setAttribute("catatan", catatan);
 				request.setAttribute("message",
@@ -579,6 +624,8 @@ public class StockOrderUpdate extends HttpServlet {
 								.format(new Date(
 										System.currentTimeMillis() + 86400000))
 								: tanggaSOAkhir);
+				pstmt.setString(4, UserSession.Factory.getUserSession(request).getUser().getKodeCabang());
+				pstmt.setString(5, UserSession.Factory.getUserSession(request).getUser().getKodeCustomer());
 				rs = pstmt.executeQuery();
 				if (rs.next())
 					total_pages = rs.getInt(1);
@@ -601,8 +648,10 @@ public class StockOrderUpdate extends HttpServlet {
 								.format(new Date(
 										System.currentTimeMillis() + 86400000))
 								: tanggaSOAkhir);
-				pstmt.setInt(4, 0);
-				pstmt.setInt(5, 10);
+				pstmt.setString(4, UserSession.Factory.getUserSession(request).getUser().getKodeCabang());
+				pstmt.setString(5, UserSession.Factory.getUserSession(request).getUser().getKodeCustomer());
+				pstmt.setInt(6, 0);
+				pstmt.setInt(7, 10);
 				rs = pstmt.executeQuery();
 
 				ArrayList<String> tableColumn = new ArrayList<String>();
