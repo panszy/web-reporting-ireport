@@ -86,34 +86,33 @@
         }
 
 
-        function addElement() {
-            var ni = document.getElementById('my_div');
+        function addElement(fld1,fld2,fld3,fld4,fld5) {
+            var ni = document.getElementById('my_div_barang');            
             var numi = document.getElementById('theValue');
-            var num = (document.getElementById('theValue').value - 1) + 2;
-            numi.value = num;
-            var newdiv = document.createElement('div');
-            var divIdName = 'my' + num + 'Div';
-            newdiv.setAttribute('id', divIdName);
-            newdiv.innerHTML = "<tr><td class='item' ><input type='text' maxlength='50' name='name'></td><td class='item' ><select name='type' <option value='VARCHAR'>String</option> <option value='INT'>Integer</option> <option value='TIMESTAMP'>Date Time</option></td><td class='item' ><input type='text' maxlength='4' onkeypress='return onlyNumbers(event)' name='size'></td><td class='item'><input type='checkbox' name='mandatory" + num + "'></td><td class='item'><input type='checkbox' name='editable" + num + "'></td><td class='item'><input type='checkbox' name='searchable" + num + "'></td><td class='item'><input type='button' value='Remove Field' onClick='removeElement(" + num + ")' name='button'></td></tr>";
-            ni.appendChild(newdiv);
-        }
+            var num = (document.getElementById('theValue').value - 1) + 2;            
+            numi.value = num;                       
+            ni.innerHTML = ni.innerHTML.substring(0, ni.innerHTML.length-9)+"<tr><td class='item'><input readonly value='"+num+"'></td><td class='item'><input readonly name='kodebarang' value='"+fld1+"'></td><td class='item'><input readonly value='"+fld2+"'></td><td class='item'><input readonly value='"+fld3+"'></td><td class='item'><input readonly value='"+fld4+"'></td><td class='item'><input name='qty' value='"+fld5+"'></td></tr>"+ni.innerHTML.substring(ni.innerHTML.length-9,ni.innerHTML.length);                                            
+        }        
 
-        function addElementEdit() {
-            var ni = document.getElementById('my_div');
-            var numi = document.getElementById('theValue');
-            var num = (document.getElementById('theValue').value - 1) + 2;
-            numi.value = num;
-            var newdiv = document.createElement('div');
-            var divIdName = 'my' + num + 'Div';
-            newdiv.setAttribute('id', divIdName);
-            newdiv.innerHTML = "<tr><td class='item' ><b>NEW</b><input type='text' maxlength='50' name='name'></td><td class='item' ><select name='type' <option value='VARCHAR'>String</option> <option value='INT'>Integer</option> <option value='TIMESTAMP'>Date Time</option></td><td class='item' ><input type='text' maxlength='4' onkeypress='return onlyNumbers(event)' name='size'></td><td class='item'><input type='checkbox' name='mandatory" + num + "'></td><td class='item'><input type='checkbox' name='editable" + num + "'></td><td class='item'><input type='checkbox' name='searchable" + num + "'></td><td class='item'><input type='button' value='Remove Field' onClick='removeElement(" + num + ")' name='button'></td></tr>";
-            ni.appendChild(newdiv);
-        }
-
-        function removeElement(divNum) {
-            var d = document.getElementById('my_div');
-            var olddiv = document.getElementById('my' + divNum + 'Div');
-            d.removeChild(olddiv);
+        function removeElement() {
+        	var numi = document.getElementById('theValue');
+        	divNum = numi.value;
+        	if(divNum > 0){
+        		numi.value = divNum - 1;
+        	}
+            var ni = document.getElementById('my_div_barang');
+            var temp = ni.innerHTML;             
+            indexTotal = 0;
+            counter = 0;
+            while(temp.indexOf("<tbody>") > 0){
+                index = temp.indexOf("<tbody>");
+                temp = temp.substring(index+7,temp.length);
+                indexTotal = indexTotal + index + 7;
+                counter++;                                
+            }     
+            if(counter > 1){       
+            	ni.innerHTML = ni.innerHTML.substring(0,indexTotal-7)+ni.innerHTML.substring(ni.innerHTML.length-9,ni.innerHTML.length);
+            }
         }                
 
         function set_interval()
@@ -141,6 +140,7 @@
         }
 
     </script>
+    <script language="JavaScript" src="<%=request.getContextPath()%>/ScrollableTable.js"></script>
 <link rel="stylesheet" href="<%=request.getContextPath()%>/style.css"></link>
 </head>
 <%
@@ -151,7 +151,7 @@
 <%
 	} else {
 %>
-<body>
+<body onLoad="makeScrollableTable('tabela',true,'auto');">
 <%
 	}
 %>

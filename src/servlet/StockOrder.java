@@ -166,10 +166,8 @@ public class StockOrder extends HttpServlet {
 
 			String tanggalSo = request.getParameter("tanggal_so");
 			String noPo = request.getParameter("po");
-			String tanggalPo = request.getParameter("tanggal_po");
-			String kodeBarang = request.getParameter("kode_barang");
-			String kodeTransaksi = request.getParameter("jenis_transaksi");
-			String quantity = request.getParameter("quantity_so");
+			String tanggalPo = request.getParameter("tanggal_po");			
+			String kodeTransaksi = request.getParameter("jenis_transaksi");			
 			String tipeBayar = request.getParameter("tipe_bayar");
 			String tipeDO = request.getParameter("tipe_transaksi");
 			String catatan = request.getParameter("catatan");
@@ -190,6 +188,9 @@ public class StockOrder extends HttpServlet {
 					.getUser().getKodeCabang();
 			String kodeCustomer = UserSession.Factory.getUserSession(request)
 					.getUser().getKodeCustomer();
+			
+			String[] kodeBarang = request.getParameterValues("kodebarang");
+			String[] qty = request.getParameterValues("qty");
 
 			try {
 				Connection conn = Connector.getInstance().getConnectionAdmin();
@@ -214,15 +215,18 @@ public class StockOrder extends HttpServlet {
 				pstmt.executeUpdate();
 				pstmt.close();
 
-				conn = Connector.getInstance().getConnectionAdmin();
-				pstmt = conn.prepareStatement(simpanOrderDetail);
-				pstmt.setString(1, kodeCabang);
-				pstmt.setString(2, noSo);
-				pstmt.setInt(3, 1);
-				pstmt.setString(4, kodeBarang);
-				pstmt.setString(5, quantity);
-				pstmt.setString(6, quantity);
-				pstmt.executeUpdate();
+				for(int cnt = 0; cnt < qty.length ; cnt++){
+					conn = Connector.getInstance().getConnectionAdmin();
+					pstmt = conn.prepareStatement(simpanOrderDetail);
+					pstmt.setString(1, kodeCabang);
+					pstmt.setString(2, noSo);
+					pstmt.setInt(3, (cnt+1));
+					pstmt.setString(4, kodeBarang[cnt]);
+					pstmt.setString(5, qty[cnt]);
+					pstmt.setString(6, qty[cnt]);
+					pstmt.executeUpdate();
+					pstmt.close();
+				}
 
 			} catch (DaoException e) {
 				// TODO Auto-generated catch block
@@ -250,7 +254,7 @@ public class StockOrder extends HttpServlet {
 			request.setAttribute("no_po", noPo);
 			request.setAttribute("tanggal_po", tanggalPo);
 			request.setAttribute("kode_barang", kodeBarang);
-			request.setAttribute("quantity", quantity);
+			request.setAttribute("quantity", qty);
 			request.setAttribute("tipe_bayar", tipeBayar);
 			request.setAttribute("catatan", catatan);
 			request.setAttribute("message",

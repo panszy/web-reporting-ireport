@@ -152,7 +152,7 @@ User user = UserSession.Factory.getUserSession(request).getUser();
 </tr>
 <tr>
 <td>Nomor SO</td>
-<td colspan="2"><input type="text" size="30" readonly name="nomor_so" value="<%=nomorSO %>" >&nbsp;<a onclick="OpenPop_UpList('<%=request.getContextPath()%>/pages/list?title=Cari%20NO%20SO%20SMS&tableTitle=Pencarian%20Stok%20Order&tableTitle=Daftar%20Stok%20Order&itemName=nomor_so&showFields=No;SO;SMS,Tgl;SO;SMS,No;PO,Tgl;PO&queryData=kodeSOQuery');return false;" href="">Look up</a></td>
+<td colspan="2"><input type="text" size="30" readonly name="nomor_so" value="<%=nomorSO %>" >&nbsp;<a onclick="OpenPop_UpList('<%=request.getContextPath()%>/pages/list?title=Cari%20NO%20SO%20SMS&tableTitle=Pencarian%20Stok%20Order&tableTitle=Daftar%20Stok%20Order&itemName=nomor_so&showFields=No;SO;SMS,Tgl;SO;SMS,No;PO,Tgl;PO&queryData=kodeSOQuery&parameters=<%=UserSession.Factory.getUserSession(request).getUser().getKodeCabang()+","+UserSession.Factory.getUserSession(request).getUser().getKodeCustomer() %>');return false;" href="">Look up</a></td>
 </tr>
 <tr>
 <td colspan="3">

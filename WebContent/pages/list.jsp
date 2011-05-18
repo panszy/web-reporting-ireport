@@ -13,6 +13,7 @@ String[] showFields = request.getParameter("showFields").replace(';',' ').split(
 String showFieldsFlat = request.getParameter("showFields");
 String itemName = request.getParameter("itemName");
 String queryData = request.getParameter("queryData");
+String parameters = request.getParameter("parameters")==null?"":request.getParameter("parameters");
 int pages=request.getAttribute("pages")==null?1:Integer.parseInt((String)request.getAttribute("pages"));
 int total_pages=request.getAttribute("total_pages")==null?1:Integer.parseInt((String)request.getAttribute("total_pages"));
 String WordOfsearch =request.getParameter("WordOfsearch")==null?"":request.getParameter("WordOfsearch");
@@ -33,9 +34,10 @@ String KindOfsearch =request.getParameter("KindOfsearch")==null?"":request.getPa
 <input type="hidden" value="<%=showFieldsFlat %>" name="showFields">
 <input type="hidden" value="<%=itemName %>" name="itemName">
 <input type="hidden" value="<%=queryData %>" name="queryData">
+<input type="hidden" value="<%=parameters %>" name="parameters">
 <link rel="stylesheet" href="<%=request.getContextPath()%>/style.css"></link>
 	<script language="javascript">
-        function validepopupform(field1,field2){
+        function validepopupform(field1,field2){            
 			field1.value=field2;
 			window.close();
 		}    	  
@@ -86,8 +88,18 @@ String KindOfsearch =request.getParameter("KindOfsearch")==null?"":request.getPa
     <% for (String data: listofuser.get(i)){
     	if(j==0){
     %>    
-        <td><a href="" onclick="validepopupform(window.opener.document.forms['info'].elements['<%=itemName%>'],'<%=data%>');return false;"><%=data%></a></td>
-        <%} else { %> 
+        <td><a href="" onclick="
+        <% String[] items = itemName.split(",");
+        int index = 0;
+        for(String item : items){        
+        %>
+        validepopupform(window.opener.document.forms['info'].elements['<%=item%>'],'<%=listofuser.get(i).toArray()[index]%>');
+        <%
+        	index++;
+        } 
+        %>
+        return false;"><%=data%></a></td>
+        <%} else if (j < showFields.length) { %> 
         <td><%=data%></td>
         <%     	
     	}  	

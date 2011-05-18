@@ -21,8 +21,25 @@
 <script type="text/javascript">    
         
 function batal(){    	
-	document.info.reset();	
-}                      
+	document.info.reset();		
+}
+
+function batal_detail(){    	
+	document.info.reset();		
+	document.info.buttonLookup.focus();
+} 
+
+function register_detail(){    		
+	document.getElementById("tab1").tabber.tabShow(2);
+}
+
+function tambah_detail(fld1,fld2,fld3,fld4,fld5){
+	addElement(fld1,fld2,fld3,fld4,fld5);
+}
+
+function hapus_detail(){
+	removeElement();
+}
     
 </script>
 <form id="info" name="info" action="<%=request.getContextPath()%>/pages/stock-order"
@@ -36,6 +53,15 @@ function batal(){
 	.getAttribute("comboTipeTransaksi");	
 	ArrayList<String> comboJenisObat = (ArrayList<String>) request
 	.getAttribute("comboJenisObat");
+	ArrayList<String> tableColumn = new ArrayList<String>();
+	tableColumn.add("No");
+	tableColumn.add("Kode");
+	tableColumn.add("Nama");
+	tableColumn.add("Satuan");
+	tableColumn.add("Kemasan");
+	tableColumn.add("Qty");
+	ArrayList<ArrayList<String>> tableData = (ArrayList<ArrayList<String>>) request
+	.getAttribute("tableData");
 	SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy");
 	String currentDate = sdf.format(new Date());
 	User user = UserSession.Factory.getUserSession(request).getUser();
@@ -110,22 +136,56 @@ function batal(){
 
 <div class="tabbertab">
 <h2>Detail Barang</h2>
-<p>
 <table>
 	<tr>
 		<td>Kode Barang</td>
-		<td><input name="kode_barang" size="50" readonly type="text" value="">&nbsp;<a onclick="OpenPop_UpList('<%=request.getContextPath()%>/pages/list?title=Pencarian%20Stok%20Barang&tableTitle=Daftar%20Stok%20Barang&itemName=kode_barang&showFields=Kode;Barang,Nama;Barang,Pabrik&queryData=kodeBarangQuery');return false;" href="">Look up</a>
-		</td>
+		<td colspan="2">Nama Barang</td>
+		<td>Pabrik</td>
+	</tr>
+	<tr>		
+		<td><input name="kode_barang" size="20" readonly type="text" value="">&nbsp;<input type="button" name="buttonLookup" value="Lookup" onclick="OpenPop_UpList('<%=request.getContextPath()%>/pages/list?title=Pencarian%20Stok%20Barang&tableTitle=Daftar%20Stok%20Barang&itemName=kode_barang,nama_barang,pabrik,satuan_barang,kemasan_barang&showFields=Kode;Barang,Nama;Barang,Pabrik&queryData=kodeBarangQuery');return false;"></td>		
+		<td colspan="2"><input name="nama_barang" size="50" readonly type="text" value=""></td>
+		<td><input name="pabrik" size="30" readonly type="text" value=""></td>
 	</tr>
 	<tr>
-		<td>Quantity SO</td>
-		<td><input name="quantity_so" type="text" value="" onkeypress='return onlyNumbers(event)'>
+		<td>Satuan</td>
+		<td>Kemasan</td>
+		<td>Qty</td>
+		<td>Proses</td>
+	</tr>
+	<tr>
+		<td><input name="satuan_barang" size="30" readonly type="text" value=""></td>
+		<td><input name="kemasan_barang" size="25" readonly type="text" value=""></td>		
+		<td><input name="quantity_so" size="25" type="text" value="" onkeypress='return onlyNumbers(event)'></td>
+		<td>
+			<input type="button" value="Tambah" onClick="tambah_detail(document.info.kode_barang.value,document.info.nama_barang.value,document.info.satuan_barang.value,document.info.kemasan_barang.value,document.info.quantity_so.value)">
+			<input type="button" value="Hapus" onClick="hapus_detail()">
+			<input type="button" value="Batal" onClick="batal_detail()">
+			<input type="button" value="Register" onClick="register_detail()">	
 		</td>
 	</tr>	
 </table>
-</p>
+<br>
+Detail Barang
+<div id="my_div_barang">
+<table id="tabela" class="item"
+	style="background-image: url('<%=request.getContextPath()%>/images/item-header-space.jpg'); background-repeat: repeat-x;"
+	width=600>	
+	<input type="hidden" value="0" id="theValue"/>  
+	<tbody>          	
+	<tr>
+		<%
+			for (String column : tableColumn) {
+		%>
+		<td class="item-header"><%=column%></td>
+		<%
+			}
+		%>				
+	</tr>
+	</tbody>			        
+	</table>
 </div>
-
+</div>
 
 <div class="tabbertab">
 
